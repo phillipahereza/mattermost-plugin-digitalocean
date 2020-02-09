@@ -27,7 +27,7 @@ type Plugin struct {
 func (p *Plugin) OnActivate() error {
 	p.API.RegisterCommand(getCommand())
 
-	profileImage := filepath.Join("assets", "icon.svg")
+	profileImage := filepath.Join("assets", "do.png")
 
 	botID, err := p.Helpers.EnsureBot(&model.Bot{
 		Username:    "do",
