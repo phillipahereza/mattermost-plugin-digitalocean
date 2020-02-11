@@ -33,7 +33,7 @@ func (t *TokenSource) Token() (*oauth2.Token, error) {
 	return token, nil
 }
 
-func NewDOAccount(p *Plugin, url string) *DOAccountInstance {
+func NewDOAccountInstance(p *Plugin, url string) *DOAccountInstance {
 	return &DOAccountInstance{
 		Plugin: p,
 		AccURL: url,
