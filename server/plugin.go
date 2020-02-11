@@ -20,6 +20,8 @@ type Plugin struct {
 	// setConfiguration for usage.
 	configuration *configuration
 
+	store Store
+
 	BotUserID string
 }
 
@@ -39,6 +41,8 @@ func (p *Plugin) OnActivate() error {
 		return errors.Wrap(err, "failed to ensure digital ocean bot")
 	}
 	p.BotUserID = botID
+	store := CreateStore(p)
+	p.store = store
 
 	return nil
 }
