@@ -1,8 +1,12 @@
 package main
 
 import (
+	"bytes"
+	"context"
 	"fmt"
+	"github.com/digitalocean/godo"
 	"strings"
+	"text/tabwriter"
 
 	"github.com/mattermost/mattermost-server/v5/model"
 	"github.com/mattermost/mattermost-server/v5/plugin"
@@ -126,6 +130,44 @@ func (p *Plugin) connectCommandFunc(args *model.CommandArgs) (*model.CommandResp
 	}
 
 	return p.responsef(args, "Successfully added a connecting token"), nil
+}
+
+func (p *Plugin) listDropletsFunc(args *model.CommandArgs) (*model.CommandResponse, *model.AppError) {
+	client, err := p.GetClient(args.UserId)
+	if err != nil {
+		return p.responsef(args, "Failed to get DigitalOcean client"),
+			&model.AppError{Message: err.Error()}
+	}
+
+	opts := &godo.ListOptions{}
+
+	droplets, _, err := client.Droplets.List(context.TODO(), opts)
+
+	if err != nil {
+		return p.responsef(args, "Error while fetching droplets list"),
+			&model.AppError{Message: err.Error()}
+	}
+
+	if len(droplets) == 0 {
+		return p.responsef(args, "You don't have any droplets configured. Use `do droplet create` to provision on"), nil
+	}
+
+	buffer := new(bytes.Buffer)
+
+	// initialize the tabwriter
+	w := new(tabwriter.Writer)
+
+	w.Init(buffer, 8, 8, 0, '\t', 0)
+	fmt.Fprintf(w, "\n %s\t%s\t%s\t%s\t", "ID", "Name", "Region", "Image")
+	fmt.Fprintf(w, "\n %s\t%s\t%s\t%s\t", "______", "______", "______", "______")
+
+	for _, droplet := range droplets {
+		fmt.Fprintf(w, "\n %d\t%s\t%s\t%s\t", droplet.ID, droplet.Name, droplet.Region.Name, fmt.Sprintf("%s %s", droplet.Image.Distribution, droplet.Image.Name))
+	}
+
+	w.Flush()
+
+	return p.responsef(args, buffer.String()), nil
 }
 
 func (p *Plugin) helpCommandFunc(args *model.CommandArgs) (*model.CommandResponse, *model.AppError) {
