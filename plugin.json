@@ -15,8 +15,18 @@
         "bundle_path": "webapp/dist/main.js"
     },
     "settings_schema": {
-        "header": "",
-        "footer": "",
-        "settings": []
+        "header": "Mattermost plugin for Digital Ocean Teams.",
+        "settings": [
+            {
+                "key": "DOTeamID",
+                "display_name": "Unique DO Team Identifier",
+                "type": "text"
+            },
+            {
+                "key": "DOAdmins",
+                "display_name": "Users that are not system admins on Mattermost but have advanced plugin privileges",
+                "type": "text"
+            }
+        ]
     }
 }

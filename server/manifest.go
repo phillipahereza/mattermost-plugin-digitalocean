@@ -29,9 +29,34 @@ const manifestStr = `
     "bundle_path": "webapp/dist/main.js"
   },
   "settings_schema": {
-    "header": "",
+    "header": "Mattermost plugin for Digital Ocean Teams.",
     "footer": "",
-    "settings": []
+    "settings": [
+      {
+        "key": "DOTeamID",
+        "display_name": "Unique DO Team Identifier",
+        "type": "text",
+        "help_text": "",
+        "placeholder": "",
+        "default": null
+      },
+      {
+        "key": "DOToken",
+        "display_name": "Access Token",
+        "type": "text",
+        "help_text": "Token that allows to make API calls to Digital Ocean",
+        "placeholder": "",
+        "default": null
+      },
+      {
+        "key": "DOAdmins",
+        "display_name": "Users that are not system admins on Mattermost but have advanced plugin privileges",
+        "type": "text",
+        "help_text": "",
+        "placeholder": "",
+        "default": null
+      }
+    ]
   }
 }
 `

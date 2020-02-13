@@ -8,7 +8,11 @@ import (
 	"github.com/mattermost/mattermost-server/v5/plugin"
 )
 
-const commandHelp = `* |/do help| - Run 'test' to see if you're configured to run bamboo commands`
+const commandHelp = `* |/do help| - Run 'test' to see if you're configured to run bamboo commands
+* |/do connect <access token>| - Associates your DO team personal token with your mattermost account
+* |/do token| - Provides instructions on getting a personal access token for the configured Digital Ocean team
+* |/do show-configured-token| - Display your configured access token
+`
 
 func getCommand() *model.Command {
 	return &model.Command{
@@ -52,9 +56,76 @@ func (p *Plugin) ExecuteCommand(c *plugin.Context, args *model.CommandArgs) (*mo
 	switch action {
 	case "help":
 		return p.helpCommandFunc(args)
+	case "connect":
+		return p.connectCommandFunc(args)
+	case "token":
+		return p.getPersonalTokenCommandFunc(args)
+	case "show-configured-token":
+		return p.showConnectTokenFunc(args)
 	default:
 		return p.responsef(args, fmt.Sprintf("Unknown action %v", action)), nil
 	}
+}
+
+func (p *Plugin) isUserAuthorized(id string) (bool, *model.AppError) {
+	user, appErr := p.API.GetUser(id)
+	if appErr != nil {
+		return false, appErr
+	}
+	if !strings.Contains(user.Roles, "system_admin") {
+		return false, nil
+	}
+
+	return true, nil
+}
+
+func (p *Plugin) getPersonalTokenCommandFunc(args *model.CommandArgs) (*model.CommandResponse, *model.AppError) {
+	const responseMessage = `Click the link below and follow subsequent steps
+
+1. [Digital Ocean Apps and APIs](/plugins/com.mattermost.digitalocean/%s)
+2. Generate a token and add copy it
+3. Run |/do connect <your-token>|
+`
+	tID := p.getConfiguration().DOTeamID
+	if tID == "" {
+		return p.responsef(args, "No team was set by system admin"),
+			&model.AppError{Message: "No team id in config"}
+	}
+
+	return p.responsef(args, fmt.Sprintf(responseMessage, routeToDOApps)), nil
+}
+
+func (p *Plugin) showConnectTokenFunc(args *model.CommandArgs) (*model.CommandResponse, *model.AppError) {
+	tk, err := p.store.LoadUserDOToken(args.UserId)
+	if err != nil {
+		return p.responsef(args, "Failed to retrieve token."),
+			&model.AppError{Message: err.Error()}
+	}
+
+	if tk == "" {
+		return p.responsef(args, "No token was found"),
+			&model.AppError{Message: "Empty token"}
+	}
+
+	return p.responsef(args, fmt.Sprintf("Your token: %s", tk)), nil
+}
+
+func extractTokenFromCommand(command string) string {
+	tk := strings.Fields(command)[2]
+	return strings.TrimSpace(tk)
+}
+
+func (p *Plugin) connectCommandFunc(args *model.CommandArgs) (*model.CommandResponse, *model.AppError) {
+	userID := args.UserId
+
+	token := extractTokenFromCommand(args.Command)
+	stErr := p.store.StoreUserDOToken(token, userID)
+	if stErr != nil {
+		return p.responsef(args, "Failed to store token. Contact system admin"),
+			&model.AppError{Message: stErr.Error()}
+	}
+
+	return p.responsef(args, "Successfully added a connecting token"), nil
 }
 
 func (p *Plugin) helpCommandFunc(args *model.CommandArgs) (*model.CommandResponse, *model.AppError) {
