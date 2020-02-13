@@ -1,53 +1,39 @@
 package main
 
-import "encoding/json"
-
-const currentInstanceKVKey string = "current_do_instance"
-
 // Store handles any data we might need to persist
 type Store interface {
-	StoreInstance(doi DOInstance) error
-	LoadInstance() (DOInstance, error)
+	StoreUserDOToken(token string, key string) error
+	LoadUserDOToken(key string) (string, error)
 }
 
-type store struct {
+// PluginStore is
+type PluginStore struct {
 	plugin *Plugin
 }
 
-func CreateStore(p *Plugin) *store {
-	return &store{
+// CreateStore is
+func CreateStore(p *Plugin) *PluginStore {
+	return &PluginStore{
 		plugin: p,
 	}
 }
 
-func (s *store) StoreInstance(doi DOInstance) error {
-	data, err := json.Marshal(doi)
-	if err != nil {
-		return err
-	}
-
-	apiErr := s.plugin.API.KVSet(currentInstanceKVKey, data)
+// StoreUserDOToken is
+func (s *PluginStore) StoreUserDOToken(token, key string) error {
+	apiErr := s.plugin.API.KVSet(key, []byte(token))
 	if apiErr != nil {
 		return apiErr
 	}
 
-	// Set the current instance into configuration
-	cloneConfig := s.plugin.getConfiguration().Clone()
-	cloneConfig.currentDOInstance = doi
-	s.plugin.setConfiguration(cloneConfig)
-
 	return nil
 }
 
-func (s *store) LoadInstance() (DOInstance, error) {
-	data, err := s.plugin.API.KVGet(currentInstanceKVKey)
-	if err != nil {
-		return nil, err
+// LoadUserDOToken is
+func (s *PluginStore) LoadUserDOToken(key string) (string, error) {
+	data, apiErr := s.plugin.API.KVGet(key)
+	if apiErr != nil {
+		return "", apiErr
 	}
-	instance := &DOAccountInstance{}
-	e := json.Unmarshal(data, instance)
-	if e != nil {
-		return nil, e
-	}
-	return instance, nil
+
+	return string(data), nil
 }
