@@ -19,7 +19,6 @@ import (
 // copy appropriate for your types.
 type configuration struct {
 	DOTeamID string
-	DOToken  string
 	DOAdmins string
 }
 
