@@ -38,7 +38,8 @@ func (p *Plugin) OnActivate() error {
 	}, plugin.ProfileImagePath(profileImage))
 
 	if err != nil {
-		return errors.Wrap(err, "failed to ensure digital ocean bot")
+		p.API.LogError("Failed to ensure digitalOcean bot", "Err", err.Error())
+		return errors.Wrap(err, "failed to ensure digitalOcean bot")
 	}
 	p.BotUserID = botID
 	store := CreateStore(p)

@@ -12,15 +12,17 @@ import (
 func (p *Plugin) listDropletsFunc(args *model.CommandArgs) (*model.CommandResponse, *model.AppError) {
 	client, err := p.GetClient(args.UserId)
 	if err != nil {
+		p.API.LogError("Failed to get digitalOcean client", "Err", err.Error())
 		return p.responsef(args, "Failed to get DigitalOcean client"),
 			&model.AppError{Message: err.Error()}
 	}
 
 	opts := &godo.ListOptions{}
 
-	droplets, _, err := client.Droplets.List(context.TODO(), opts)
+	droplets, response, err := client.Droplets.List(context.TODO(), opts)
 
 	if err != nil {
+		p.API.LogError("failed to fetch droplets", "response", response, "Err", err.Error())
 		return p.responsef(args, "Error while fetching droplets list"),
 			&model.AppError{Message: err.Error()}
 	}
