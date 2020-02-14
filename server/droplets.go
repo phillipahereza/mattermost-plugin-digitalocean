@@ -26,7 +26,7 @@ func (p *Plugin) listDropletsFunc(args *model.CommandArgs) (*model.CommandRespon
 	}
 
 	if len(droplets) == 0 {
-		return p.responsef(args, "You don't have any droplets configured. Use `do droplet create` to provision on"), nil
+		return p.responsef(args, "You don't have any droplets configured. Use `do droplet create` to provision one"), nil
 	}
 
 	buffer := new(bytes.Buffer)
