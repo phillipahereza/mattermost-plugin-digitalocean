@@ -33,6 +33,7 @@ func (p *Plugin) connectCommandFunc(args *model.CommandArgs) (*model.CommandResp
 func (p *Plugin) disconnectCommandFunc(args *model.CommandArgs) (*model.CommandResponse, *model.AppError) {
 	err := p.store.DeleteUserDOToken(args.UserId)
 	if err != nil {
+		p.API.LogError("Failed to remove user token", "user_id", args.UserId, "Err", err.Error())
 		return p.responsef(args, "Failed to remove the user token"),
 			&model.AppError{Message: err.Error()}
 	}
