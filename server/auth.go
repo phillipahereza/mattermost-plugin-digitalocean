@@ -29,3 +29,13 @@ func (p *Plugin) connectCommandFunc(args *model.CommandArgs) (*model.CommandResp
 
 	return p.responsef(args, "Successfully added a connecting token"), nil
 }
+
+func (p *Plugin) disconnectCommandFunc(args *model.CommandArgs) (*model.CommandResponse, *model.AppError) {
+	err := p.store.DeleteUserDOToken(args.UserId)
+	if err != nil {
+		return p.responsef(args, "Failed to remove the user token"),
+			&model.AppError{Message: err.Error()}
+	}
+
+	return p.responsef(args, "Successfully disconnected token: %s", ), nil
+}

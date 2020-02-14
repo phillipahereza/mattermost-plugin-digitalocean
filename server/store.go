@@ -4,6 +4,7 @@ package main
 type Store interface {
 	StoreUserDOToken(token string, key string) error
 	LoadUserDOToken(key string) (string, error)
+	DeleteUserDOToken(key string) error
 }
 
 // PluginStore is
@@ -36,4 +37,13 @@ func (s *PluginStore) LoadUserDOToken(key string) (string, error) {
 	}
 
 	return string(data), nil
+}
+
+// DeleteUserDOToken is
+func (s *PluginStore) DeleteUserDOToken(key string) error {
+	apiErr := s.plugin.API.KVDelete(key)
+	if apiErr != nil {
+		return apiErr
+	}
+	return nil
 }
