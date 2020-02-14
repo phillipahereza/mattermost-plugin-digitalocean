@@ -16,6 +16,7 @@ const commandHelp = `* |/do help| - Run 'test' to see if you're configured to ru
 * |/do connect <access token>| - Associates your DO team personal token with your mattermost account
 * |/do token| - Provides instructions on getting a personal access token for the configured Digital Ocean team
 * |/do show-configured-token| - Display your configured access token
+* |/do list-droplets| - List all Droplets in your account 
 `
 
 func getCommand() *model.Command {
@@ -66,6 +67,8 @@ func (p *Plugin) ExecuteCommand(c *plugin.Context, args *model.CommandArgs) (*mo
 		return p.getPersonalTokenCommandFunc(args)
 	case "show-configured-token":
 		return p.showConnectTokenFunc(args)
+	case "list-droplets":
+		return p.listDropletsFunc(args)
 	default:
 		return p.responsef(args, fmt.Sprintf("Unknown action %v", action)), nil
 	}
@@ -158,11 +161,13 @@ func (p *Plugin) listDropletsFunc(args *model.CommandArgs) (*model.CommandRespon
 	w := new(tabwriter.Writer)
 
 	w.Init(buffer, 8, 8, 0, '\t', 0)
-	fmt.Fprintf(w, "\n %s\t%s\t%s\t%s\t", "ID", "Name", "Region", "Image")
-	fmt.Fprintf(w, "\n %s\t%s\t%s\t%s\t", "______", "______", "______", "______")
+	fmt.Fprintf(w, "\n |%s|%s|%s|%s|%s|", "ID", "Name", "IP", "Region", "Image")
+	fmt.Fprintf(w, "\n |%s|%s|%s|%s|%s|", "------", "----", "------", "----", "----")
 
 	for _, droplet := range droplets {
-		fmt.Fprintf(w, "\n %d\t%s\t%s\t%s\t", droplet.ID, droplet.Name, droplet.Region.Name, fmt.Sprintf("%s %s", droplet.Image.Distribution, droplet.Image.Name))
+		ip, _ := droplet.PublicIPv4()
+
+		fmt.Fprintf(w, "\n |%d|%s|%s|%s|%s|", droplet.ID, droplet.Name, ip, droplet.Region.Name, fmt.Sprintf("%s %s", droplet.Image.Distribution, droplet.Image.Name))
 	}
 
 	w.Flush()
