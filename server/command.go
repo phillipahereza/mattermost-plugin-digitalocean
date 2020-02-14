@@ -14,7 +14,7 @@ import (
 
 const commandHelp = `* |/do help| - Run 'test' to see if you're configured to run bamboo commands
 * |/do connect <access token>| - Associates your DO team personal token with your mattermost account
-* |/do token| - Provides instructions on getting a personal access token for the configured Digital Ocean team
+* |/do token| - Provides instructions on getting a personal access token for the configured DigitalOcean team
 * |/do show-configured-token| - Display your configured access token
 * |/do list-droplets| - List all Droplets in your team
 `
@@ -23,7 +23,7 @@ func getCommand() *model.Command {
 	return &model.Command{
 		Trigger:          "do",
 		DisplayName:      "do",
-		Description:      "Integration with Digital Ocean.",
+		Description:      "Integration with DigitalOcean.",
 		AutoComplete:     true,
 		AutoCompleteDesc: "Available commands: help",
 		AutoCompleteHint: "[command]",
@@ -91,7 +91,7 @@ func (p *Plugin) isUserAuthorized(id string) (bool, *model.AppError) {
 func (p *Plugin) getPersonalTokenCommandFunc(args *model.CommandArgs) (*model.CommandResponse, *model.AppError) {
 	const responseMessage = `Click the link below and follow subsequent steps
 
-1. [Digital Ocean Apps and APIs](/plugins/com.mattermost.digitalocean/%s)
+1. [DigitalOcean Apps and APIs](/plugins/com.mattermost.digitalocean/%s)
 2. Generate a token and add copy it
 3. Run |/do connect <your-token>|
 `
@@ -178,6 +178,6 @@ func (p *Plugin) listDropletsFunc(args *model.CommandArgs) (*model.CommandRespon
 }
 
 func (p *Plugin) helpCommandFunc(args *model.CommandArgs) (*model.CommandResponse, *model.AppError) {
-	text := "###### Mattermost Digital Ocean Plugin - Slash Command Help\n" + strings.Replace(commandHelp, "|", "`", -1)
+	text := "###### Mattermost DigitalOcean Plugin - Slash Command Help\n" + strings.Replace(commandHelp, "|", "`", -1)
 	return p.responsef(args, text), nil
 }

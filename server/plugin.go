@@ -34,7 +34,7 @@ func (p *Plugin) OnActivate() error {
 	botID, err := p.Helpers.EnsureBot(&model.Bot{
 		Username:    "do",
 		DisplayName: "DO",
-		Description: "Created by the Digital Ocean plugin.",
+		Description: "Created by the DigitalOcean plugin.",
 	}, plugin.ProfileImagePath(profileImage))
 
 	if err != nil {
