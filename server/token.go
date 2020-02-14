@@ -25,6 +25,7 @@ func (p *Plugin) getPersonalTokenCommandFunc(args *model.CommandArgs) (*model.Co
 func (p *Plugin) showConnectTokenFunc(args *model.CommandArgs) (*model.CommandResponse, *model.AppError) {
 	tk, err := p.store.LoadUserDOToken(args.UserId)
 	if err != nil {
+		p.API.LogError("Failed to show connected token", "Err", err.Error())
 		return p.responsef(args, "Failed to retrieve token."),
 			&model.AppError{Message: err.Error()}
 	}

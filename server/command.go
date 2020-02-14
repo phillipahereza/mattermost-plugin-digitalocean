@@ -27,6 +27,8 @@ func (p *Plugin) ExecuteCommand(c *plugin.Context, args *model.CommandArgs) (*mo
 		return p.helpCommandFunc(args)
 	case "connect":
 		return p.connectCommandFunc(args)
+	case "disconnect":
+		return p.disconnectCommandFunc(args)
 	case "token":
 		return p.getPersonalTokenCommandFunc(args)
 	case "show-configured-token":
