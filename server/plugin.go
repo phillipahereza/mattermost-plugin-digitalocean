@@ -46,3 +46,14 @@ func (p *Plugin) OnActivate() error {
 
 	return nil
 }
+
+func getCommand() *model.Command {
+	return &model.Command{
+		Trigger:          "do",
+		DisplayName:      "do",
+		Description:      "Integration with DigitalOcean.",
+		AutoComplete:     true,
+		AutoCompleteDesc: "Available commands: help",
+		AutoCompleteHint: "[command]",
+	}
+}

@@ -13,8 +13,8 @@ var manifest *model.Manifest
 const manifestStr = `
 {
   "id": "com.mattermost.digitalocean",
-  "name": "Digital Ocean Plugin",
-  "description": "A digital ocean plugin for Mattermost",
+  "name": "DigitalOcean Plugin",
+  "description": "A DigitalOcean plugin for Mattermost",
   "version": "0.1.0",
   "min_server_version": "5.12.0",
   "server": {
@@ -29,12 +29,12 @@ const manifestStr = `
     "bundle_path": "webapp/dist/main.js"
   },
   "settings_schema": {
-    "header": "Mattermost plugin for Digital Ocean Teams.",
+    "header": "Mattermost plugin for DigitalOcean Teams.",
     "footer": "",
     "settings": [
       {
         "key": "DOTeamID",
-        "display_name": "Unique DO Team Identifier",
+        "display_name": "Unique DigitalOcean Team Identifier",
         "type": "text",
         "help_text": "",
         "placeholder": "",
