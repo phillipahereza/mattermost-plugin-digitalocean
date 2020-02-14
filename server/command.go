@@ -59,6 +59,8 @@ func (p *Plugin) ExecuteCommand(c *plugin.Context, args *model.CommandArgs) (*mo
 	}
 
 	switch action {
+	case "":
+		return p.helpCommandFunc(args)
 	case "help":
 		return p.helpCommandFunc(args)
 	case "connect":
