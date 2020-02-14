@@ -47,3 +47,21 @@ func (p *Plugin) listDropletsFunc(args *model.CommandArgs) (*model.CommandRespon
 
 	return p.responsef(args, buffer.String()), nil
 }
+
+func (p *Plugin) deleteDropletsFunc(args *model.CommandArgs, dropletID int) (*model.CommandResponse, *model.AppError) {
+	client, err := p.GetClient(args.UserId)
+	if err != nil {
+		return p.responsef(args, "Failed to get DigitalOcean client"),
+			&model.AppError{Message: err.Error()}
+	}
+
+	response, err := client.Droplets.Delete(context.TODO(), dropletID)
+
+	if err != nil {
+		p.API.LogError("Failed to delete droplet", "dropletID", dropletID, "response", response, "Err", err.Error())
+		return p.responsef(args, "Failed to delete droplet %d", dropletID),
+			&model.AppError{Message: err.Error()}
+	}
+
+	return p.responsef(args, "Successfully deleted droplet"), nil
+}
