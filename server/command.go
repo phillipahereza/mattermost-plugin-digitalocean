@@ -36,7 +36,7 @@ func (p *Plugin) ExecuteCommand(c *plugin.Context, args *model.CommandArgs) (*mo
 	case "list-droplets":
 		return p.listDropletsFunc(args)
 	default:
-		return p.responsef(args, fmt.Sprintf("Unknown action %v", action)), nil
+		return p.defaultCommandFunc(args, action)
 	}
 }
 
