@@ -16,7 +16,7 @@ const commandHelp = `* |/do help| - Run 'test' to see if you're configured to ru
 * |/do connect <access token>| - Associates your DO team personal token with your mattermost account
 * |/do token| - Provides instructions on getting a personal access token for the configured Digital Ocean team
 * |/do show-configured-token| - Display your configured access token
-* |/do list-droplets| - List all Droplets in your account 
+* |/do list-droplets| - List all Droplets in your team
 `
 
 func getCommand() *model.Command {
