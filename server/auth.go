@@ -37,5 +37,5 @@ func (p *Plugin) disconnectCommandFunc(args *model.CommandArgs) (*model.CommandR
 			&model.AppError{Message: err.Error()}
 	}
 
-	return p.responsef(args, "Successfully disconnected token: %s", ), nil
+	return p.responsef(args, "Successfully disconnected token"), nil
 }
