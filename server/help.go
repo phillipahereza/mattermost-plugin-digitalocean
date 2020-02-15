@@ -17,6 +17,10 @@ const commandHelp = `* |/do help| - Run 'test' to see if you're configured to ru
 * |/do shutdown-droplet <dropletID>| - Shutdown a droplet
 * |/do powercycle-droplet <dropletID>| - action is similar to pushing the reset button on a physical machine, it's similar to booting from scratch
 * |/do list-domains| - Retrieve a list of all of the domains in your team
+* |/do list-keys| - Retrieve a list of all of SSH keys in your team
+* |/do retrieve-key <keyID>| - Retrieve a single key by its ID
+* |/do delete-key <keyID>| - Delete single key by its ID
+* |/do create-key <name> <publicKey>| - Add an SSH key to your team. PublicKey is in double quotes
 `
 
 func (p *Plugin) helpCommandFunc(args *model.CommandArgs) (*model.CommandResponse, *model.AppError) {
