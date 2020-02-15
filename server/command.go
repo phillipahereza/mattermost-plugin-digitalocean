@@ -92,6 +92,44 @@ func (p *Plugin) ExecuteCommand(c *plugin.Context, args *model.CommandArgs) (*mo
 		}
 	case "list-domains":
 		return p.listDomainsFunc(args)
+	case "list-keys":
+		return p.listSSHKeysFunc(args)
+	case "create-key":
+		p.API.LogInfo("%v", parameters)
+		if len(parameters) < 2 {
+			return p.responsef(args, "Please specify the key name or and the publicKey in the form `/do create-key <name> <publicKey>`"), nil
+		} else if len(parameters) >= 2 {
+			name := parameters[0]
+			publicKey := strings.Join(parameters[1:], " ")
+			return p.createSSHKeysFunc(args, name, publicKey)
+		} else {
+			return p.responsef(args, "Too many arguments, command should be in the form `/do create-key <name> <publicKey>`"), nil
+		}
+	case "retrieve-key":
+		if len(parameters) == 0 {
+			return p.responsef(args, "Please specify the SSH key ID"), nil
+		} else if len(parameters) == 1 {
+			dropletID, err := strconv.Atoi(parameters[0])
+			if err != nil {
+				return p.responsef(args, "SSH key ID must be an integer"), nil
+			}
+			return p.retrieveSSHKeyFunc(args, dropletID)
+		} else {
+			return p.responsef(args, "Too many arguments, command should be in the form `/do retrieve-key <keyID>`"), nil
+		}
+	case "delete-key":
+		if len(parameters) == 0 {
+			return p.responsef(args, "Please specify the SSH key ID"), nil
+		} else if len(parameters) == 1 {
+			dropletID, err := strconv.Atoi(parameters[0])
+			if err != nil {
+				return p.responsef(args, "SSH key ID must be an integer"), nil
+			}
+			return p.deleteSSHKeyFunc(args, dropletID)
+		} else {
+			return p.responsef(args, "Too many arguments, command should be in the form `/do delete-key <keyID>`"), nil
+		}
+
 	default:
 		return p.defaultCommandFunc(args, action)
 	}
