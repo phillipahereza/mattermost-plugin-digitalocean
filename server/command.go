@@ -131,6 +131,15 @@ func (p *Plugin) ExecuteCommand(c *plugin.Context, args *model.CommandArgs) (*mo
 		}
 	case "list-clusters":
 		return p.listClustersFunc(args)
+	case "list-cluster-backups":
+		if len(parameters) == 0 {
+			return p.responsef(args, "Please specify the Cluster ID"), nil
+		} else if len(parameters) == 1 {
+			clusterID := parameters[0]
+			return p.listClusterBackupsFunc(args, clusterID)
+		} else {
+			return p.responsef(args, "Too many arguments, command should be in the form `/do retrieve-key <keyID>`"), nil
+		}
 
 	default:
 		return p.defaultCommandFunc(args, action)
