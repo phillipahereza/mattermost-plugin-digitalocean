@@ -90,6 +90,8 @@ func (p *Plugin) ExecuteCommand(c *plugin.Context, args *model.CommandArgs) (*mo
 		} else {
 			return p.responsef(args, "Too many arguments, command should be in the form `/do rename-droplet <dropletID> <name>`"), nil
 		}
+	case "list-domains":
+		return p.listDomainsFunc(args)
 	default:
 		return p.defaultCommandFunc(args, action)
 	}
