@@ -7,6 +7,7 @@ import (
 	"github.com/digitalocean/godo"
 	"github.com/mattermost/mattermost-server/v5/model"
 	"text/tabwriter"
+	"time"
 )
 
 func (p *Plugin) listDropletsFunc(args *model.CommandArgs) (*model.CommandResponse, *model.AppError) {
@@ -65,7 +66,7 @@ func (p *Plugin) rebootDropletFunc(args *model.CommandArgs, dropletID int) (*mod
 			&model.AppError{Message: err.Error()}
 	}
 
-	return p.responsef(args, "Rebooting started at: %s with status `%s`", action.StartedAt.String(), action.Status), nil
+	return p.responsef(args, "Rebooting Droplet  `%d` started at: %s with status `%s`", dropletID, action.StartedAt.Format(time.RFC822), action.Status), nil
 }
 
 func (p *Plugin) renameDropletFunc(args *model.CommandArgs, dropletID int, name string) (*model.CommandResponse, *model.AppError) {
@@ -82,5 +83,5 @@ func (p *Plugin) renameDropletFunc(args *model.CommandArgs, dropletID int, name 
 			&model.AppError{Message: err.Error()}
 	}
 
-	return p.responsef(args, "Renaming started at: %s with status `%s`", action.StartedAt.String(), action.Status), nil
+	return p.responsef(args, "Renaming Droplet `%d` to `%s` started at: %s with status `%s`", dropletID, name, action.StartedAt.Format(time.RFC822), action.Status), nil
 }
