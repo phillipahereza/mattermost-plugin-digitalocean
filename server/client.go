@@ -24,6 +24,7 @@ func (t *TokenSource) Token() (*oauth2.Token, error) {
 func (p *Plugin) GetClient(mmUser string) (*digitalocean.Client, error) {
 	token, err := p.store.LoadUserDOToken(mmUser)
 	if err != nil {
+		p.API.LogError("Failed to load DO token", "user", mmUser, "Err", err.Error())
 		return nil, err
 	}
 
