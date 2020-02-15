@@ -129,6 +129,8 @@ func (p *Plugin) ExecuteCommand(c *plugin.Context, args *model.CommandArgs) (*mo
 		} else {
 			return p.responsef(args, "Too many arguments, command should be in the form `/do delete-key <keyID>`"), nil
 		}
+	case "list-clusters":
+		return p.listClustersFunc(args)
 
 	default:
 		return p.defaultCommandFunc(args, action)

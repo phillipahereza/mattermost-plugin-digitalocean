@@ -21,6 +21,7 @@ const commandHelp = `* |/do help| - Run 'test' to see if you're configured to ru
 * |/do retrieve-key <keyID>| - Retrieve a single key by its ID
 * |/do delete-key <keyID>| - Delete single key by its ID
 * |/do create-key <name> <publicKey>| - Add an SSH key to your team. PublicKey is in double quotes
+* |/do list-clusters| - Retrieve a list of all Database Clusters set up in your team
 `
 
 func (p *Plugin) helpCommandFunc(args *model.CommandArgs) (*model.CommandResponse, *model.AppError) {
