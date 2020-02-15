@@ -103,3 +103,21 @@ func (p *Plugin) shutdownDropletFunc(args *model.CommandArgs, dropletID int) (*m
 
 	return p.responsef(args, "Shutting down Droplet  `%d` started at: %s with status `%s`", dropletID, action.StartedAt.Format(time.RFC822), action.Status), nil
 }
+
+func (p *Plugin) powercycleDropletFunc(args *model.CommandArgs, dropletID int) (*model.CommandResponse, *model.AppError) {
+
+	client, err := p.GetClient(args.UserId)
+	if err != nil {
+		return p.responsef(args, "Failed to get DigitalOcean client"),
+			&model.AppError{Message: err.Error()}
+	}
+	action, response, err := client.DropletActions.PowerCycle(context.TODO(), dropletID)
+
+	if err != nil {
+		p.API.LogError("Failed to powercycle droplet", "dropletID", dropletID, "response", response, "Err", err.Error())
+		return p.responsef(args, "Failed to reboot droplet %d", dropletID),
+			&model.AppError{Message: err.Error()}
+	}
+
+	return p.responsef(args, "Powering off down Droplet  `%d` started at: %s with status `%s`", dropletID, action.StartedAt.Format(time.RFC822), action.Status), nil
+}

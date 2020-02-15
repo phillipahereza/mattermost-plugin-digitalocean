@@ -15,6 +15,7 @@ const commandHelp = `* |/do help| - Run 'test' to see if you're configured to ru
 * |/do rename-droplet <dropletID> <name>| - Rename a droplet
 * |/do reboot-droplet <dropletID>| - Reboot a droplet
 * |/do shutdown-droplet <dropletID>| - Shutdown a droplet
+* |/do powercycle-droplet <dropletID>| - action is similar to pushing the reset button on a physical machine, it's similar to booting from scratch
 `
 
 func (p *Plugin) helpCommandFunc(args *model.CommandArgs) (*model.CommandResponse, *model.AppError) {
