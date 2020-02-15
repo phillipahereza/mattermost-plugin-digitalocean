@@ -28,7 +28,7 @@ func (p *Plugin) listDropletsFunc(args *model.CommandArgs) (*model.CommandRespon
 	}
 
 	if len(droplets) == 0 {
-		return p.responsef(args, "You don't have any droplets configured. Use `do droplet create` to provision on"), nil
+		return p.responsef(args, "You don't have any droplets configured. Use `/do droplet create` to provision one"), nil
 	}
 
 	buffer := new(bytes.Buffer)
@@ -48,4 +48,21 @@ func (p *Plugin) listDropletsFunc(args *model.CommandArgs) (*model.CommandRespon
 	w.Flush()
 
 	return p.responsef(args, buffer.String()), nil
+}
+
+func (p *Plugin) rebootDropletFunc(args *model.CommandArgs, dropletID int) (*model.CommandResponse, *model.AppError) {
+	client, err := p.GetClient(args.UserId)
+	if err != nil {
+		return p.responsef(args, "Failed to get DigitalOcean client"),
+			&model.AppError{Message: err.Error()}
+	}
+	action, response, err := client.DropletActions.Reboot(context.TODO(), dropletID)
+
+	if err != nil {
+		p.API.LogError("Failed to reboot droplet", "dropletID", dropletID, "response", response, "Err", err.Error())
+		return p.responsef(args, "Failed to reboot droplet %d", dropletID),
+			&model.AppError{Message: err.Error()}
+	}
+
+	return p.responsef(args, "Rebooting started at: %s with status `%s`", action.StartedAt.String(), action.Status), nil
 }
