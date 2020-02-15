@@ -37,7 +37,7 @@ func (p *Plugin) listDomainsFunc(args *model.CommandArgs) (*model.CommandRespons
 
 	w.Init(buffer, 8, 8, 0, '\t', 0)
 	fmt.Fprintf(w, "\n |%s|%s|", "Name", "TTL")
-	fmt.Fprintf(w, "\n |%s|%s|%s|", "------", "----")
+	fmt.Fprintf(w, "\n |%s|%s|", "------", "----")
 
 	for _, domain := range domains {
 
