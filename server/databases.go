@@ -134,3 +134,22 @@ func (p *Plugin) listClusterUsersFunc(args *model.CommandArgs, id string) (*mode
 	}
 	return p.responsef(args, usersList), nil
 }
+
+func (p *Plugin) deleteClusterUserFunc(args *model.CommandArgs, id, userName string) (*model.CommandResponse, *model.AppError) {
+	client, err := p.GetClient(args.UserId)
+	if err != nil {
+		p.API.LogError("Failed to get digitalOcean client", "Err", err.Error())
+		return p.responsef(args, "Failed to get DigitalOcean client"),
+			&model.AppError{Message: err.Error()}
+	}
+
+	response, err := client.Databases.DeleteUser(context.TODO(), id, userName)
+
+	if err != nil {
+		p.API.LogError("failed to delete user for database", "id", id, "name", userName, "response", response, "Err", err.Error())
+		return p.responsef(args, "Error while deleting user %s for database cluster %s because %s", userName, id, err.Error()),
+			&model.AppError{Message: err.Error()}
+	}
+
+	return p.responsef(args, "Successfully deleted user %s from database %s", userName, id), nil
+}
