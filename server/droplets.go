@@ -47,3 +47,20 @@ func (p *Plugin) listDropletsFunc(args *model.CommandArgs) (*model.CommandRespon
 
 	return p.responsef(args, buffer.String()), nil
 }
+
+func (p *Plugin) renameDropletFunc(args *model.CommandArgs, dropletID int, name string) (*model.CommandResponse, *model.AppError) {
+	client, err := p.GetClient(args.UserId)
+	if err != nil {
+		return p.responsef(args, "Failed to get DigitalOcean client"),
+			&model.AppError{Message: err.Error()}
+	}
+	action, response, err := client.DropletActions.Rename(context.TODO(), dropletID, name)
+
+	if err != nil {
+		p.API.LogError("Failed to rename droplet", "dropletID", dropletID, "response", response, "Err", err.Error())
+		return p.responsef(args, "Failed to rename droplet %d", dropletID),
+			&model.AppError{Message: err.Error()}
+	}
+
+	return p.responsef(args, "Renaming started at: %s with status `%s`", action.StartedAt.String(), action.Status), nil
+}
