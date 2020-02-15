@@ -37,13 +37,13 @@ func (p *Plugin) listDropletsFunc(args *model.CommandArgs) (*model.CommandRespon
 	w := new(tabwriter.Writer)
 
 	w.Init(buffer, 8, 8, 0, '\t', 0)
-	fmt.Fprintf(w, "\n |%s|%s|%s|%s|%s|", "ID", "Name", "IP", "Region", "Image")
-	fmt.Fprintf(w, "\n |%s|%s|%s|%s|%s|", "------", "----", "------", "----", "----")
+	fmt.Fprintf(w, "\n |%s|%s|%s|%s|%s|%s|", "ID", "Name", "IP", "Status", "Region", "Image")
+	fmt.Fprintf(w, "\n |%s|%s|%s|%s|%s|%s|", "------", "----", "------", "----", "----", "----")
 
 	for _, droplet := range droplets {
 		ip, _ := droplet.PublicIPv4()
 
-		fmt.Fprintf(w, "\n |%d|%s|%s|%s|%s|", droplet.ID, droplet.Name, ip, droplet.Region.Name, fmt.Sprintf("%s %s", droplet.Image.Distribution, droplet.Image.Name))
+		fmt.Fprintf(w, "\n |%d|%s|%s|%s|%s|%s|", droplet.ID, droplet.Name, ip, droplet.Status, droplet.Region.Name, fmt.Sprintf("%s %s", droplet.Image.Distribution, droplet.Image.Name))
 	}
 
 	w.Flush()
