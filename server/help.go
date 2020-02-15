@@ -14,6 +14,7 @@ const commandHelp = `* |/do help| - Run 'test' to see if you're configured to ru
 * |/do list-droplets| - List all Droplets in your team
 * |/do rename-droplet <dropletID> <name>| - Rename a droplet
 * |/do reboot-droplet <dropletID>| - Reboot a droplet
+* |/do shutdown-droplet <dropletID>| - Shutdown a droplet
 `
 
 func (p *Plugin) helpCommandFunc(args *model.CommandArgs) (*model.CommandResponse, *model.AppError) {
