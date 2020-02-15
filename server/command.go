@@ -65,6 +65,18 @@ func (p *Plugin) ExecuteCommand(c *plugin.Context, args *model.CommandArgs) (*mo
 		} else {
 			return p.responsef(args, "Too many arguments, command should be in the form `/do shutdown-droplet <dropletID>`"), nil
 		}
+	case "powercycle-droplet":
+		if len(parameters) == 0 {
+			return p.responsef(args, "Please specify the droplet ID"), nil
+		} else if len(parameters) == 1 {
+			dropletID, err := strconv.Atoi(parameters[0])
+			if err != nil {
+				return p.responsef(args, "Droplet ID must be an integer"), nil
+			}
+			return p.powercycleDropletFunc(args, dropletID)
+		} else {
+			return p.responsef(args, "Too many arguments, command should be in the form `/do powercycle-droplet <dropletID>`"), nil
+		}
 	case "rename-droplet":
 		if len(parameters) < 2 {
 			return p.responsef(args, "Please specify the droplet ID or and the new name in the form `/do rename-droplet <dropletID> <name>`"), nil
