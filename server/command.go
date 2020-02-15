@@ -150,6 +150,15 @@ func (p *Plugin) ExecuteCommand(c *plugin.Context, args *model.CommandArgs) (*mo
 		} else {
 			return p.responsef(args, "Too many arguments, command should be in the form `/do add-cluster-user <clusterID> <userName>`"), nil
 		}
+	case "list-cluster-users":
+		if len(parameters) == 0 {
+			return p.responsef(args, "Please specify the database cluster ID"), nil
+		} else if len(parameters) == 1 {
+			clusterID := parameters[0]
+			return p.listClusterUsersFunc(args, clusterID)
+		} else {
+			return p.responsef(args, "Too many arguments, command should be in the form `/do list-cluster-users <clusterID>`"), nil
+		}
 
 	default:
 		return p.defaultCommandFunc(args, action)

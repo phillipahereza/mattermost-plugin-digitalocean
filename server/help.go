@@ -24,6 +24,7 @@ const commandHelp = `* |/do help| - Run 'test' to see if you're configured to ru
 * |/do list-clusters| - Retrieve a list of all Database Clusters set up in your team
 * |/do list-cluster-backups <id>| - Retrieve a list of all backups of a Database Cluster
 * |/do add-cluster-user <clusterID> <userName>| - Add a database user to a cluster
+* |/do list-cluster-users <clusterID>| - List database cluster users
 `
 
 func (p *Plugin) helpCommandFunc(args *model.CommandArgs) (*model.CommandResponse, *model.AppError) {

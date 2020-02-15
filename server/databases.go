@@ -61,7 +61,7 @@ func (p *Plugin) listClusterBackupsFunc(args *model.CommandArgs, id string) (*mo
 	backups, response, err := client.Databases.ListBackups(context.TODO(), id, nil)
 
 	if err != nil {
-		p.API.LogError("failed to backups for database", "id", id, "response", response, "Err", err.Error())
+		p.API.LogError("failed to get backups for database", "id", id, "response", response, "Err", err.Error())
 		return p.responsef(args, "Error while fetching backups list for database cluster %s", id),
 			&model.AppError{Message: err.Error()}
 	}
@@ -106,4 +106,31 @@ func (p *Plugin) addUserToClusterFunc(args *model.CommandArgs, id, name string) 
 			&model.AppError{Message: err.Error()}
 	}
 	return p.responsef(args, "Name: `%s`\t Password: `%s`\t Role: `%s`", user.Name, user.Password, user.Role), nil
+}
+
+func (p *Plugin) listClusterUsersFunc(args *model.CommandArgs, id string) (*model.CommandResponse, *model.AppError) {
+	client, err := p.GetClient(args.UserId)
+	if err != nil {
+		p.API.LogError("Failed to get digitalOcean client", "Err", err.Error())
+		return p.responsef(args, "Failed to get DigitalOcean client"),
+			&model.AppError{Message: err.Error()}
+	}
+
+	users, response, err := client.Databases.ListUsers(context.TODO(), id, nil)
+
+	if err != nil {
+		p.API.LogError("failed to get users for database", "id", id, "response", response, "Err", err.Error())
+		return p.responsef(args, "Error while fetching users for database cluster %s", id),
+			&model.AppError{Message: err.Error()}
+	}
+
+	if len(users) == 0 {
+		return p.responsef(args, "You don't have any cluster backups"), nil
+	}
+
+	usersList := ""
+	for _, user := range users {
+		usersList += fmt.Sprintf("- Name: `%s`\t Role: `%s`\n", user.Name, user.Role)
+	}
+	return p.responsef(args, usersList), nil
 }
