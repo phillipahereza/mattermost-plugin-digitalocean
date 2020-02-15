@@ -7,6 +7,7 @@ import (
 	"github.com/digitalocean/godo"
 	"github.com/mattermost/mattermost-server/v5/model"
 	"text/tabwriter"
+	"time"
 )
 
 func (p *Plugin) listDropletsFunc(args *model.CommandArgs) (*model.CommandResponse, *model.AppError) {
@@ -51,6 +52,7 @@ func (p *Plugin) listDropletsFunc(args *model.CommandArgs) (*model.CommandRespon
 }
 
 func (p *Plugin) rebootDropletFunc(args *model.CommandArgs, dropletID int) (*model.CommandResponse, *model.AppError) {
+
 	client, err := p.GetClient(args.UserId)
 	if err != nil {
 		return p.responsef(args, "Failed to get DigitalOcean client"),
@@ -64,5 +66,22 @@ func (p *Plugin) rebootDropletFunc(args *model.CommandArgs, dropletID int) (*mod
 			&model.AppError{Message: err.Error()}
 	}
 
-	return p.responsef(args, "Rebooting started at: %s with status `%s`", action.StartedAt.String(), action.Status), nil
+	return p.responsef(args, "Rebooting Droplet  `%d` started at: %s with status `%s`", dropletID, action.StartedAt.Format(time.RFC822), action.Status), nil
+}
+
+func (p *Plugin) renameDropletFunc(args *model.CommandArgs, dropletID int, name string) (*model.CommandResponse, *model.AppError) {
+	client, err := p.GetClient(args.UserId)
+	if err != nil {
+		return p.responsef(args, "Failed to get DigitalOcean client"), &model.AppError{Message: err.Error()}
+	}
+
+	action, response, err := client.DropletActions.Rename(context.TODO(), dropletID, name)
+
+	if err != nil {
+		p.API.LogError("Failed to rename droplet", "dropletID", dropletID, "response", response, "Err", err.Error())
+		return p.responsef(args, "Failed to rename droplet %d", dropletID),
+			&model.AppError{Message: err.Error()}
+	}
+
+	return p.responsef(args, "Renaming Droplet `%d` to `%s` started at: %s with status `%s`", dropletID, name, action.StartedAt.Format(time.RFC822), action.Status), nil
 }

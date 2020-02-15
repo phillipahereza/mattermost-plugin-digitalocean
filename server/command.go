@@ -53,6 +53,19 @@ func (p *Plugin) ExecuteCommand(c *plugin.Context, args *model.CommandArgs) (*mo
 		} else {
 			return p.responsef(args, "Too many arguments, command should be in the form `/do reboot-droplet <dropletID>`"), nil
 		}
+	case "rename-droplet":
+		if len(parameters) < 2 {
+			return p.responsef(args, "Please specify the droplet ID or and the new name in the form `/do rename-droplet <dropletID> <name>`"), nil
+		} else if len(parameters) == 2 {
+			dropletID, err := strconv.Atoi(parameters[0])
+			if err != nil {
+				return p.responsef(args, "Droplet ID must be an integer"), nil
+			}
+			newName := parameters[1]
+			return p.renameDropletFunc(args, dropletID, newName)
+		} else {
+			return p.responsef(args, "Too many arguments, command should be in the form `/do rename-droplet <dropletID> <name>`"), nil
+		}
 	default:
 		return p.defaultCommandFunc(args, action)
 	}
