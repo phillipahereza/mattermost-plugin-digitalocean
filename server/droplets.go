@@ -48,20 +48,19 @@ func (p *Plugin) listDropletsFunc(args *model.CommandArgs) (*model.CommandRespon
 	return p.responsef(args, buffer.String()), nil
 }
 
-func (p *Plugin) deleteDropletsFunc(args *model.CommandArgs, dropletID int) (*model.CommandResponse, *model.AppError) {
+func (p *Plugin) rebootDropletFunc(args *model.CommandArgs, dropletID int) (*model.CommandResponse, *model.AppError) {
 	client, err := p.GetClient(args.UserId)
 	if err != nil {
 		return p.responsef(args, "Failed to get DigitalOcean client"),
 			&model.AppError{Message: err.Error()}
 	}
-
-	response, err := client.Droplets.Delete(context.TODO(), dropletID)
+	action, response, err := client.DropletActions.Reboot(context.TODO(), dropletID)
 
 	if err != nil {
-		p.API.LogError("Failed to delete droplet", "dropletID", dropletID, "response", response, "Err", err.Error())
-		return p.responsef(args, "Failed to delete droplet %d", dropletID),
+		p.API.LogError("Failed to reboot droplet", "dropletID", dropletID, "response", response, "Err", err.Error())
+		return p.responsef(args, "Failed to reboot droplet %d", dropletID),
 			&model.AppError{Message: err.Error()}
 	}
 
-	return p.responsef(args, "Successfully deleted droplet"), nil
+	return p.responsef(args, "Rebooting started at: %s with status `%s`", action.StartedAt.String(), action.Status), nil
 }

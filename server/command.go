@@ -41,7 +41,7 @@ func (p *Plugin) ExecuteCommand(c *plugin.Context, args *model.CommandArgs) (*mo
 		return p.showConnectTokenFunc(args)
 	case "list-droplets":
 		return p.listDropletsFunc(args)
-	case "delete-droplet":
+	case "reboot-droplet":
 		if len(parameters) == 0 {
 			return p.responsef(args, "Please specify the droplet ID"), nil
 		} else if len(parameters) == 1 {
@@ -49,9 +49,9 @@ func (p *Plugin) ExecuteCommand(c *plugin.Context, args *model.CommandArgs) (*mo
 			if err != nil {
 				return p.responsef(args, "Droplet ID must be an integer"), nil
 			}
-			return p.deleteDropletsFunc(args, dropletID)
+			return p.rebootDropletFunc(args, dropletID)
 		} else {
-			return p.responsef(args, "Too many arguments, command should be in the form `/do delete-droplet <dropletID>`"), nil
+			return p.responsef(args, "Too many arguments, command should be in the form `/do reboot-droplet <dropletID>`"), nil
 		}
 	default:
 		return p.responsef(args, fmt.Sprintf("Unknown action %v", action)), nil

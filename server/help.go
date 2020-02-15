@@ -11,7 +11,7 @@ const commandHelp = `* |/do help| - Run 'test' to see if you're configured to ru
 * |/do token| - Provides instructions on getting a personal access token for the configured DigitalOcean team
 * |/do show-configured-token| - Display your configured access token
 * |/do list-droplets| - List all Droplets in your team
-* |/do delete-droplet <dropletID>| - Delete a droplet
+* |/do reboot-droplet <dropletID>| - Reboot a droplet
 `
 
 func (p *Plugin) helpCommandFunc(args *model.CommandArgs) (*model.CommandResponse, *model.AppError) {
