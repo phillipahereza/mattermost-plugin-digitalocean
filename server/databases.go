@@ -86,5 +86,24 @@ func (p *Plugin) listClusterBackupsFunc(args *model.CommandArgs, id string) (*mo
 	w.Flush()
 
 	return p.responsef(args, buffer.String()), nil
+}
 
+func (p *Plugin) addUserToClusterFunc(args *model.CommandArgs, id, name string) (*model.CommandResponse, *model.AppError) {
+	client, err := p.GetClient(args.UserId)
+	if err != nil {
+		p.API.LogError("Failed to get digitalOcean client", "Err", err.Error())
+		return p.responsef(args, "Failed to get DigitalOcean client"),
+			&model.AppError{Message: err.Error()}
+	}
+	dbUserCreateReq := &godo.DatabaseCreateUserRequest{
+		Name:          name,
+		MySQLSettings: nil,
+	}
+	user, response, err := client.Databases.CreateUser(context.TODO(), id, dbUserCreateReq)
+	if err != nil {
+		p.API.LogError("failed to create user for database", "id", id, "response", response, "Err", err.Error())
+		return p.responsef(args, "Error while creating a user on database %s because %s", id, err.Error()),
+			&model.AppError{Message: err.Error()}
+	}
+	return p.responsef(args, "Name: `%s`\t Password: `%s`\t Role: `%s`", user.Name, user.Password, user.Role), nil
 }

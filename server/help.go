@@ -23,6 +23,7 @@ const commandHelp = `* |/do help| - Run 'test' to see if you're configured to ru
 * |/do create-key <name> <publicKey>| - Add an SSH key to your team. PublicKey is in double quotes
 * |/do list-clusters| - Retrieve a list of all Database Clusters set up in your team
 * |/do list-cluster-backups <id>| - Retrieve a list of all backups of a Database Cluster
+* |/do add-cluster-user <clusterID> <userName>| - Add a database user to a cluster
 `
 
 func (p *Plugin) helpCommandFunc(args *model.CommandArgs) (*model.CommandResponse, *model.AppError) {

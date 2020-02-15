@@ -140,6 +140,16 @@ func (p *Plugin) ExecuteCommand(c *plugin.Context, args *model.CommandArgs) (*mo
 		} else {
 			return p.responsef(args, "Too many arguments, command should be in the form `/do retrieve-key <keyID>`"), nil
 		}
+	case "add-cluster-user":
+		if len(parameters) < 2 {
+			return p.responsef(args, "Please specify the cluster ID or and the name in the form `/do add-cluster-user <clusterID> <userName>`"), nil
+		} else if len(parameters) == 2 {
+			clusterID := parameters[0]
+			userName := parameters[1]
+			return p.addUserToClusterFunc(args, clusterID, userName)
+		} else {
+			return p.responsef(args, "Too many arguments, command should be in the form `/do add-cluster-user <clusterID> <userName>`"), nil
+		}
 
 	default:
 		return p.defaultCommandFunc(args, action)
