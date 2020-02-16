@@ -1,4 +1,5 @@
 # Mattermost Digital Ocean Plugin
+[![phillipahereza](https://circleci.com/gh/phillipahereza/mattermost-plugin-digitalocean.svg?style=svg)](https://github.com/phillipahereza/mattermost-plugin-digitalocean)
 
 ## Table of Contents
 - [1. Features](#1-features)
