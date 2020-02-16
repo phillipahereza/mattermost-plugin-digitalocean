@@ -153,3 +153,29 @@ func (p *Plugin) deleteClusterUserFunc(args *model.CommandArgs, id, userName str
 
 	return p.responsef(args, "Successfully deleted user %s from database %s", userName, id), nil
 }
+
+func (p *Plugin) listClusterDatabasesFunc(args *model.CommandArgs, id string) (*model.CommandResponse, *model.AppError) {
+	client, err := p.GetClient(args.UserId)
+	if err != nil {
+		p.API.LogError("Failed to get digitalOcean client", "Err", err.Error())
+		return p.responsef(args, "Failed to get DigitalOcean client"),
+			&model.AppError{Message: err.Error()}
+	}
+
+	dbs, response, err := client.Databases.ListDBs(context.TODO(), id, nil)
+	if err != nil {
+		p.API.LogError("failed to list databases in this cluster", "id", id, "response", response, "Err", err.Error())
+		return p.responsef(args, "Error listing databases in the cluster %s because %s", id, err.Error()),
+			&model.AppError{Message: err.Error()}
+	}
+
+	if len(dbs) == 0 {
+		return p.responsef(args, "You don't have any cluster backups"), nil
+	}
+
+	dbList := ""
+	for i, db := range dbs {
+		dbList += fmt.Sprintf("%d. Name: `%s`\n", i+1, db.Name)
+	}
+	return p.responsef(args, dbList), nil
+}

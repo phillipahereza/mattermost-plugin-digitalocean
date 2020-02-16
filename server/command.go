@@ -169,6 +169,15 @@ func (p *Plugin) ExecuteCommand(c *plugin.Context, args *model.CommandArgs) (*mo
 		} else {
 			return p.responsef(args, "Too many arguments, command should be in the form `/do delete-cluster-user <clusterID> <userName>`"), nil
 		}
+	case "list-cluster-dbs":
+		if len(parameters) == 0 {
+			return p.responsef(args, "Please specify the database cluster ID"), nil
+		} else if len(parameters) == 1 {
+			clusterID := parameters[0]
+			return p.listClusterDatabasesFunc(args, clusterID)
+		} else {
+			return p.responsef(args, "Too many arguments, command should be in the form `/do list-cluster-dbs <clusterID>`"), nil
+		}
 
 	default:
 		return p.defaultCommandFunc(args, action)
