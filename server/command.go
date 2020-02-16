@@ -179,6 +179,56 @@ func (p *Plugin) ExecuteCommand(c *plugin.Context, args *model.CommandArgs) (*mo
 			return p.responsef(args, "Too many arguments, command should be in the form `/do list-cluster-dbs <clusterID>`"), nil
 		}
 
+	case "list-k8s-clusters":
+		return p.listKubernetesClustersFunc(args)
+
+	case "list-k8s-cluster-nodepools":
+		if len(parameters) == 0 {
+			return p.responsef(args, "Please specify the Kubernetes cluster ID"), nil
+		} else if len(parameters) == 1 {
+			clusterID := parameters[0]
+			return p.listKubernetesClusterNodePoolsFunc(args, clusterID)
+		} else {
+			return p.responsef(args, "Too many arguments, command should be in the form `/do list-k8s-cluster-nodepools <clusterID>`"), nil
+		}
+	case "list-k8s-cluster-nodes":
+		if len(parameters) == 0 {
+			return p.responsef(args, "Please specify the Kubernetes cluster ID"), nil
+		} else if len(parameters) == 1 {
+			clusterID := parameters[0]
+			return p.listKubernetesClusterNodesFunc(args, clusterID)
+		} else {
+			return p.responsef(args, "Too many arguments, command should be in the form `/do list-k8s-cluster-node <clusterID>`"), nil
+		}
+	case "get-k8s-cluster-upgrades":
+		if len(parameters) == 0 {
+			return p.responsef(args, "Please specify the Kubernetes cluster ID"), nil
+		} else if len(parameters) == 1 {
+			clusterID := parameters[0]
+			return p.retrieveAvailableUpgradesForKubernetesCluster(args, clusterID)
+		} else {
+			return p.responsef(args, "Too many arguments, command should be in the form `/do get-k8s-cluster-upgrades <clusterID>`"), nil
+		}
+	case "upgrade-k8s-cluster":
+		if len(parameters) < 2 {
+			return p.responsef(args, "Please specify the cluster ID or/and the versionSlug in the form `/do upgrade-k8s-cluster <clusterID> <versionSlug>`"), nil
+		} else if len(parameters) == 2 {
+			clusterID := parameters[0]
+			versionSlug := parameters[1]
+			return p.upgradeKubernetesClusterFunc(args, clusterID, versionSlug)
+		} else {
+			return p.responsef(args, "Too many arguments, command should be in the form `/do upgrade-k8s-cluster <clusterID> <versionSlug>`"), nil
+		}
+	case "get-k8s-kubeconfig":
+		if len(parameters) == 0 {
+			return p.responsef(args, "Please specify the Kubernetes cluster ID"), nil
+		} else if len(parameters) == 1 {
+			clusterID := parameters[0]
+			return p.retrieveKubeconfigFunc(args, clusterID)
+		} else {
+			return p.responsef(args, "Too many arguments, command should be in the form `/do get-k8s-kubeconfig <clusterID>`"), nil
+		}
+
 	default:
 		return p.defaultCommandFunc(args, action)
 	}

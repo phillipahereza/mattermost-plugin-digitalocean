@@ -37,6 +37,13 @@ Run ```/do help``` and get help on all commands.
 - ```/do list-cluster-users <clusterID>``` - List database cluster users
 - ```/do delete-cluster-user <clusterID> <userName>``` - Delete a database user to a cluster
 - ```/do list-cluster-dbs <clusterID>``` - List databases in the cluster
+#### Kubernetes
+- ```/do list-k8s-clusters``` - List all Kubernetes Clusters in your team
+- ```/do list-k8s-cluster-nodepools <clusterID>``` - List Nodepools in a Kubernetes cluster
+- ```/do list-k8s-cluster-nodes <clusterID>``` - List Nodes in a Kubernetes cluster
+- ```/do get-k8s-cluster-upgrades <clusterID>``` - Retrieve a list of available upgrades for a Kubernetes cluster
+- ```/do get-k8s-kubeconfig <clusterID>``` - Retrieve kubeconfig file in YAML format
+- ```do upgrade-k8s-cluster <clusterID> <versionSlug>``` - Upgrade a Kubernetes cluster to a newer patch release of Kubernetes
 
 ## 2. Configuration
 - Configure the plugin in Mattermost by going to ```System Console > Plugins > DigitalOcean```. Enable the plugin if it's not enabled.

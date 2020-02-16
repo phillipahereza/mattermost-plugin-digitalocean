@@ -26,7 +26,12 @@ const commandHelp = `* |/do help| - Run 'test' to see if you're configured to ru
 * |/do add-cluster-user <clusterID> <userName>| - Add a database user to a cluster
 * |/do list-cluster-users <clusterID>| - List database cluster users
 * |/do delete-cluster-user <clusterID> <userName>| - Delete a database user to a cluster
-* |/do list-cluster-dbs <clusterID>| - List databases in the cluster
+* |/do list-k8s-clusters| - List all Kubernetes Clusters in your team
+* |/do list-k8s-cluster-nodepools <clusterID>| - List Nodepools in a Kubernetes cluster
+* |/do list-k8s-cluster-nodes <clusterID>| - List Nodes in a Kubernetes cluster
+* |/do get-k8s-cluster-upgrades <clusterID>| - Retrieve a list of available upgrades for a Kubernetes cluster
+* |/do get-k8s-kubeconfig <clusterID>| - Retrieve kubeconfig file in YAML format
+* |/do upgrade-k8s-cluster <clusterID> <versionSlug>| - Upgrade a Kubernetes cluster to a newer patch release of Kubernetes
 `
 
 func (p *Plugin) helpCommandFunc(args *model.CommandArgs) (*model.CommandResponse, *model.AppError) {
