@@ -35,6 +35,7 @@ Run ```/do help``` and get help on all commands.
 - ```/do add-cluster-user <clusterID> <userName>``` - Add a database user to a cluster
 - ```/do list-cluster-users <clusterID>``` - List database cluster users
 - ```/do delete-cluster-user <clusterID> <userName>``` - Delete a database user to a cluster
+- ```/do list-cluster-dbs <clusterID>``` - List databases in the cluster
 
 ## 2. Configuration
 Configure the plugin in Mattermost by going to ```System Console > Plugins > DigitalOcean```. Enable the plugin if it's not enabled.
