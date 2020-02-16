@@ -31,7 +31,13 @@ Run ```/do help``` and get help on all commands.
 - ```/do create-key <name> <publicKey>``` - Add an SSH key to your team
 
 ## 2. Configuration
-Configure the plugin in Mattermost by going to ```System Console > Plugins > DigitalOcean```. Enable the plugin if it's not enabled.
+- Configure the plugin in Mattermost by going to ```System Console > Plugins > DigitalOcean```. Enable the plugin if it's not enabled.
+- Go to Digital Ocean, copy and then add your Digital Ocean team identifier (ID) to the settings under *"Unique DigitalOcean Team Identifier"*
+
+![Screen Shot 2020-02-16 at 09 51 09](https://user-images.githubusercontent.com/28563179/74600387-f8a8f300-50a1-11ea-99ee-b913c3d68fa7.png)
+
+NB: This can be found as query param on any Digital Ocean Url. From this URL *https://cloud.digitalocean.com/projects/9ae5693a-1573-4dc1-a55d-3ebf87579XXX/resources?i=6dXcXX*, It would be *6dXcXX*
+- Save your settings
 
 ## 3. Development
 - Fork this repo
