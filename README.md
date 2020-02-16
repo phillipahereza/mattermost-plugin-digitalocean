@@ -39,3 +39,4 @@ Configure the plugin in Mattermost by going to ```System Console > Plugins > Dig
 - Run ```$ make``` at the root of this project
 - Install the generated tar on your server to see your changes
 
+NB: This will add images to the github CDN. We will not merge this PR.
