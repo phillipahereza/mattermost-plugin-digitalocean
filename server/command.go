@@ -129,6 +129,55 @@ func (p *Plugin) ExecuteCommand(c *plugin.Context, args *model.CommandArgs) (*mo
 		} else {
 			return p.responsef(args, "Too many arguments, command should be in the form `/do delete-key <keyID>`"), nil
 		}
+	case "list-clusters":
+		return p.listClustersFunc(args)
+	case "list-cluster-backups":
+		if len(parameters) == 0 {
+			return p.responsef(args, "Please specify the Cluster ID"), nil
+		} else if len(parameters) == 1 {
+			clusterID := parameters[0]
+			return p.listClusterBackupsFunc(args, clusterID)
+		} else {
+			return p.responsef(args, "Too many arguments, command should be in the form `/do retrieve-key <keyID>`"), nil
+		}
+	case "add-cluster-user":
+		if len(parameters) < 2 {
+			return p.responsef(args, "Please specify the cluster ID or and the name in the form `/do add-cluster-user <clusterID> <userName>`"), nil
+		} else if len(parameters) == 2 {
+			clusterID := parameters[0]
+			userName := parameters[1]
+			return p.addUserToClusterFunc(args, clusterID, userName)
+		} else {
+			return p.responsef(args, "Too many arguments, command should be in the form `/do add-cluster-user <clusterID> <userName>`"), nil
+		}
+	case "list-cluster-users":
+		if len(parameters) == 0 {
+			return p.responsef(args, "Please specify the database cluster ID"), nil
+		} else if len(parameters) == 1 {
+			clusterID := parameters[0]
+			return p.listClusterUsersFunc(args, clusterID)
+		} else {
+			return p.responsef(args, "Too many arguments, command should be in the form `/do list-cluster-users <clusterID>`"), nil
+		}
+	case "delete-cluster-user":
+		if len(parameters) < 2 {
+			return p.responsef(args, "Please specify the cluster ID or and the name in the form `/do delete-cluster-user <clusterID> <userName>`"), nil
+		} else if len(parameters) == 2 {
+			clusterID := parameters[0]
+			userName := parameters[1]
+			return p.deleteClusterUserFunc(args, clusterID, userName)
+		} else {
+			return p.responsef(args, "Too many arguments, command should be in the form `/do delete-cluster-user <clusterID> <userName>`"), nil
+		}
+	case "list-cluster-dbs":
+		if len(parameters) == 0 {
+			return p.responsef(args, "Please specify the database cluster ID"), nil
+		} else if len(parameters) == 1 {
+			clusterID := parameters[0]
+			return p.listClusterDatabasesFunc(args, clusterID)
+		} else {
+			return p.responsef(args, "Too many arguments, command should be in the form `/do list-cluster-dbs <clusterID>`"), nil
+		}
 
 	default:
 		return p.defaultCommandFunc(args, action)
