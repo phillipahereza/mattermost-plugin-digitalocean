@@ -78,7 +78,7 @@ func (p *Plugin) listKubernetesClusterNodePoolsFunc(args *model.CommandArgs, id 
 
 	for _, pool := range cluster.NodePools {
 
-		fmt.Fprintf(w, "\n |%s|%s|%s|%s|%s|", pool.ID, pool.Name, pool.Size, pool.Count, strings.Join(pool.Tags, ", "))
+		fmt.Fprintf(w, "\n |%s|%s|%s|%d|%s|", pool.ID, pool.Name, pool.Size, pool.Count, strings.Join(pool.Tags, ", "))
 	}
 
 	w.Flush()
@@ -115,7 +115,7 @@ func (p *Plugin) listKubernetesClusterNodesFunc(args *model.CommandArgs, id stri
 
 	for _, pool := range cluster.NodePools {
 		for _, node := range pool.Nodes {
-			fmt.Fprintf(w, "\n |%s|%s|%s|%s|%s|", node.ID, node.Name, node.Status, pool.Name, node.CreatedAt.Format(time.RFC822))
+			fmt.Fprintf(w, "\n |%s|%s|%s|%s|%s|", node.ID, node.Name, node.Status.State, pool.Name, node.CreatedAt.Format(time.RFC822))
 		}
 	}
 

@@ -41,8 +41,8 @@ Run ```/do help``` and get help on all commands.
 - ```/do list-k8s-clusters``` - List all Kubernetes Clusters in your team
 - ```/do list-k8s-cluster-nodepools <clusterID>``` - List Nodepools in a Kubernetes cluster
 - ```/do list-k8s-cluster-nodes <clusterID>``` - List Nodes in a Kubernetes cluster
-- ```/do get-k8s-cluster-upgrades <clusterID>``` - Retrieve a list of available upgrades for a Kubernetes cluster
-- ```/do get-k8s-kubeconfig <clusterID>``` - Retrieve kubeconfig file in YAML format
+- ```/do list-k8s-cluster-upgrades <clusterID>``` - Retrieve a list of available upgrades for a Kubernetes cluster
+- ```/do get-k8s-config <clusterID>``` - Retrieve kubeconfig file in YAML format
 - ```do upgrade-k8s-cluster <clusterID> <versionSlug>``` - Upgrade a Kubernetes cluster to a newer patch release of Kubernetes
 
 ## 2. Configuration
