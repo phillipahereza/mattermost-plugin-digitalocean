@@ -6,21 +6,16 @@ import (
 	"fmt"
 	"github.com/digitalocean/godo"
 	"github.com/mattermost/mattermost-server/v5/model"
+	"github.com/phillipahereza/mattermost-plugin-digitalocean/server/client"
 	"text/tabwriter"
 	"time"
 )
 
-func (p *Plugin) listClustersFunc(args *model.CommandArgs) (*model.CommandResponse, *model.AppError) {
-	client, err := p.GetClient(args.UserId)
-	if err != nil {
-		p.API.LogError("Failed to get digitalOcean client", "Err", err.Error())
-		return p.responsef(args, "Failed to get DigitalOcean client"),
-			&model.AppError{Message: err.Error()}
-	}
+func (p *Plugin) listDatabaseClustersCommandFunc(client *client.DigitalOceanClient, args *model.CommandArgs) (*model.CommandResponse, *model.AppError) {
 
 	opts := &godo.ListOptions{}
 
-	databases, response, err := client.Databases.List(context.TODO(), opts)
+	databases, response, err := client.ListDatabaseClusters(context.TODO(), opts)
 
 	if err != nil {
 		p.API.LogError("failed to fetch databases", "response", response, "Err", err.Error())
@@ -50,15 +45,9 @@ func (p *Plugin) listClustersFunc(args *model.CommandArgs) (*model.CommandRespon
 	return p.responsef(args, buffer.String()), nil
 }
 
-func (p *Plugin) listClusterBackupsFunc(args *model.CommandArgs, id string) (*model.CommandResponse, *model.AppError) {
-	client, err := p.GetClient(args.UserId)
-	if err != nil {
-		p.API.LogError("Failed to get digitalOcean client", "Err", err.Error())
-		return p.responsef(args, "Failed to get DigitalOcean client"),
-			&model.AppError{Message: err.Error()}
-	}
+func (p *Plugin) listDatabaseClusterBackupsCommandFunc(client *client.DigitalOceanClient, args *model.CommandArgs, id string) (*model.CommandResponse, *model.AppError) {
 
-	backups, response, err := client.Databases.ListBackups(context.TODO(), id, nil)
+	backups, response, err := client.ListDatabaseClusterBackups(context.TODO(), id, nil)
 
 	if err != nil {
 		p.API.LogError("failed to get backups for database", "id", id, "response", response, "Err", err.Error())
@@ -88,18 +77,12 @@ func (p *Plugin) listClusterBackupsFunc(args *model.CommandArgs, id string) (*mo
 	return p.responsef(args, buffer.String()), nil
 }
 
-func (p *Plugin) addUserToClusterFunc(args *model.CommandArgs, id, name string) (*model.CommandResponse, *model.AppError) {
-	client, err := p.GetClient(args.UserId)
-	if err != nil {
-		p.API.LogError("Failed to get digitalOcean client", "Err", err.Error())
-		return p.responsef(args, "Failed to get DigitalOcean client"),
-			&model.AppError{Message: err.Error()}
-	}
+func (p *Plugin) addUserToDatabaseClusterCommandFunc(client *client.DigitalOceanClient, args *model.CommandArgs, id, name string) (*model.CommandResponse, *model.AppError) {
 	dbUserCreateReq := &godo.DatabaseCreateUserRequest{
 		Name:          name,
 		MySQLSettings: nil,
 	}
-	user, response, err := client.Databases.CreateUser(context.TODO(), id, dbUserCreateReq)
+	user, response, err := client.CreateDatabaseUser(context.TODO(), id, dbUserCreateReq)
 	if err != nil {
 		p.API.LogError("failed to create user for database", "id", id, "response", response, "Err", err.Error())
 		return p.responsef(args, "Error while creating a user on database %s because %s", id, err.Error()),
@@ -108,15 +91,9 @@ func (p *Plugin) addUserToClusterFunc(args *model.CommandArgs, id, name string) 
 	return p.responsef(args, "Name: `%s`\t Password: `%s`\t Role: `%s`", user.Name, user.Password, user.Role), nil
 }
 
-func (p *Plugin) listClusterUsersFunc(args *model.CommandArgs, id string) (*model.CommandResponse, *model.AppError) {
-	client, err := p.GetClient(args.UserId)
-	if err != nil {
-		p.API.LogError("Failed to get digitalOcean client", "Err", err.Error())
-		return p.responsef(args, "Failed to get DigitalOcean client"),
-			&model.AppError{Message: err.Error()}
-	}
+func (p *Plugin) listDatabaseClusterUsersCommandFunc(client *client.DigitalOceanClient, args *model.CommandArgs, id string) (*model.CommandResponse, *model.AppError) {
 
-	users, response, err := client.Databases.ListUsers(context.TODO(), id, nil)
+	users, response, err := client.ListDatabaseClusterUsers(context.TODO(), id, nil)
 
 	if err != nil {
 		p.API.LogError("failed to get users for database", "id", id, "response", response, "Err", err.Error())
@@ -135,15 +112,9 @@ func (p *Plugin) listClusterUsersFunc(args *model.CommandArgs, id string) (*mode
 	return p.responsef(args, usersList), nil
 }
 
-func (p *Plugin) deleteClusterUserFunc(args *model.CommandArgs, id, userName string) (*model.CommandResponse, *model.AppError) {
-	client, err := p.GetClient(args.UserId)
-	if err != nil {
-		p.API.LogError("Failed to get digitalOcean client", "Err", err.Error())
-		return p.responsef(args, "Failed to get DigitalOcean client"),
-			&model.AppError{Message: err.Error()}
-	}
+func (p *Plugin) deleteDatabaseClusterUserCommandFunc(client *client.DigitalOceanClient, args *model.CommandArgs, id, userName string) (*model.CommandResponse, *model.AppError) {
 
-	response, err := client.Databases.DeleteUser(context.TODO(), id, userName)
+	response, err := client.DeleteDatabaseClusterUser(context.TODO(), id, userName)
 
 	if err != nil {
 		p.API.LogError("failed to delete user for database", "id", id, "name", userName, "response", response, "Err", err.Error())
@@ -154,15 +125,9 @@ func (p *Plugin) deleteClusterUserFunc(args *model.CommandArgs, id, userName str
 	return p.responsef(args, "Successfully deleted user %s from database %s", userName, id), nil
 }
 
-func (p *Plugin) listClusterDatabasesFunc(args *model.CommandArgs, id string) (*model.CommandResponse, *model.AppError) {
-	client, err := p.GetClient(args.UserId)
-	if err != nil {
-		p.API.LogError("Failed to get digitalOcean client", "Err", err.Error())
-		return p.responsef(args, "Failed to get DigitalOcean client"),
-			&model.AppError{Message: err.Error()}
-	}
+func (p *Plugin) listDatabasesInClusterCommandFunc(client *client.DigitalOceanClient, args *model.CommandArgs, id string) (*model.CommandResponse, *model.AppError) {
 
-	dbs, response, err := client.Databases.ListDBs(context.TODO(), id, nil)
+	dbs, response, err := client.ListDatabasesInCluster(context.TODO(), id, nil)
 	if err != nil {
 		p.API.LogError("failed to list databases in this cluster", "id", id, "response", response, "Err", err.Error())
 		return p.responsef(args, "Error listing databases in the cluster %s because %s", id, err.Error()),
