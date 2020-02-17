@@ -13,7 +13,7 @@ func (s *DoPluginTestSuite) TestListDomainsCommandFunc() {
 	p := &Plugin{BotUserID: "1"}
 	api := &plugintest.API{}
 
-	commandArgs := &model.CommandArgs{Command: "/jira list-domains", UserId: "1"}
+	commandArgs := &model.CommandArgs{Command: "/do list-domains", UserId: "1"}
 
 	message := "You don't have any domains configured. Use `/do create-domain  <domainName> <ipAddress[optional]>` to provision one"
 
