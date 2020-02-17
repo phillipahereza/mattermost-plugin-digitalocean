@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"strconv"
 
 	"github.com/digitalocean/godo"
 	"github.com/mattermost/mattermost-server/v5/model"
@@ -24,6 +25,31 @@ func (s *DoPluginTestSuite) TestListDomainsCommandFunc() {
 		api.On("SendEphemeralPost", mock.AnythingOfType("string"), mock.AnythingOfType("*model.Post")).Run(func(args mock.Arguments) {
 			post := args.Get(1).(*model.Post)
 			s.Assert().Equal(message, post.Message)
+		}).Once().Return(&model.Post{})
+
+		p.SetAPI(api)
+
+		_, err := p.listDomainsCommandFunc(s.client, commandArgs)
+
+		s.Require().Nil(err)
+	})
+
+	s.Run("Test domains posted if they are returned by the client", func() {
+		domains := []godo.Domain{godo.Domain{
+			Name:     "do.com",
+			TTL:      1800,
+			ZoneFile: "zonefile",
+		}}
+		s.client.EXPECT().ListDomains(context.TODO(), nil).Return(domains, &godo.Response{}, nil).Times(1)
+
+		api.On("LogError", mock.AnythingOfTypeArgument("string")).Return(nil)
+		api.On("SendEphemeralPost", mock.AnythingOfType("string"), mock.AnythingOfType("*model.Post")).Run(func(args mock.Arguments) {
+			post := args.Get(1).(*model.Post)
+			for _, domain := range domains {
+				s.Assert().Contains(post.Message, domain.Name)
+				s.Assert().Contains(post.Message, strconv.Itoa(domain.TTL))
+			}
+
 		}).Once().Return(&model.Post{})
 
 		p.SetAPI(api)
