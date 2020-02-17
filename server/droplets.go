@@ -11,7 +11,7 @@ import (
 	"time"
 )
 
-func (p *Plugin) listDropletsCommandFunc(client *client.DigitalOceanClient, args *model.CommandArgs) (*model.CommandResponse, *model.AppError) {
+func (p *Plugin) listDropletsCommandFunc(client client.DigitalOceanService, args *model.CommandArgs) (*model.CommandResponse, *model.AppError) {
 
 	opts := &godo.ListOptions{}
 
@@ -46,7 +46,7 @@ func (p *Plugin) listDropletsCommandFunc(client *client.DigitalOceanClient, args
 	return p.responsef(args, buffer.String()), nil
 }
 
-func (p *Plugin) rebootDropletCommandFunc(client *client.DigitalOceanClient, args *model.CommandArgs, dropletID int) (*model.CommandResponse, *model.AppError) {
+func (p *Plugin) rebootDropletCommandFunc(client client.DigitalOceanService, args *model.CommandArgs, dropletID int) (*model.CommandResponse, *model.AppError) {
 
 	action, response, err := client.RebootDroplet(context.TODO(), dropletID)
 
@@ -59,7 +59,7 @@ func (p *Plugin) rebootDropletCommandFunc(client *client.DigitalOceanClient, arg
 	return p.responsef(args, "Rebooting Droplet  `%d` started at: %s with status `%s`", dropletID, action.StartedAt.Format(time.RFC822), action.Status), nil
 }
 
-func (p *Plugin) renameDropletCommandFunc(client *client.DigitalOceanClient, args *model.CommandArgs, dropletID int, name string) (*model.CommandResponse, *model.AppError) {
+func (p *Plugin) renameDropletCommandFunc(client client.DigitalOceanService, args *model.CommandArgs, dropletID int, name string) (*model.CommandResponse, *model.AppError) {
 
 	action, response, err := client.RenameDroplet(context.TODO(), dropletID, name)
 
@@ -72,7 +72,7 @@ func (p *Plugin) renameDropletCommandFunc(client *client.DigitalOceanClient, arg
 	return p.responsef(args, "Renaming Droplet `%d` to `%s` started at: %s with status `%s`", dropletID, name, action.StartedAt.Format(time.RFC822), action.Status), nil
 }
 
-func (p *Plugin) shutdownDropletCommandFunc(client *client.DigitalOceanClient, args *model.CommandArgs, dropletID int) (*model.CommandResponse, *model.AppError) {
+func (p *Plugin) shutdownDropletCommandFunc(client client.DigitalOceanService, args *model.CommandArgs, dropletID int) (*model.CommandResponse, *model.AppError) {
 
 	action, response, err := client.ShutdownDroplet(context.TODO(), dropletID)
 
@@ -85,7 +85,7 @@ func (p *Plugin) shutdownDropletCommandFunc(client *client.DigitalOceanClient, a
 	return p.responsef(args, "Shutting down Droplet  `%d` started at: %s with status `%s`", dropletID, action.StartedAt.Format(time.RFC822), action.Status), nil
 }
 
-func (p *Plugin) powercycleDropletCommandFunc(client *client.DigitalOceanClient, args *model.CommandArgs, dropletID int) (*model.CommandResponse, *model.AppError) {
+func (p *Plugin) powercycleDropletCommandFunc(client client.DigitalOceanService, args *model.CommandArgs, dropletID int) (*model.CommandResponse, *model.AppError) {
 
 	action, response, err := client.PowerCycleDroplet(context.TODO(), dropletID)
 

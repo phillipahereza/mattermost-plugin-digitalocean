@@ -12,7 +12,7 @@ import (
 	"time"
 )
 
-func (p *Plugin) listKubernetesClustersCommandFunc(client *client.DigitalOceanClient, args *model.CommandArgs) (*model.CommandResponse, *model.AppError) {
+func (p *Plugin) listKubernetesClustersCommandFunc(client client.DigitalOceanService, args *model.CommandArgs) (*model.CommandResponse, *model.AppError) {
 
 	clusters, response, err := client.ListKubernetesClusters(context.TODO(), nil)
 
@@ -43,7 +43,7 @@ func (p *Plugin) listKubernetesClustersCommandFunc(client *client.DigitalOceanCl
 	return p.responsef(args, buffer.String()), nil
 }
 
-func (p *Plugin) listKubernetesClusterNodePoolsCommandFunc(client *client.DigitalOceanClient, args *model.CommandArgs, id string) (*model.CommandResponse, *model.AppError) {
+func (p *Plugin) listKubernetesClusterNodePoolsCommandFunc(client client.DigitalOceanService, args *model.CommandArgs, id string) (*model.CommandResponse, *model.AppError) {
 
 	nodePools, response, err := client.ListKubernetesClusterNodePools(context.TODO(), id, nil)
 
@@ -74,7 +74,7 @@ func (p *Plugin) listKubernetesClusterNodePoolsCommandFunc(client *client.Digita
 	return p.responsef(args, buffer.String()), nil
 }
 
-func (p *Plugin) listKubernetesClusterNodesCommandFunc(client *client.DigitalOceanClient, args *model.CommandArgs, id string) (*model.CommandResponse, *model.AppError) {
+func (p *Plugin) listKubernetesClusterNodesCommandFunc(client client.DigitalOceanService, args *model.CommandArgs, id string) (*model.CommandResponse, *model.AppError) {
 
 	nodes, response, err := client.ListKubernetesClusterNodes(context.TODO(), id, nil)
 
@@ -104,7 +104,7 @@ func (p *Plugin) listKubernetesClusterNodesCommandFunc(client *client.DigitalOce
 	return p.responsef(args, buffer.String()), nil
 }
 
-func (p *Plugin) retrieveAvailableUpgradesForKubernetesClusterCommandFunc(client *client.DigitalOceanClient, args *model.CommandArgs, id string) (*model.CommandResponse, *model.AppError) {
+func (p *Plugin) retrieveAvailableUpgradesForKubernetesClusterCommandFunc(client client.DigitalOceanService, args *model.CommandArgs, id string) (*model.CommandResponse, *model.AppError) {
 
 	upgrades, response, err := client.GetKubernetesClusterUpgrades(context.TODO(), id)
 	if err != nil {
@@ -124,7 +124,7 @@ func (p *Plugin) retrieveAvailableUpgradesForKubernetesClusterCommandFunc(client
 	return p.responsef(args, upgradeList), nil
 }
 
-func (p *Plugin) upgradeKubernetesClusterCommandFunc(client *client.DigitalOceanClient, args *model.CommandArgs, id, versionSlug string) (*model.CommandResponse, *model.AppError) {
+func (p *Plugin) upgradeKubernetesClusterCommandFunc(client client.DigitalOceanService, args *model.CommandArgs, id, versionSlug string) (*model.CommandResponse, *model.AppError) {
 
 	response, err := client.UpgradeKubernetesCluster(context.TODO(), id, &godo.KubernetesClusterUpgradeRequest{VersionSlug: versionSlug})
 	if err != nil {
@@ -135,7 +135,7 @@ func (p *Plugin) upgradeKubernetesClusterCommandFunc(client *client.DigitalOcean
 	return p.responsef(args, "Successfully upgrades Kubernetes Cluster %s to version %s", id, versionSlug), nil
 }
 
-func (p *Plugin) retrieveKubeconfigCommandFunc(client *client.DigitalOceanClient, args *model.CommandArgs, id string) (*model.CommandResponse, *model.AppError) {
+func (p *Plugin) retrieveKubeconfigCommandFunc(client client.DigitalOceanService, args *model.CommandArgs, id string) (*model.CommandResponse, *model.AppError) {
 
 	kubeconfig, response, err := client.GetKubeConfig(context.TODO(), id)
 

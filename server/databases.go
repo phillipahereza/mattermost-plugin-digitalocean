@@ -11,7 +11,7 @@ import (
 	"time"
 )
 
-func (p *Plugin) listDatabaseClustersCommandFunc(client *client.DigitalOceanClient, args *model.CommandArgs) (*model.CommandResponse, *model.AppError) {
+func (p *Plugin) listDatabaseClustersCommandFunc(client client.DigitalOceanService, args *model.CommandArgs) (*model.CommandResponse, *model.AppError) {
 
 	opts := &godo.ListOptions{}
 
@@ -45,7 +45,7 @@ func (p *Plugin) listDatabaseClustersCommandFunc(client *client.DigitalOceanClie
 	return p.responsef(args, buffer.String()), nil
 }
 
-func (p *Plugin) listDatabaseClusterBackupsCommandFunc(client *client.DigitalOceanClient, args *model.CommandArgs, id string) (*model.CommandResponse, *model.AppError) {
+func (p *Plugin) listDatabaseClusterBackupsCommandFunc(client client.DigitalOceanService, args *model.CommandArgs, id string) (*model.CommandResponse, *model.AppError) {
 
 	backups, response, err := client.ListDatabaseClusterBackups(context.TODO(), id, nil)
 
@@ -77,7 +77,7 @@ func (p *Plugin) listDatabaseClusterBackupsCommandFunc(client *client.DigitalOce
 	return p.responsef(args, buffer.String()), nil
 }
 
-func (p *Plugin) addUserToDatabaseClusterCommandFunc(client *client.DigitalOceanClient, args *model.CommandArgs, id, name string) (*model.CommandResponse, *model.AppError) {
+func (p *Plugin) addUserToDatabaseClusterCommandFunc(client client.DigitalOceanService, args *model.CommandArgs, id, name string) (*model.CommandResponse, *model.AppError) {
 	dbUserCreateReq := &godo.DatabaseCreateUserRequest{
 		Name:          name,
 		MySQLSettings: nil,
@@ -91,7 +91,7 @@ func (p *Plugin) addUserToDatabaseClusterCommandFunc(client *client.DigitalOcean
 	return p.responsef(args, "Name: `%s`\t Password: `%s`\t Role: `%s`", user.Name, user.Password, user.Role), nil
 }
 
-func (p *Plugin) listDatabaseClusterUsersCommandFunc(client *client.DigitalOceanClient, args *model.CommandArgs, id string) (*model.CommandResponse, *model.AppError) {
+func (p *Plugin) listDatabaseClusterUsersCommandFunc(client client.DigitalOceanService, args *model.CommandArgs, id string) (*model.CommandResponse, *model.AppError) {
 
 	users, response, err := client.ListDatabaseClusterUsers(context.TODO(), id, nil)
 
@@ -112,7 +112,7 @@ func (p *Plugin) listDatabaseClusterUsersCommandFunc(client *client.DigitalOcean
 	return p.responsef(args, usersList), nil
 }
 
-func (p *Plugin) deleteDatabaseClusterUserCommandFunc(client *client.DigitalOceanClient, args *model.CommandArgs, id, userName string) (*model.CommandResponse, *model.AppError) {
+func (p *Plugin) deleteDatabaseClusterUserCommandFunc(client client.DigitalOceanService, args *model.CommandArgs, id, userName string) (*model.CommandResponse, *model.AppError) {
 
 	response, err := client.DeleteDatabaseClusterUser(context.TODO(), id, userName)
 
@@ -125,7 +125,7 @@ func (p *Plugin) deleteDatabaseClusterUserCommandFunc(client *client.DigitalOcea
 	return p.responsef(args, "Successfully deleted user %s from database %s", userName, id), nil
 }
 
-func (p *Plugin) listDatabasesInClusterCommandFunc(client *client.DigitalOceanClient, args *model.CommandArgs, id string) (*model.CommandResponse, *model.AppError) {
+func (p *Plugin) listDatabasesInClusterCommandFunc(client client.DigitalOceanService, args *model.CommandArgs, id string) (*model.CommandResponse, *model.AppError) {
 
 	dbs, response, err := client.ListDatabasesInCluster(context.TODO(), id, nil)
 	if err != nil {

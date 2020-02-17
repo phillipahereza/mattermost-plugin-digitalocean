@@ -28,7 +28,7 @@ func drawKeysTable(keys []godo.Key) string {
 	return buffer.String()
 }
 
-func (p *Plugin) listSSHKeysCommandFunc(client *client.DigitalOceanClient, args *model.CommandArgs) (*model.CommandResponse, *model.AppError) {
+func (p *Plugin) listSSHKeysCommandFunc(client client.DigitalOceanService, args *model.CommandArgs) (*model.CommandResponse, *model.AppError) {
 
 	opts := &godo.ListOptions{}
 
@@ -47,7 +47,7 @@ func (p *Plugin) listSSHKeysCommandFunc(client *client.DigitalOceanClient, args 
 	return p.responsef(args, drawKeysTable(keys)), nil
 }
 
-func (p *Plugin) createSSHKeysCommandFunc(client *client.DigitalOceanClient, args *model.CommandArgs, name, publicKey string) (*model.CommandResponse, *model.AppError) {
+func (p *Plugin) createSSHKeysCommandFunc(client client.DigitalOceanService, args *model.CommandArgs, name, publicKey string) (*model.CommandResponse, *model.AppError) {
 
 	keyCreateRequest := &godo.KeyCreateRequest{
 		Name:      name,
@@ -66,7 +66,7 @@ func (p *Plugin) createSSHKeysCommandFunc(client *client.DigitalOceanClient, arg
 
 }
 
-func (p *Plugin) retrieveSSHKeyCommandFunc(client *client.DigitalOceanClient, args *model.CommandArgs, id int) (*model.CommandResponse, *model.AppError) {
+func (p *Plugin) retrieveSSHKeyCommandFunc(client client.DigitalOceanService, args *model.CommandArgs, id int) (*model.CommandResponse, *model.AppError) {
 
 	key, response, err := client.GetSSHKeyByID(context.TODO(), id)
 	if err != nil {
@@ -78,7 +78,7 @@ func (p *Plugin) retrieveSSHKeyCommandFunc(client *client.DigitalOceanClient, ar
 
 }
 
-func (p *Plugin) deleteSSHKeyCommandFunc(client *client.DigitalOceanClient, args *model.CommandArgs, id int) (*model.CommandResponse, *model.AppError) {
+func (p *Plugin) deleteSSHKeyCommandFunc(client client.DigitalOceanService, args *model.CommandArgs, id int) (*model.CommandResponse, *model.AppError) {
 
 	response, err := client.DeleteSSHKeyByID(context.TODO(), id)
 	if err != nil {
