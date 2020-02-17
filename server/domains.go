@@ -4,17 +4,14 @@ import (
 	"bytes"
 	"context"
 	"fmt"
-	"github.com/digitalocean/godo"
 	"github.com/mattermost/mattermost-server/v5/model"
 	"github.com/phillipahereza/mattermost-plugin-digitalocean/server/client"
 	"text/tabwriter"
 )
 
-func (p *Plugin) listDomainsCommandFunc(client *client.DigitalOceanClient, args *model.CommandArgs) (*model.CommandResponse, *model.AppError) {
+func (p *Plugin) listDomainsCommandFunc(client client.DigitalOceanService, args *model.CommandArgs) (*model.CommandResponse, *model.AppError) {
 
-	opts := &godo.ListOptions{}
-
-	domains, response, err := client.ListDomains(context.TODO(), opts)
+	domains, response, err := client.ListDomains(context.TODO(), nil)
 
 	if err != nil {
 		p.API.LogError("failed to fetch domains", "response", response, "Err", err.Error())

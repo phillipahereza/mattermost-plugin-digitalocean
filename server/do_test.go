@@ -4,6 +4,7 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/phillipahereza/mattermost-plugin-digitalocean/server/mocks"
 	"github.com/stretchr/testify/suite"
+	"testing"
 )
 
 type DoPluginTestSuite struct {
@@ -19,4 +20,8 @@ func (s *DoPluginTestSuite) SetupTest() {
 
 func (s *DoPluginTestSuite) TearDownTest() {
 	s.mockCtrl.Finish()
+}
+
+func TestDoPluginTestSuite(t *testing.T) {
+	suite.Run(t, new(DoPluginTestSuite))
 }
