@@ -22,7 +22,7 @@ func (p *Plugin) getPersonalTokenCommandFunc(args *model.CommandArgs) (*model.Co
 	return p.responsef(args, fmt.Sprintf(responseMessage, routeToDOApps)), nil
 }
 
-func (p *Plugin) showConnectTokenFunc(args *model.CommandArgs) (*model.CommandResponse, *model.AppError) {
+func (p *Plugin) showConnectTokenCommandFunc(args *model.CommandArgs) (*model.CommandResponse, *model.AppError) {
 	tk, err := p.store.LoadUserDOToken(args.UserId)
 	if err != nil {
 		p.API.LogError("Failed to show connected token", "Err", err.Error())

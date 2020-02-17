@@ -10,6 +10,7 @@ import (
 
 // ExecuteCommand is
 func (p *Plugin) ExecuteCommand(c *plugin.Context, args *model.CommandArgs) (*model.CommandResponse, *model.AppError) {
+
 	split := strings.Fields(args.Command)
 	command := split[0]
 	parameters := []string{}
@@ -26,6 +27,7 @@ func (p *Plugin) ExecuteCommand(c *plugin.Context, args *model.CommandArgs) (*mo
 		return &model.CommandResponse{}, nil
 	}
 
+	// actions that don't make calls to the DigitalOcean API
 	switch action {
 	case "":
 		return p.helpCommandFunc(args)
@@ -38,9 +40,19 @@ func (p *Plugin) ExecuteCommand(c *plugin.Context, args *model.CommandArgs) (*mo
 	case "token":
 		return p.getPersonalTokenCommandFunc(args)
 	case "show-configured-token":
-		return p.showConnectTokenFunc(args)
+		return p.showConnectTokenCommandFunc(args)
+	}
+
+	client, err := p.GetClient(args.UserId)
+	if err != nil {
+		p.API.LogError("Failed to get digitalOcean client", "Err", err.Error())
+		return p.responsef(args, "Failed to get DigitalOcean client: %s", err.Error()),
+			&model.AppError{Message: err.Error()}
+	}
+
+	switch action {
 	case "list-droplets":
-		return p.listDropletsFunc(args)
+		return p.listDropletsCommandFunc(client, args)
 	case "reboot-droplet":
 		if len(parameters) == 0 {
 			return p.responsef(args, "Please specify the droplet ID"), nil
@@ -49,7 +61,7 @@ func (p *Plugin) ExecuteCommand(c *plugin.Context, args *model.CommandArgs) (*mo
 			if err != nil {
 				return p.responsef(args, "Droplet ID must be an integer"), nil
 			}
-			return p.rebootDropletFunc(args, dropletID)
+			return p.rebootDropletCommandFunc(client, args, dropletID)
 		} else {
 			return p.responsef(args, "Too many arguments, command should be in the form `/do reboot-droplet <dropletID>`"), nil
 		}
@@ -61,7 +73,7 @@ func (p *Plugin) ExecuteCommand(c *plugin.Context, args *model.CommandArgs) (*mo
 			if err != nil {
 				return p.responsef(args, "Droplet ID must be an integer"), nil
 			}
-			return p.shutdownDropletFunc(args, dropletID)
+			return p.shutdownDropletCommandFunc(client, args, dropletID)
 		} else {
 			return p.responsef(args, "Too many arguments, command should be in the form `/do shutdown-droplet <dropletID>`"), nil
 		}
@@ -73,7 +85,7 @@ func (p *Plugin) ExecuteCommand(c *plugin.Context, args *model.CommandArgs) (*mo
 			if err != nil {
 				return p.responsef(args, "Droplet ID must be an integer"), nil
 			}
-			return p.powercycleDropletFunc(args, dropletID)
+			return p.powercycleDropletCommandFunc(client, args, dropletID)
 		} else {
 			return p.responsef(args, "Too many arguments, command should be in the form `/do powercycle-droplet <dropletID>`"), nil
 		}
@@ -86,14 +98,14 @@ func (p *Plugin) ExecuteCommand(c *plugin.Context, args *model.CommandArgs) (*mo
 				return p.responsef(args, "Droplet ID must be an integer"), nil
 			}
 			newName := parameters[1]
-			return p.renameDropletFunc(args, dropletID, newName)
+			return p.renameDropletCommandFunc(client, args, dropletID, newName)
 		} else {
 			return p.responsef(args, "Too many arguments, command should be in the form `/do rename-droplet <dropletID> <name>`"), nil
 		}
 	case "list-domains":
-		return p.listDomainsFunc(args)
+		return p.listDomainsCommandFunc(client, args)
 	case "list-keys":
-		return p.listSSHKeysFunc(args)
+		return p.listSSHKeysCommandFunc(client, args)
 	case "create-key":
 		p.API.LogInfo("%v", parameters)
 		if len(parameters) < 2 {
@@ -101,7 +113,7 @@ func (p *Plugin) ExecuteCommand(c *plugin.Context, args *model.CommandArgs) (*mo
 		} else if len(parameters) >= 2 {
 			name := parameters[0]
 			publicKey := strings.Join(parameters[1:], " ")
-			return p.createSSHKeysFunc(args, name, publicKey)
+			return p.createSSHKeysCommandFunc(client, args, name, publicKey)
 		} else {
 			return p.responsef(args, "Too many arguments, command should be in the form `/do create-key <name> <publicKey>`"), nil
 		}
@@ -113,7 +125,7 @@ func (p *Plugin) ExecuteCommand(c *plugin.Context, args *model.CommandArgs) (*mo
 			if err != nil {
 				return p.responsef(args, "SSH key ID must be an integer"), nil
 			}
-			return p.retrieveSSHKeyFunc(args, dropletID)
+			return p.retrieveSSHKeyCommandFunc(client, args, dropletID)
 		} else {
 			return p.responsef(args, "Too many arguments, command should be in the form `/do retrieve-key <keyID>`"), nil
 		}
@@ -125,18 +137,18 @@ func (p *Plugin) ExecuteCommand(c *plugin.Context, args *model.CommandArgs) (*mo
 			if err != nil {
 				return p.responsef(args, "SSH key ID must be an integer"), nil
 			}
-			return p.deleteSSHKeyFunc(args, dropletID)
+			return p.deleteSSHKeyCommandFunc(client, args, dropletID)
 		} else {
 			return p.responsef(args, "Too many arguments, command should be in the form `/do delete-key <keyID>`"), nil
 		}
 	case "list-clusters":
-		return p.listClustersFunc(args)
+		return p.listDatabaseClustersCommandFunc(client, args)
 	case "list-cluster-backups":
 		if len(parameters) == 0 {
 			return p.responsef(args, "Please specify the Cluster ID"), nil
 		} else if len(parameters) == 1 {
 			clusterID := parameters[0]
-			return p.listClusterBackupsFunc(args, clusterID)
+			return p.listDatabaseClusterBackupsCommandFunc(client, args, clusterID)
 		} else {
 			return p.responsef(args, "Too many arguments, command should be in the form `/do retrieve-key <keyID>`"), nil
 		}
@@ -146,7 +158,7 @@ func (p *Plugin) ExecuteCommand(c *plugin.Context, args *model.CommandArgs) (*mo
 		} else if len(parameters) == 2 {
 			clusterID := parameters[0]
 			userName := parameters[1]
-			return p.addUserToClusterFunc(args, clusterID, userName)
+			return p.addUserToDatabaseClusterCommandFunc(client, args, clusterID, userName)
 		} else {
 			return p.responsef(args, "Too many arguments, command should be in the form `/do add-cluster-user <clusterID> <userName>`"), nil
 		}
@@ -155,7 +167,7 @@ func (p *Plugin) ExecuteCommand(c *plugin.Context, args *model.CommandArgs) (*mo
 			return p.responsef(args, "Please specify the database cluster ID"), nil
 		} else if len(parameters) == 1 {
 			clusterID := parameters[0]
-			return p.listClusterUsersFunc(args, clusterID)
+			return p.listDatabaseClusterUsersCommandFunc(client, args, clusterID)
 		} else {
 			return p.responsef(args, "Too many arguments, command should be in the form `/do list-cluster-users <clusterID>`"), nil
 		}
@@ -165,7 +177,7 @@ func (p *Plugin) ExecuteCommand(c *plugin.Context, args *model.CommandArgs) (*mo
 		} else if len(parameters) == 2 {
 			clusterID := parameters[0]
 			userName := parameters[1]
-			return p.deleteClusterUserFunc(args, clusterID, userName)
+			return p.deleteDatabaseClusterUserCommandFunc(client, args, clusterID, userName)
 		} else {
 			return p.responsef(args, "Too many arguments, command should be in the form `/do delete-cluster-user <clusterID> <userName>`"), nil
 		}
@@ -174,20 +186,20 @@ func (p *Plugin) ExecuteCommand(c *plugin.Context, args *model.CommandArgs) (*mo
 			return p.responsef(args, "Please specify the database cluster ID"), nil
 		} else if len(parameters) == 1 {
 			clusterID := parameters[0]
-			return p.listClusterDatabasesFunc(args, clusterID)
+			return p.listDatabasesInClusterCommandFunc(client, args, clusterID)
 		} else {
 			return p.responsef(args, "Too many arguments, command should be in the form `/do list-cluster-dbs <clusterID>`"), nil
 		}
 
 	case "list-k8s-clusters":
-		return p.listKubernetesClustersFunc(args)
+		return p.listKubernetesClustersCommandFunc(client, args)
 
 	case "list-k8s-cluster-nodepools":
 		if len(parameters) == 0 {
 			return p.responsef(args, "Please specify the Kubernetes cluster ID"), nil
 		} else if len(parameters) == 1 {
 			clusterID := parameters[0]
-			return p.listKubernetesClusterNodePoolsFunc(args, clusterID)
+			return p.listKubernetesClusterNodePoolsCommandFunc(client, args, clusterID)
 		} else {
 			return p.responsef(args, "Too many arguments, command should be in the form `/do list-k8s-cluster-nodepools <clusterID>`"), nil
 		}
@@ -196,7 +208,7 @@ func (p *Plugin) ExecuteCommand(c *plugin.Context, args *model.CommandArgs) (*mo
 			return p.responsef(args, "Please specify the Kubernetes cluster ID"), nil
 		} else if len(parameters) == 1 {
 			clusterID := parameters[0]
-			return p.listKubernetesClusterNodesFunc(args, clusterID)
+			return p.listKubernetesClusterNodesCommandFunc(client, args, clusterID)
 		} else {
 			return p.responsef(args, "Too many arguments, command should be in the form `/do list-k8s-cluster-node <clusterID>`"), nil
 		}
@@ -205,7 +217,7 @@ func (p *Plugin) ExecuteCommand(c *plugin.Context, args *model.CommandArgs) (*mo
 			return p.responsef(args, "Please specify the Kubernetes cluster ID"), nil
 		} else if len(parameters) == 1 {
 			clusterID := parameters[0]
-			return p.retrieveAvailableUpgradesForKubernetesCluster(args, clusterID)
+			return p.retrieveAvailableUpgradesForKubernetesClusterCommandFunc(client, args, clusterID)
 		} else {
 			return p.responsef(args, "Too many arguments, command should be in the form `/do list-k8s-cluster-upgrades <clusterID>`"), nil
 		}
@@ -215,7 +227,7 @@ func (p *Plugin) ExecuteCommand(c *plugin.Context, args *model.CommandArgs) (*mo
 		} else if len(parameters) == 2 {
 			clusterID := parameters[0]
 			versionSlug := parameters[1]
-			return p.upgradeKubernetesClusterFunc(args, clusterID, versionSlug)
+			return p.upgradeKubernetesClusterCommandFunc(client, args, clusterID, versionSlug)
 		} else {
 			return p.responsef(args, "Too many arguments, command should be in the form `/do upgrade-k8s-cluster <clusterID> <versionSlug>`"), nil
 		}
@@ -224,7 +236,7 @@ func (p *Plugin) ExecuteCommand(c *plugin.Context, args *model.CommandArgs) (*mo
 			return p.responsef(args, "Please specify the Kubernetes cluster ID"), nil
 		} else if len(parameters) == 1 {
 			clusterID := parameters[0]
-			return p.retrieveKubeconfigFunc(args, clusterID)
+			return p.retrieveKubeconfigCommandFunc(client, args, clusterID)
 		} else {
 			return p.responsef(args, "Too many arguments, command should be in the form `/do get-k8s-config <clusterID>`"), nil
 		}

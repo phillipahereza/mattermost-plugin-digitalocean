@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/digitalocean/godo"
 	"github.com/mattermost/mattermost-server/v5/model"
+	"github.com/phillipahereza/mattermost-plugin-digitalocean/server/client"
 	"text/tabwriter"
 )
 
@@ -27,17 +28,11 @@ func drawKeysTable(keys []godo.Key) string {
 	return buffer.String()
 }
 
-func (p *Plugin) listSSHKeysFunc(args *model.CommandArgs) (*model.CommandResponse, *model.AppError) {
-	client, err := p.GetClient(args.UserId)
-	if err != nil {
-		p.API.LogError("Failed to get digitalOcean client", "Err", err.Error())
-		return p.responsef(args, "Failed to get DigitalOcean client"),
-			&model.AppError{Message: err.Error()}
-	}
+func (p *Plugin) listSSHKeysCommandFunc(client client.DigitalOceanService, args *model.CommandArgs) (*model.CommandResponse, *model.AppError) {
 
 	opts := &godo.ListOptions{}
 
-	keys, response, err := client.Keys.List(context.TODO(), opts)
+	keys, response, err := client.ListSSHKeys(context.TODO(), opts)
 
 	if err != nil {
 		p.API.LogError("failed to fetch ssh keys", "response", response, "Err", err.Error())
@@ -52,20 +47,14 @@ func (p *Plugin) listSSHKeysFunc(args *model.CommandArgs) (*model.CommandRespons
 	return p.responsef(args, drawKeysTable(keys)), nil
 }
 
-func (p *Plugin) createSSHKeysFunc(args *model.CommandArgs, name, publicKey string) (*model.CommandResponse, *model.AppError) {
-	client, err := p.GetClient(args.UserId)
-	if err != nil {
-		p.API.LogError("Failed to get digitalOcean client", "Err", err.Error())
-		return p.responsef(args, "Failed to get DigitalOcean client"),
-			&model.AppError{Message: err.Error()}
-	}
+func (p *Plugin) createSSHKeysCommandFunc(client client.DigitalOceanService, args *model.CommandArgs, name, publicKey string) (*model.CommandResponse, *model.AppError) {
 
 	keyCreateRequest := &godo.KeyCreateRequest{
 		Name:      name,
 		PublicKey: publicKey,
 	}
 
-	key, response, err := client.Keys.Create(context.TODO(), keyCreateRequest)
+	key, response, err := client.CreateSSHKey(context.TODO(), keyCreateRequest)
 
 	if err != nil {
 		p.API.LogError("failed to create ssh key", "response", response, "Err", err.Error())
@@ -77,15 +66,9 @@ func (p *Plugin) createSSHKeysFunc(args *model.CommandArgs, name, publicKey stri
 
 }
 
-func (p *Plugin) retrieveSSHKeyFunc(args *model.CommandArgs, id int) (*model.CommandResponse, *model.AppError) {
-	client, err := p.GetClient(args.UserId)
-	if err != nil {
-		p.API.LogError("Failed to get digitalOcean client", "Err", err.Error())
-		return p.responsef(args, "Failed to get DigitalOcean client"),
-			&model.AppError{Message: err.Error()}
-	}
+func (p *Plugin) retrieveSSHKeyCommandFunc(client client.DigitalOceanService, args *model.CommandArgs, id int) (*model.CommandResponse, *model.AppError) {
 
-	key, response, err := client.Keys.GetByID(context.TODO(), id)
+	key, response, err := client.GetSSHKeyByID(context.TODO(), id)
 	if err != nil {
 		p.API.LogError("Failed to retrieve SSH key", "id", id, "response", response, "Err", err.Error())
 		return p.responsef(args, "Failed to retrieve SSH key with ID `%d`", id),
@@ -95,15 +78,9 @@ func (p *Plugin) retrieveSSHKeyFunc(args *model.CommandArgs, id int) (*model.Com
 
 }
 
-func (p *Plugin) deleteSSHKeyFunc(args *model.CommandArgs, id int) (*model.CommandResponse, *model.AppError) {
-	client, err := p.GetClient(args.UserId)
-	if err != nil {
-		p.API.LogError("Failed to get digitalOcean client", "Err", err.Error())
-		return p.responsef(args, "Failed to get DigitalOcean client"),
-			&model.AppError{Message: err.Error()}
-	}
+func (p *Plugin) deleteSSHKeyCommandFunc(client client.DigitalOceanService, args *model.CommandArgs, id int) (*model.CommandResponse, *model.AppError) {
 
-	response, err := client.Keys.DeleteByID(context.TODO(), id)
+	response, err := client.DeleteSSHKeyByID(context.TODO(), id)
 	if err != nil {
 		p.API.LogError("Failed to delete SSH key", "id", id, "response", response, "Err", err.Error())
 		return p.responsef(args, "Failed to delete SSH key with ID `%d`", id),

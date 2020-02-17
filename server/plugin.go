@@ -1,11 +1,15 @@
 package main
 
 import (
+	"context"
+	"github.com/digitalocean/godo"
+	"golang.org/x/oauth2"
 	"path/filepath"
 	"sync"
 
 	"github.com/mattermost/mattermost-server/v5/model"
 	"github.com/mattermost/mattermost-server/v5/plugin"
+	"github.com/phillipahereza/mattermost-plugin-digitalocean/server/client"
 	"github.com/pkg/errors"
 )
 
@@ -57,4 +61,24 @@ func getCommand() *model.Command {
 		AutoCompleteDesc: "Available commands: help",
 		AutoCompleteHint: "[command]",
 	}
+}
+
+// GetClient returns a digital ocean client with configured token
+func (p *Plugin) GetClient(mmUser string) (*client.DigitalOceanClient, error) {
+	token, err := p.store.LoadUserDOToken(mmUser)
+	if err != nil {
+		p.API.LogError("Failed to load DO token", "user", mmUser, "Err", err.Error())
+		return nil, err
+	} else if token == "" {
+		p.API.LogError("Failed to load DO token", "user", mmUser, "Err", err)
+		return nil, errors.New("Missing DigitalOcean token: User `/do token` to get instructions on how to add a token")
+	}
+
+	tokenSource := &client.TokenSource{
+		AccessToken: token,
+	}
+
+	oauthClient := oauth2.NewClient(context.Background(), tokenSource)
+	godoClient := godo.NewClient(oauthClient)
+	return &client.DigitalOceanClient{Client: godoClient}, nil
 }

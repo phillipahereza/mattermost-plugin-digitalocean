@@ -6,20 +6,15 @@ import (
 	"fmt"
 	"github.com/digitalocean/godo"
 	"github.com/mattermost/mattermost-server/v5/model"
+	"github.com/phillipahereza/mattermost-plugin-digitalocean/server/client"
 	"strings"
 	"text/tabwriter"
 	"time"
 )
 
-func (p *Plugin) listKubernetesClustersFunc(args *model.CommandArgs) (*model.CommandResponse, *model.AppError) {
-	client, err := p.GetClient(args.UserId)
-	if err != nil {
-		p.API.LogError("Failed to get digitalOcean client", "Err", err.Error())
-		return p.responsef(args, "Failed to get DigitalOcean client"),
-			&model.AppError{Message: err.Error()}
-	}
+func (p *Plugin) listKubernetesClustersCommandFunc(client client.DigitalOceanService, args *model.CommandArgs) (*model.CommandResponse, *model.AppError) {
 
-	clusters, response, err := client.Kubernetes.List(context.TODO(), nil)
+	clusters, response, err := client.ListKubernetesClusters(context.TODO(), nil)
 
 	if err != nil {
 		p.API.LogError("failed to fetch kubernetes clusters", "response", response, "Err", err.Error())
@@ -48,15 +43,9 @@ func (p *Plugin) listKubernetesClustersFunc(args *model.CommandArgs) (*model.Com
 	return p.responsef(args, buffer.String()), nil
 }
 
-func (p *Plugin) listKubernetesClusterNodePoolsFunc(args *model.CommandArgs, id string) (*model.CommandResponse, *model.AppError) {
-	client, err := p.GetClient(args.UserId)
-	if err != nil {
-		p.API.LogError("Failed to get digitalOcean client", "Err", err.Error())
-		return p.responsef(args, "Failed to get DigitalOcean client"),
-			&model.AppError{Message: err.Error()}
-	}
+func (p *Plugin) listKubernetesClusterNodePoolsCommandFunc(client client.DigitalOceanService, args *model.CommandArgs, id string) (*model.CommandResponse, *model.AppError) {
 
-	cluster, response, err := client.Kubernetes.Get(context.TODO(), id)
+	nodePools, response, err := client.ListKubernetesClusterNodePools(context.TODO(), id, nil)
 
 	if err != nil {
 		p.API.LogError("failed to fetch kubernetes cluster", "id", id, "response", response, "Err", err.Error())
@@ -64,7 +53,7 @@ func (p *Plugin) listKubernetesClusterNodePoolsFunc(args *model.CommandArgs, id 
 			&model.AppError{Message: err.Error()}
 	}
 
-	if len(cluster.NodePools) == 0 {
+	if len(nodePools) == 0 {
 		return p.responsef(args, "This cluster has no node pools"), nil
 	}
 
@@ -76,7 +65,7 @@ func (p *Plugin) listKubernetesClusterNodePoolsFunc(args *model.CommandArgs, id 
 	fmt.Fprintf(w, "\n |%s|%s|%s|%s|%s|", "ID", "Name", "Size", "Node Count", "Tags")
 	fmt.Fprintf(w, "\n |%s|%s|%s|%s|%s|", "------", "----", "------", "------", "------")
 
-	for _, pool := range cluster.NodePools {
+	for _, pool := range nodePools {
 
 		fmt.Fprintf(w, "\n |%s|%s|%s|%d|%s|", pool.ID, pool.Name, pool.Size, pool.Count, strings.Join(pool.Tags, ", "))
 	}
@@ -85,15 +74,9 @@ func (p *Plugin) listKubernetesClusterNodePoolsFunc(args *model.CommandArgs, id 
 	return p.responsef(args, buffer.String()), nil
 }
 
-func (p *Plugin) listKubernetesClusterNodesFunc(args *model.CommandArgs, id string) (*model.CommandResponse, *model.AppError) {
-	client, err := p.GetClient(args.UserId)
-	if err != nil {
-		p.API.LogError("Failed to get digitalOcean client", "Err", err.Error())
-		return p.responsef(args, "Failed to get DigitalOcean client"),
-			&model.AppError{Message: err.Error()}
-	}
+func (p *Plugin) listKubernetesClusterNodesCommandFunc(client client.DigitalOceanService, args *model.CommandArgs, id string) (*model.CommandResponse, *model.AppError) {
 
-	cluster, response, err := client.Kubernetes.Get(context.TODO(), id)
+	nodes, response, err := client.ListKubernetesClusterNodes(context.TODO(), id, nil)
 
 	if err != nil {
 		p.API.LogError("failed to fetch kubernetes cluster", "id", id, "response", response, "Err", err.Error())
@@ -101,7 +84,7 @@ func (p *Plugin) listKubernetesClusterNodesFunc(args *model.CommandArgs, id stri
 			&model.AppError{Message: err.Error()}
 	}
 
-	if len(cluster.NodePools) == 0 {
+	if len(nodes) == 0 {
 		return p.responsef(args, "This cluster has no nodes"), nil
 	}
 
@@ -113,25 +96,17 @@ func (p *Plugin) listKubernetesClusterNodesFunc(args *model.CommandArgs, id stri
 	fmt.Fprintf(w, "\n |%s|%s|%s|%s|%s|", "ID", "Name", "Status", "Node Pool", "Created At")
 	fmt.Fprintf(w, "\n |%s|%s|%s|%s|%s|", "------", "----", "------", "------", "------")
 
-	for _, pool := range cluster.NodePools {
-		for _, node := range pool.Nodes {
-			fmt.Fprintf(w, "\n |%s|%s|%s|%s|%s|", node.ID, node.Name, node.Status.State, pool.Name, node.CreatedAt.Format(time.RFC822))
-		}
+	for _, node := range nodes {
+		fmt.Fprintf(w, "\n |%s|%s|%s|%s|%s|", node.ID, node.Name, node.Status.State, node.NodePoolName, node.CreatedAt.Format(time.RFC822))
 	}
 
 	w.Flush()
 	return p.responsef(args, buffer.String()), nil
 }
 
-func (p *Plugin) retrieveAvailableUpgradesForKubernetesCluster(args *model.CommandArgs, id string) (*model.CommandResponse, *model.AppError) {
-	client, err := p.GetClient(args.UserId)
-	if err != nil {
-		p.API.LogError("Failed to get digitalOcean client", "Err", err.Error())
-		return p.responsef(args, "Failed to get DigitalOcean client"),
-			&model.AppError{Message: err.Error()}
-	}
+func (p *Plugin) retrieveAvailableUpgradesForKubernetesClusterCommandFunc(client client.DigitalOceanService, args *model.CommandArgs, id string) (*model.CommandResponse, *model.AppError) {
 
-	upgrades, response, err := client.Kubernetes.GetUpgrades(context.TODO(), id)
+	upgrades, response, err := client.GetKubernetesClusterUpgrades(context.TODO(), id)
 	if err != nil {
 		p.API.LogError("failed to fetch upgrades for kubernetes cluster", "id", id, "response", response, "Err", err.Error())
 		return p.responsef(args, "Error while fetching upgrades for kubernetes cluster %s", id),
@@ -149,15 +124,9 @@ func (p *Plugin) retrieveAvailableUpgradesForKubernetesCluster(args *model.Comma
 	return p.responsef(args, upgradeList), nil
 }
 
-func (p *Plugin) upgradeKubernetesClusterFunc(args *model.CommandArgs, id, versionSlug string) (*model.CommandResponse, *model.AppError) {
-	client, err := p.GetClient(args.UserId)
-	if err != nil {
-		p.API.LogError("Failed to get digitalOcean client", "Err", err.Error())
-		return p.responsef(args, "Failed to get DigitalOcean client"),
-			&model.AppError{Message: err.Error()}
-	}
+func (p *Plugin) upgradeKubernetesClusterCommandFunc(client client.DigitalOceanService, args *model.CommandArgs, id, versionSlug string) (*model.CommandResponse, *model.AppError) {
 
-	response, err := client.Kubernetes.Upgrade(context.TODO(), id, &godo.KubernetesClusterUpgradeRequest{VersionSlug: versionSlug})
+	response, err := client.UpgradeKubernetesCluster(context.TODO(), id, &godo.KubernetesClusterUpgradeRequest{VersionSlug: versionSlug})
 	if err != nil {
 		p.API.LogError("failed to upgrade for kubernetes cluster", "id", id, "version", versionSlug, "response", response, "Err", err.Error())
 		return p.responsef(args, "Error while attempting to upgrade kubernetes cluster %s to %s because %s", id, versionSlug, err.Error()),
@@ -166,15 +135,9 @@ func (p *Plugin) upgradeKubernetesClusterFunc(args *model.CommandArgs, id, versi
 	return p.responsef(args, "Successfully upgrades Kubernetes Cluster %s to version %s", id, versionSlug), nil
 }
 
-func (p *Plugin) retrieveKubeconfigFunc(args *model.CommandArgs, id string) (*model.CommandResponse, *model.AppError) {
-	client, err := p.GetClient(args.UserId)
-	if err != nil {
-		p.API.LogError("Failed to get digitalOcean client", "Err", err.Error())
-		return p.responsef(args, "Failed to get DigitalOcean client"),
-			&model.AppError{Message: err.Error()}
-	}
+func (p *Plugin) retrieveKubeconfigCommandFunc(client client.DigitalOceanService, args *model.CommandArgs, id string) (*model.CommandResponse, *model.AppError) {
 
-	kubeconfig, response, err := client.Kubernetes.GetKubeConfig(context.TODO(), id)
+	kubeconfig, response, err := client.GetKubeConfig(context.TODO(), id)
 
 	if err != nil {
 		p.API.LogError("failed to get kubeconfig for kubernetes cluster", "id", id, "response", response, "Err", err.Error())

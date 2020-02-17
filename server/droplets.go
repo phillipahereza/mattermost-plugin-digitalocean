@@ -6,21 +6,16 @@ import (
 	"fmt"
 	"github.com/digitalocean/godo"
 	"github.com/mattermost/mattermost-server/v5/model"
+	"github.com/phillipahereza/mattermost-plugin-digitalocean/server/client"
 	"text/tabwriter"
 	"time"
 )
 
-func (p *Plugin) listDropletsFunc(args *model.CommandArgs) (*model.CommandResponse, *model.AppError) {
-	client, err := p.GetClient(args.UserId)
-	if err != nil {
-		p.API.LogError("Failed to get digitalOcean client", "Err", err.Error())
-		return p.responsef(args, "Failed to get DigitalOcean client"),
-			&model.AppError{Message: err.Error()}
-	}
+func (p *Plugin) listDropletsCommandFunc(client client.DigitalOceanService, args *model.CommandArgs) (*model.CommandResponse, *model.AppError) {
 
 	opts := &godo.ListOptions{}
 
-	droplets, response, err := client.Droplets.List(context.TODO(), opts)
+	droplets, response, err := client.ListDroplets(context.TODO(), opts)
 
 	if err != nil {
 		p.API.LogError("failed to fetch droplets", "response", response, "Err", err.Error())
@@ -51,14 +46,9 @@ func (p *Plugin) listDropletsFunc(args *model.CommandArgs) (*model.CommandRespon
 	return p.responsef(args, buffer.String()), nil
 }
 
-func (p *Plugin) rebootDropletFunc(args *model.CommandArgs, dropletID int) (*model.CommandResponse, *model.AppError) {
+func (p *Plugin) rebootDropletCommandFunc(client client.DigitalOceanService, args *model.CommandArgs, dropletID int) (*model.CommandResponse, *model.AppError) {
 
-	client, err := p.GetClient(args.UserId)
-	if err != nil {
-		return p.responsef(args, "Failed to get DigitalOcean client"),
-			&model.AppError{Message: err.Error()}
-	}
-	action, response, err := client.DropletActions.Reboot(context.TODO(), dropletID)
+	action, response, err := client.RebootDroplet(context.TODO(), dropletID)
 
 	if err != nil {
 		p.API.LogError("Failed to reboot droplet", "dropletID", dropletID, "response", response, "Err", err.Error())
@@ -69,13 +59,9 @@ func (p *Plugin) rebootDropletFunc(args *model.CommandArgs, dropletID int) (*mod
 	return p.responsef(args, "Rebooting Droplet  `%d` started at: %s with status `%s`", dropletID, action.StartedAt.Format(time.RFC822), action.Status), nil
 }
 
-func (p *Plugin) renameDropletFunc(args *model.CommandArgs, dropletID int, name string) (*model.CommandResponse, *model.AppError) {
-	client, err := p.GetClient(args.UserId)
-	if err != nil {
-		return p.responsef(args, "Failed to get DigitalOcean client"), &model.AppError{Message: err.Error()}
-	}
+func (p *Plugin) renameDropletCommandFunc(client client.DigitalOceanService, args *model.CommandArgs, dropletID int, name string) (*model.CommandResponse, *model.AppError) {
 
-	action, response, err := client.DropletActions.Rename(context.TODO(), dropletID, name)
+	action, response, err := client.RenameDroplet(context.TODO(), dropletID, name)
 
 	if err != nil {
 		p.API.LogError("Failed to rename droplet", "dropletID", dropletID, "response", response, "Err", err.Error())
@@ -86,14 +72,9 @@ func (p *Plugin) renameDropletFunc(args *model.CommandArgs, dropletID int, name 
 	return p.responsef(args, "Renaming Droplet `%d` to `%s` started at: %s with status `%s`", dropletID, name, action.StartedAt.Format(time.RFC822), action.Status), nil
 }
 
-func (p *Plugin) shutdownDropletFunc(args *model.CommandArgs, dropletID int) (*model.CommandResponse, *model.AppError) {
+func (p *Plugin) shutdownDropletCommandFunc(client client.DigitalOceanService, args *model.CommandArgs, dropletID int) (*model.CommandResponse, *model.AppError) {
 
-	client, err := p.GetClient(args.UserId)
-	if err != nil {
-		return p.responsef(args, "Failed to get DigitalOcean client"),
-			&model.AppError{Message: err.Error()}
-	}
-	action, response, err := client.DropletActions.Shutdown(context.TODO(), dropletID)
+	action, response, err := client.ShutdownDroplet(context.TODO(), dropletID)
 
 	if err != nil {
 		p.API.LogError("Failed to shutdown droplet", "dropletID", dropletID, "response", response, "Err", err.Error())
@@ -104,14 +85,9 @@ func (p *Plugin) shutdownDropletFunc(args *model.CommandArgs, dropletID int) (*m
 	return p.responsef(args, "Shutting down Droplet  `%d` started at: %s with status `%s`", dropletID, action.StartedAt.Format(time.RFC822), action.Status), nil
 }
 
-func (p *Plugin) powercycleDropletFunc(args *model.CommandArgs, dropletID int) (*model.CommandResponse, *model.AppError) {
+func (p *Plugin) powercycleDropletCommandFunc(client client.DigitalOceanService, args *model.CommandArgs, dropletID int) (*model.CommandResponse, *model.AppError) {
 
-	client, err := p.GetClient(args.UserId)
-	if err != nil {
-		return p.responsef(args, "Failed to get DigitalOcean client"),
-			&model.AppError{Message: err.Error()}
-	}
-	action, response, err := client.DropletActions.PowerCycle(context.TODO(), dropletID)
+	action, response, err := client.PowerCycleDroplet(context.TODO(), dropletID)
 
 	if err != nil {
 		p.API.LogError("Failed to powercycle droplet", "dropletID", dropletID, "response", response, "Err", err.Error())
