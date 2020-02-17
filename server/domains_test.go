@@ -35,10 +35,10 @@ func (s *DoPluginTestSuite) TestListDomainsCommandFunc() {
 	})
 
 	s.Run("Test domains posted if they are returned by the client", func() {
-		domains := []godo.Domain{godo.Domain{
+		domains := []godo.Domain{{
 			Name:     "do.com",
 			TTL:      1800,
-			ZoneFile: "zonefile",
+			ZoneFile: "zoneFile",
 		}}
 		s.client.EXPECT().ListDomains(context.TODO(), nil).Return(domains, &godo.Response{}, nil).Times(1)
 
