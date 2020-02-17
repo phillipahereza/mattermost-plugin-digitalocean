@@ -15,35 +15,22 @@ func (s *DoPluginTestSuite) TestListDomainsCommandFunc() {
 
 	commandArgs := &model.CommandArgs{Command: "/jira list-domains", UserId: "1"}
 
-	tests := map[string]struct {
-		message         string
-		domains         []godo.Domain
-		commandResponse *model.CommandResponse
-	}{
-		"Test List Domains when there no available domains": {
-			message:         "You don't have any domains configured. Use `/do create-domain  <domainName> <ipAddress[optional]>` to provision one",
-			domains:         []godo.Domain{},
-			commandResponse: &model.CommandResponse{},
-		},
-	}
+	message := "You don't have any domains configured. Use `/do create-domain  <domainName> <ipAddress[optional]>` to provision one"
 
-	for name, tt := range tests {
-		s.Run(name, func() {
-			s.client.EXPECT().ListDomains(context.TODO(), nil).Return(tt.domains, &godo.Response{}, nil).Times(1)
+	s.Run("Test List Domains when there no available domains", func() {
+		s.client.EXPECT().ListDomains(context.TODO(), nil).Return([]godo.Domain{}, &godo.Response{}, nil).Times(1)
 
-			api.On("LogError", mock.AnythingOfTypeArgument("string")).Return(nil)
-			api.On("SendEphemeralPost", mock.AnythingOfType("string"), mock.AnythingOfType("*model.Post")).Run(func(args mock.Arguments) {
-				post := args.Get(1).(*model.Post)
-				s.Assert().Equal(tt.message, post.Message)
-			}).Once().Return(&model.Post{})
+		api.On("LogError", mock.AnythingOfTypeArgument("string")).Return(nil)
+		api.On("SendEphemeralPost", mock.AnythingOfType("string"), mock.AnythingOfType("*model.Post")).Run(func(args mock.Arguments) {
+			post := args.Get(1).(*model.Post)
+			s.Assert().Equal(message, post.Message)
+		}).Once().Return(&model.Post{})
 
-			p.SetAPI(api)
+		p.SetAPI(api)
 
-			response, err := p.listDomainsCommandFunc(s.client, commandArgs)
+		_, err := p.listDomainsCommandFunc(s.client, commandArgs)
 
-			s.Require().Nil(err)
-			s.Require().Equal(tt.commandResponse.Text, response.Text)
-		})
+		s.Require().Nil(err)
+	})
 
-	}
 }
