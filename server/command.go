@@ -10,12 +10,6 @@ import (
 
 // ExecuteCommand is
 func (p *Plugin) ExecuteCommand(c *plugin.Context, args *model.CommandArgs) (*model.CommandResponse, *model.AppError) {
-	client, err := p.GetClient(args.UserId)
-	if err != nil {
-		p.API.LogError("Failed to get digitalOcean client", "Err", err.Error())
-		return p.responsef(args, "Failed to get DigitalOcean client"),
-			&model.AppError{Message: err.Error()}
-	}
 
 	split := strings.Fields(args.Command)
 	command := split[0]
@@ -33,6 +27,7 @@ func (p *Plugin) ExecuteCommand(c *plugin.Context, args *model.CommandArgs) (*mo
 		return &model.CommandResponse{}, nil
 	}
 
+	// actions that don't make calls to the DigitalOcean API
 	switch action {
 	case "":
 		return p.helpCommandFunc(args)
@@ -46,6 +41,16 @@ func (p *Plugin) ExecuteCommand(c *plugin.Context, args *model.CommandArgs) (*mo
 		return p.getPersonalTokenCommandFunc(args)
 	case "show-configured-token":
 		return p.showConnectTokenCommandFunc(args)
+	}
+
+	client, err := p.GetClient(args.UserId)
+	if err != nil {
+		p.API.LogError("Failed to get digitalOcean client", "Err", err.Error())
+		return p.responsef(args, "Failed to get DigitalOcean client: %s", err.Error()),
+			&model.AppError{Message: err.Error()}
+	}
+
+	switch action {
 	case "list-droplets":
 		return p.listDropletsCommandFunc(client, args)
 	case "reboot-droplet":

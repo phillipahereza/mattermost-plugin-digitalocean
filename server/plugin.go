@@ -69,6 +69,9 @@ func (p *Plugin) GetClient(mmUser string) (*client.DigitalOceanClient, error) {
 	if err != nil {
 		p.API.LogError("Failed to load DO token", "user", mmUser, "Err", err.Error())
 		return nil, err
+	} else if token == "" {
+		p.API.LogError("Failed to load DO token", "user", mmUser, "Err", err)
+		return nil, errors.New("Missing DigitalOcean token: User `/do token` to get instructions on how to add a token")
 	}
 
 	tokenSource := &client.TokenSource{
