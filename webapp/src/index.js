@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import manifest from './manifest';
 
 import reducers from './reducers';

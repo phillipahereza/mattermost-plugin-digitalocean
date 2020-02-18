@@ -13,6 +13,36 @@ const openModal = (state = false, action) => {
     }
 };
 
+const regions = (state = [], action) => {
+    switch (action.type) {
+    case ActionTypes.RECEIVED_DO_REGIONS:
+        return [...state, ...action.data.regions];
+    default:
+        return state;
+    }
+};
+
+const sizes = (state = [], action) => {
+    switch (action.type) {
+    case ActionTypes.RECEIVED_DO_DROPLET_SIZES:
+        return [...state, ...action.data.sizes];
+    default:
+        return state;
+    }
+};
+
+const images = (state = [], action) => {
+    switch (action.type) {
+    case ActionTypes.RECEIVED_DO_IMAGES:
+        return [...state, ...action.data.images];
+    default:
+        return state;
+    }
+};
+
 export default combineReducers({
     openModal,
+    regions,
+    sizes,
+    images,
 });

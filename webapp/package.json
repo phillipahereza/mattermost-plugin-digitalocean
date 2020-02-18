@@ -57,10 +57,12 @@
     "webpack-cli": "3.3.5"
   },
   "dependencies": {
+    "axios": "^0.19.2",
     "core-js": "3.6.2",
     "react": "16.8.6",
     "react-bootstrap": "^1.0.0-beta.16",
     "react-redux": "^5.0.7",
+    "react-select": "^3.0.8",
     "redux": "4.0.1",
     "typescript": "3.5.3"
   },
