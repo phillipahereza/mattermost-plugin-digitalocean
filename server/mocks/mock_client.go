@@ -51,6 +51,22 @@ func (mr *MockDigitalOceanServiceMockRecorder) CreateDatabaseUser(arg0, arg1, ar
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateDatabaseUser", reflect.TypeOf((*MockDigitalOceanService)(nil).CreateDatabaseUser), arg0, arg1, arg2)
 }
 
+// CreateDroplet mocks base method
+func (m *MockDigitalOceanService) CreateDroplet(arg0 context.Context, arg1 *godo.DropletCreateRequest) (*godo.Droplet, *godo.Response, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateDroplet", arg0, arg1)
+	ret0, _ := ret[0].(*godo.Droplet)
+	ret1, _ := ret[1].(*godo.Response)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// CreateDroplet indicates an expected call of CreateDroplet
+func (mr *MockDigitalOceanServiceMockRecorder) CreateDroplet(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateDroplet", reflect.TypeOf((*MockDigitalOceanService)(nil).CreateDroplet), arg0, arg1)
+}
+
 // CreateSSHKey mocks base method
 func (m *MockDigitalOceanService) CreateSSHKey(arg0 context.Context, arg1 *godo.KeyCreateRequest) (*godo.Key, *godo.Response, error) {
 	m.ctrl.T.Helper()

@@ -1,5 +1,8 @@
+/* eslint-disable no-unused-vars */
 import manifest from './manifest';
+
 import reducers from './reducers';
+
 import UIHook from './ui_hooks';
 import CreateDropletModal from './components/create_droplet/index';
 
