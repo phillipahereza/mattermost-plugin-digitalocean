@@ -2,6 +2,7 @@ package client
 
 import (
 	"context"
+
 	"github.com/digitalocean/godo"
 	"golang.org/x/oauth2"
 )
@@ -43,6 +44,7 @@ type DigitalOceanService interface {
 
 	ListDomains(ctx context.Context, listOptions *godo.ListOptions) ([]godo.Domain, *godo.Response, error)
 
+	CreateDroplet(ctx context.Context, createRequest *godo.DropletCreateRequest) (*godo.Droplet, *godo.Response, error)
 	ListDroplets(ctx context.Context, listOptions *godo.ListOptions) ([]godo.Droplet, *godo.Response, error)
 	PowerCycleDroplet(ctx context.Context, dropletID int) (*godo.Action, *godo.Response, error)
 	RebootDroplet(ctx context.Context, dropletID int) (*godo.Action, *godo.Response, error)
@@ -95,6 +97,11 @@ func (do *DigitalOceanClient) ListDatabaseClusterBackups(ctx context.Context, cl
 // ListDomains lists all domains.
 func (do *DigitalOceanClient) ListDomains(ctx context.Context, listOptions *godo.ListOptions) ([]godo.Domain, *godo.Response, error) {
 	return do.Client.Domains.List(ctx, listOptions)
+}
+
+// CreateDroplet creates a new droplet.
+func (do *DigitalOceanClient) CreateDroplet(ctx context.Context, createRequest *godo.DropletCreateRequest) (*godo.Droplet, *godo.Response, error) {
+	return do.Client.Droplets.Create(ctx, createRequest)
 }
 
 // ListDroplets lists all droplets.

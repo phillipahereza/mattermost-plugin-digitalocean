@@ -1,9 +1,15 @@
 import manifest from './manifest';
+import reducers from './reducers';
+import UIHook from './ui_hooks';
+import CreateDropletModal from './components/create_droplet/index';
 
 export default class Plugin {
-    // eslint-disable-next-line no-unused-vars
     initialize(registry, store) {
-        // @see https://developers.mattermost.com/extend/plugins/webapp/reference/
+        registry.registerReducer(reducers);
+        registry.registerRootComponent(CreateDropletModal);
+
+        const hooks = new UIHook(store);
+        registry.registerSlashCommandWillBePostedHook(hooks.slashCommandWillBePostedHook);
     }
 }
 
