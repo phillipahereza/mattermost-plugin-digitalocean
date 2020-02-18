@@ -62,6 +62,10 @@ type DigitalOceanService interface {
 	GetKubernetesClusterUpgrades(ctx context.Context, clusterID string) ([]*godo.KubernetesVersion, *godo.Response, error)
 	GetKubeConfig(ctx context.Context, clusterID string) (*godo.KubernetesClusterConfig, *godo.Response, error)
 	UpgradeKubernetesCluster(ctx context.Context, clusterID string, upgradeRequest *godo.KubernetesClusterUpgradeRequest) (*godo.Response, error)
+
+	ListRegions(ctx context.Context, listOptions *godo.ListOptions) ([]godo.Region, *godo.Response, error)
+	ListSizes(ctx context.Context, listOptions *godo.ListOptions) ([]godo.Size, *godo.Response, error)
+	ListImages(ctx context.Context, listOptions *godo.ListOptions) ([]godo.Image, *godo.Response, error)
 }
 
 // CreateDatabaseUser will create a new database user
@@ -191,4 +195,19 @@ func (do *DigitalOceanClient) GetKubeConfig(ctx context.Context, clusterID strin
 // versions for a given cluster can be retrieved with `GetKubernetesClusterUpgrades`.
 func (do *DigitalOceanClient) UpgradeKubernetesCluster(ctx context.Context, clusterID string, upgradeRequest *godo.KubernetesClusterUpgradeRequest) (*godo.Response, error) {
 	return do.Client.Kubernetes.Upgrade(ctx, clusterID, upgradeRequest)
+}
+
+// ListRegions lists the available regions
+func (do *DigitalOceanClient) ListRegions(ctx context.Context, listOptions *godo.ListOptions) ([]godo.Region, *godo.Response, error) {
+	return do.Client.Regions.List(ctx, listOptions)
+}
+
+// ListSizes lists droplet sizes
+func (do *DigitalOceanClient) ListSizes(ctx context.Context, listOptions *godo.ListOptions) ([]godo.Size, *godo.Response, error) {
+	return do.Client.Sizes.List(ctx, listOptions)
+}
+
+// ListImages lists available images
+func (do *DigitalOceanClient) ListImages(ctx context.Context, listOptions *godo.ListOptions) ([]godo.Image, *godo.Response, error) {
+	return do.Client.Images.List(ctx, listOptions)
 }

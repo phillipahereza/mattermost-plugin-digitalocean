@@ -12,8 +12,11 @@ import (
 )
 
 const (
-	routeToDOApps        = "/api/v1/do-api-apps"
-	routeToCreateDroplet = "/api/v1/create-droplet"
+	routeToDOApps           = "/api/v1/do-api-apps"
+	routeToCreateDroplet    = "/api/v1/create-droplet"
+	routeToListRegions      = "/api/v1/get-do-regions"
+	routeToListDropletSizes = "/api/v1/get-do-sizes"
+	routeToListImages       = "/api/v1/get-do-images"
 )
 
 func (p *Plugin) ServeHTTP(c *plugin.Context, w http.ResponseWriter, r *http.Request) {
@@ -24,9 +27,20 @@ func (p *Plugin) ServeHTTP(c *plugin.Context, w http.ResponseWriter, r *http.Req
 		p.httpRouteToDOApps(w, r)
 	case routeToCreateDroplet:
 		p.httpRouteCreateDroplet(w, r)
+	case routeToListRegions:
+		p.httpRouteToListRegions(w, r)
+	case routeToListDropletSizes:
+		p.httpRouteToListDropletSizes(w, r)
+	case routeToListImages:
+		p.httpRouteToListImages(w, r)
 	default:
 		http.NotFound(w, r)
 	}
+}
+
+func writeError(w http.ResponseWriter, err error) {
+	errBytes, _ := json.Marshal(err)
+	w.Write(errBytes)
 }
 
 func (p *Plugin) httpRouteToDOApps(w http.ResponseWriter, r *http.Request) {
@@ -63,4 +77,76 @@ func (p *Plugin) httpRouteCreateDroplet(w http.ResponseWriter, r *http.Request) 
 	}
 
 	p.API.CreatePost(post)
+}
+
+func (p *Plugin) httpRouteToListRegions(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		return
+	}
+
+	mattermostUserID := r.Header.Get("Mattermost-User-Id")
+	if mattermostUserID == "" {
+		return
+	}
+
+	client, err := p.GetClient(mattermostUserID)
+	if err != nil {
+		return
+	}
+
+	regions, _, err := client.ListRegions(context.Background(), &godo.ListOptions{})
+	if err != nil {
+		writeError(w, err)
+	}
+
+	data, _ := json.Marshal(regions)
+	w.Write(data)
+}
+
+func (p *Plugin) httpRouteToListDropletSizes(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		return
+	}
+
+	mattermostUserID := r.Header.Get("Mattermost-User-Id")
+	if mattermostUserID == "" {
+		return
+	}
+
+	client, err := p.GetClient(mattermostUserID)
+	if err != nil {
+		return
+	}
+
+	sizes, _, err := client.ListSizes(context.Background(), &godo.ListOptions{})
+	if err != nil {
+		writeError(w, err)
+	}
+
+	data, _ := json.Marshal(sizes)
+	w.Write(data)
+}
+
+func (p *Plugin) httpRouteToListImages(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		return
+	}
+
+	mattermostUserID := r.Header.Get("Mattermost-User-Id")
+	if mattermostUserID == "" {
+		return
+	}
+
+	client, err := p.GetClient(mattermostUserID)
+	if err != nil {
+		return
+	}
+
+	images, _, err := client.ListSizes(context.Background(), &godo.ListOptions{})
+	if err != nil {
+		writeError(w, err)
+	}
+
+	data, _ := json.Marshal(images)
+	w.Write(data)
 }
