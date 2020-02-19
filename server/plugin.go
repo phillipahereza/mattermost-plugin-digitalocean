@@ -49,6 +49,9 @@ func (p *Plugin) OnActivate() error {
 	store := CreateStore(p)
 	p.store = store
 
+	// start jobs
+	p.RunJobs()
+
 	return nil
 }
 

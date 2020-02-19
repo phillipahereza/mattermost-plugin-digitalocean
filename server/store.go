@@ -5,6 +5,10 @@ type Store interface {
 	StoreUserDOToken(token string, key string) error
 	LoadUserDOToken(key string) (string, error)
 	DeleteUserDOToken(key string) error
+
+	// StoreSubscription()
+	// LoadSubscription()
+	// DeleteSubscription()
 }
 
 // PluginStore is

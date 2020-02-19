@@ -41,6 +41,8 @@ func (p *Plugin) ExecuteCommand(c *plugin.Context, args *model.CommandArgs) (*mo
 		return p.getPersonalTokenCommandFunc(args)
 	case "show-configured-token":
 		return p.showConnectTokenCommandFunc(args)
+	case "subscribe":
+		return p.subscribeCommandFunc(args)
 	}
 
 	client, err := p.GetClient(args.UserId)
