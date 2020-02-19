@@ -50,7 +50,12 @@ func (p *Plugin) OnActivate() error {
 	store := CreateStore(p)
 
 	// Add an empty subscription where channels will be kept
-	store.StoreSubscription(Subscription{})
+	// Only add it if this was never done before
+	sub, _ := store.LoadSubscription()
+	if sub == nil {
+		store.StoreSubscription(Subscription{})
+	}
+
 	p.store = store
 
 	// start jobs

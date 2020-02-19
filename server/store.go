@@ -13,7 +13,7 @@ type Store interface {
 	DeleteUserDOToken(key string) error
 
 	StoreSubscription(sub Subscription) error
-	LoadSubscription() (Subscription, error)
+	LoadSubscription() (*Subscription, error)
 	AddChannelToSubcription(id string) error
 	RemoveChannelFromSubscription(id string) error
 }
@@ -77,20 +77,20 @@ func (s *PluginStore) StoreSubscription(sub Subscription) error {
 }
 
 // LoadSubscription adds an empty subcription on plugin activation
-func (s *PluginStore) LoadSubscription() (Subscription, error) {
+func (s *PluginStore) LoadSubscription() (*Subscription, error) {
 	data, apiErr := s.plugin.API.KVGet(subscriptionKVKey)
 	if apiErr != nil {
 		s.plugin.API.LogError("Failed to get subscription", "key", subscriptionKVKey, "Err", apiErr.Error())
-		return Subscription{}, apiErr
+		return nil, apiErr
 	}
 
 	subscription := &Subscription{}
 	err := json.Unmarshal(data, subscription)
 	if err != nil {
-		return Subscription{}, err
+		return nil, err
 	}
 
-	return *subscription, nil
+	return subscription, nil
 }
 
 // AddChannelToSubcription adds a channel
@@ -109,7 +109,7 @@ func (s *PluginStore) AddChannelToSubcription(id string) error {
 	channels = append(channels, id)
 	sub.Channels = channels
 
-	e := s.StoreSubscription(sub)
+	e := s.StoreSubscription(*sub)
 	if e != nil {
 		return e
 	}
@@ -128,7 +128,7 @@ func (s *PluginStore) RemoveChannelFromSubscription(id string) error {
 	channels = remove(channels, i)
 	sub.Channels = channels
 
-	e := s.StoreSubscription(sub)
+	e := s.StoreSubscription(*sub)
 	if e != nil {
 		return e
 	}
