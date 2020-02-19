@@ -5,10 +5,11 @@ import (
 	"fmt"
 	"net/http"
 
+	"context"
+
 	"github.com/digitalocean/godo"
 	"github.com/mattermost/mattermost-server/v5/model"
 	"github.com/mattermost/mattermost-server/v5/plugin"
-	"golang.org/x/net/context"
 )
 
 const (
@@ -142,7 +143,7 @@ func (p *Plugin) httpRouteToListImages(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	images, _, err := client.ListSizes(context.Background(), &godo.ListOptions{})
+	images, _, err := client.ListImages(context.Background(), &godo.ListOptions{})
 	if err != nil {
 		writeError(w, err)
 	}

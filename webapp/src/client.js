@@ -4,7 +4,7 @@ import axios from 'axios';
 class Client {
     constructor() {
         this.axiosInstance = axios.create({
-            baseUrl: '/plugins/com.mattermost.digitalocean',
+            baseURL: '/plugins/com.mattermost.digitalocean',
         });
     }
 

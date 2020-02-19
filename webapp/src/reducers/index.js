@@ -16,7 +16,7 @@ const openModal = (state = false, action) => {
 const regions = (state = [], action) => {
     switch (action.type) {
     case ActionTypes.RECEIVED_DO_REGIONS:
-        return [...state, ...action.data.regions];
+        return action.data;
     default:
         return state;
     }
@@ -25,7 +25,7 @@ const regions = (state = [], action) => {
 const sizes = (state = [], action) => {
     switch (action.type) {
     case ActionTypes.RECEIVED_DO_DROPLET_SIZES:
-        return [...state, ...action.data.sizes];
+        return action.data;
     default:
         return state;
     }
@@ -34,7 +34,7 @@ const sizes = (state = [], action) => {
 const images = (state = [], action) => {
     switch (action.type) {
     case ActionTypes.RECEIVED_DO_IMAGES:
-        return [...state, ...action.data.images];
+        return action.data;
     default:
         return state;
     }

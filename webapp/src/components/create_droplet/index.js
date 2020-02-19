@@ -2,19 +2,25 @@
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 
-import {closeCreateModal} from '../../actions';
-import {isCreateModalOpen} from '../../selectors';
+import {closeCreateModal, getTeamRegions, getDropletSizes, getImages} from '../../actions';
+import {isCreateModalOpen, getPreparedRegions, getPreparedSizes, getPreparedImages} from '../../selectors';
 
 import CreateDroplet from './create_droplet';
 
 const mapStateToProps = (state) => {
     return {
         show: isCreateModalOpen(state),
+        regionsSelectData: getPreparedRegions(state),
+        sizeSelectData: getPreparedSizes(state),
+        imageSelectData: getPreparedImages(state),
     };
 };
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
     closeCreateModal,
+    getTeamRegions,
+    getDropletSizes,
+    getImages,
 }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(CreateDroplet);
