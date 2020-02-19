@@ -2,10 +2,11 @@ package main
 
 import (
 	"fmt"
-	"github.com/mattermost/mattermost-server/v5/model"
-	"github.com/mattermost/mattermost-server/v5/plugin"
 	"strconv"
 	"strings"
+
+	"github.com/mattermost/mattermost-server/v5/model"
+	"github.com/mattermost/mattermost-server/v5/plugin"
 )
 
 // ExecuteCommand is
@@ -43,6 +44,8 @@ func (p *Plugin) ExecuteCommand(c *plugin.Context, args *model.CommandArgs) (*mo
 		return p.showConnectTokenCommandFunc(args)
 	case "subscribe":
 		return p.subscribeCommandFunc(args)
+	case "unsubscribe":
+		return p.unsubscribeCommandFunc(args)
 	}
 
 	client, err := p.GetClient(args.UserId)
