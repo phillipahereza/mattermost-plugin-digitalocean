@@ -20,6 +20,10 @@ class Client {
         return this.doGet('/api/v1/get-do-images');
     }
 
+    createDroplet = async (droplet) => {
+        return this.doPost('/api/v1/create-droplet', droplet);
+    }
+
     doGet = async (url) => {
         try {
             const response = await this.axiosInstance.get(url);

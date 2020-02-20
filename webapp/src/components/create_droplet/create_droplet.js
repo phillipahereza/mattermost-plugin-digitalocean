@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable camelcase */
 /* eslint-disable no-magic-numbers */
 /* eslint-disable react/prop-types */
@@ -36,11 +37,27 @@ export default class CreateDropletModal extends React.PureComponent {
 
         // Droplet name
         name: '',
+        backups: false,
+        ipV6: false,
+        private_networking: false,
+        monitoring: false,
     }
 
     onTextInputChange = (event) => {
         this.setState({
             [event.target.name]: event.target.value,
+        });
+    }
+
+    onMultiSelectChange = (inputValue, name) => {
+        this.setState({
+            [name]: inputValue,
+        });
+    }
+
+    onToggleChange = (event) => {
+        this.setState({
+            [event.target.name]: !this.state[event.target.name],
         });
     }
 
@@ -51,6 +68,62 @@ export default class CreateDropletModal extends React.PureComponent {
         getImages();
     }
 
+    prepareFormMultiKeys = (keys) => {
+        if (keys.length === 0) {
+            return [];
+        }
+
+        const prepKeys = [];
+        keys.forEach((key) => {
+            prepKeys.push(key.value);
+        });
+        return prepKeys;
+    }
+
+    createDropletDataFromState = () => {
+        const {
+            name, region, size,
+            image, ssh_keys, backups,
+            ipV6, private_networking, user_data,
+            monitoring, volumes, tags} = this.state;
+
+        const droplet = {};
+        droplet.name = name;
+        droplet.region = region.value;
+        droplet.size = size.value;
+        droplet.image = image.value;
+        droplet.ssh_keys = this.prepareFormMultiKeys(ssh_keys);
+        droplet.backups = backups;
+        droplet.ipV6 = ipV6;
+        droplet.private_networking = private_networking;
+        droplet.user_data = user_data;
+        droplet.monitoring = monitoring;
+        droplet.volumes = this.prepareFormMultiKeys(volumes);
+        droplet.tags = this.prepareFormMultiKeys(tags);
+
+        return droplet;
+    }
+
+    handleCreate = (e) => {
+        if (e && e.preventDefault) {
+            e.preventDefault();
+        }
+
+        const {createDroplet, closeCreateModal} = this.props;
+        const droplet = this.createDropletDataFromState();
+
+        this.setState({saving: true});
+
+        createDroplet(droplet).then((data) => {
+            if (data.error) {
+                this.setState({saving: false});
+                return;
+            }
+
+            closeCreateModal();
+        });
+    }
+
     render() {
         const {
             show,
@@ -59,7 +132,8 @@ export default class CreateDropletModal extends React.PureComponent {
             sizeSelectData,
             imageSelectData,
         } = this.props;
-        const {saving, name, user_data} = this.state;
+        console.log('STATE CREATING', this.state);
+        const {saving, name, user_data, backups, monitoring, private_networking, ipV6} = this.state;
         const footer = (
             <React.Fragment>
                 <FormButton
@@ -94,19 +168,47 @@ export default class CreateDropletModal extends React.PureComponent {
                     <Note
                         Tag='label'
                         style={noteStyle}
-                    ><Checkbox checked={true}/>{'backups'}</Note>
+                    >
+                        <Checkbox
+                            checked={backups}
+                            name='backups'
+                            onChange={this.onToggleChange}
+                        />
+                        {'backups'}
+                    </Note>
                     <Note
                         Tag='label'
                         style={{marginLeft: '1em', ...noteStyle}}
-                    ><Checkbox checked={true}/>{'ipV6'}</Note>
+                    >
+                        <Checkbox
+                            checked={ipV6}
+                            name='ipV6'
+                            onChange={this.onToggleChange}
+                        />
+                        {'ipV6'}
+                    </Note>
                     <Note
                         Tag='label'
                         style={{marginLeft: '1em', ...noteStyle}}
-                    ><Checkbox checked={true}/>{'private_networking'}</Note>
+                    >
+                        <Checkbox
+                            checked={private_networking}
+                            name='private_networking'
+                            onChange={this.onToggleChange}
+                        />
+                        {'private_networking'}
+                    </Note>
                     <Note
                         Tag='label'
                         style={{marginLeft: '1em', ...noteStyle}}
-                    ><Checkbox checked={true}/>{'Monitoring'}</Note>
+                    >
+                        <Checkbox
+                            checked={monitoring}
+                            name='monitoring'
+                            onChange={this.onToggleChange}
+                        />
+                        {'Monitoring'}
+                    </Note>
                 </InputWrapper>
                 <InputWrapper
                     label='Select region'
@@ -115,6 +217,7 @@ export default class CreateDropletModal extends React.PureComponent {
                     <MultiSelect
                         name='region'
                         options={regionsSelectData}
+                        handleSelectChange={this.onMultiSelectChange}
                     />
                 </InputWrapper>
                 <InputWrapper
@@ -124,6 +227,7 @@ export default class CreateDropletModal extends React.PureComponent {
                     <MultiSelect
                         name='size'
                         options={sizeSelectData}
+                        handleSelectChange={this.onMultiSelectChange}
                     />
                 </InputWrapper>
                 <InputWrapper
@@ -133,6 +237,7 @@ export default class CreateDropletModal extends React.PureComponent {
                     <MultiSelect
                         name='image'
                         options={imageSelectData}
+                        handleSelectChange={this.onMultiSelectChange}
                     />
                 </InputWrapper>
                 <InputWrapper
@@ -140,8 +245,9 @@ export default class CreateDropletModal extends React.PureComponent {
                     required={false}
                 >
                     <MultiSelect
-                        name='keys'
+                        name='ssh_keys'
                         creatable={true}
+                        handleSelectChange={this.onMultiSelectChange}
                     />
                 </InputWrapper>
                 <InputWrapper
@@ -151,15 +257,17 @@ export default class CreateDropletModal extends React.PureComponent {
                     <MultiSelect
                         name='tags'
                         creatable={true}
+                        handleSelectChange={this.onMultiSelectChange}
                     />
                 </InputWrapper>
                 <InputWrapper
-                    label='Add volumnes'
+                    label='Add volumes'
                     required={false}
                 >
                     <MultiSelect
                         name='volumes'
                         creatable={true}
+                        handleSelectChange={this.onMultiSelectChange}
                     />
                 </InputWrapper>
                 <InputWrapper
@@ -190,6 +298,7 @@ export default class CreateDropletModal extends React.PureComponent {
                 </Modal.Header>
                 <form
                     role='form'
+                    onSubmit={this.handleCreate}
                 >
                     <Modal.Body >
                         {formFields}

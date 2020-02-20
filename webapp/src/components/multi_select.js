@@ -6,13 +6,14 @@ import CreatableSelect from 'react-select/creatable';
 
 export default class MultiSelect extends PureComponent {
     render() {
-        const {creatable, options, name} = this.props;
+        const {creatable, options, name, handleSelectChange} = this.props;
         let selectComponent;
         selectComponent = (
             <Select
                 name={name}
                 isSearchable={true}
                 options={options}
+                onChange={(value) => handleSelectChange(value, name)}
             />
         );
 
@@ -26,6 +27,7 @@ export default class MultiSelect extends PureComponent {
                     menuPlacement='auto'
                     isClearable={true}
                     isMulti={true}
+                    onChange={(value) => handleSelectChange(value, name)}
                 />
             );
         }

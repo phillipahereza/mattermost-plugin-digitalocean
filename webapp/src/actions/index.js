@@ -64,3 +64,21 @@ export const getImages = () => {
         return {data};
     };
 };
+
+export const createDroplet = (droplet) => {
+    return async (dispatch) => {
+        let data;
+        try {
+            data = await Client.createDroplet(droplet);
+        } catch (error) {
+            return {error};
+        }
+
+        dispatch({
+            type: ActionTypes.RECEIVED_DO_IMAGES,
+            data,
+        });
+
+        return {data};
+    };
+};
