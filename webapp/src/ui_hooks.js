@@ -12,8 +12,6 @@ export default class UIHook {
         }
 
         if (messageTrimmed && messageTrimmed.startsWith('/do create')) {
-            // Make checks like if user is connected
-
             this.store.dispatch(openCreateModal());
             return Promise.resolve({});
         }
