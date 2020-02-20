@@ -59,7 +59,7 @@ func (p *Plugin) OnActivate() error {
 	p.store = store
 
 	// start jobs
-	p.RunJobs()
+	p.RunPollingJobs()
 
 	return nil
 }
