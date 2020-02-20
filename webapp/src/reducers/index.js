@@ -17,6 +17,8 @@ const regions = (state = [], action) => {
     switch (action.type) {
     case ActionTypes.RECEIVED_DO_REGIONS:
         return action.data;
+    case ActionTypes.REQUEST_FAILED:
+        return state;
     default:
         return state;
     }
@@ -26,6 +28,8 @@ const sizes = (state = [], action) => {
     switch (action.type) {
     case ActionTypes.RECEIVED_DO_DROPLET_SIZES:
         return action.data;
+    case ActionTypes.REQUEST_FAILED:
+        return state;
     default:
         return state;
     }
@@ -35,6 +39,8 @@ const images = (state = [], action) => {
     switch (action.type) {
     case ActionTypes.RECEIVED_DO_IMAGES:
         return action.data;
+    case ActionTypes.REQUEST_FAILED:
+        return state;
     default:
         return state;
     }

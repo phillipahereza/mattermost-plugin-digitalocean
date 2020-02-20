@@ -4,6 +4,8 @@ import React, {PureComponent} from 'react';
 import Select from 'react-select';
 import CreatableSelect from 'react-select/creatable';
 
+import {getStyleForReactSelect} from '../utils';
+
 export default class MultiSelect extends PureComponent {
     render() {
         const {creatable, options, name, handleSelectChange} = this.props;
@@ -14,6 +16,7 @@ export default class MultiSelect extends PureComponent {
                 isSearchable={true}
                 options={options}
                 onChange={(value) => handleSelectChange(value, name)}
+                styles={getStyleForReactSelect(this.props.theme)}
             />
         );
 
@@ -28,6 +31,7 @@ export default class MultiSelect extends PureComponent {
                     isClearable={true}
                     isMulti={true}
                     onChange={(value) => handleSelectChange(value, name)}
+                    styles={getStyleForReactSelect(this.props.theme)}
                 />
             );
         }

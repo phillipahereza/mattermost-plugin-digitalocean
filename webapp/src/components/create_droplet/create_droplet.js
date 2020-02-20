@@ -31,16 +31,20 @@ const Note = ({Tag = 'div', ...props}) => (
     />
 );
 
-export default class CreateDropletModal extends React.PureComponent {
-    state = {
-        saving: false,
+const initialState = {
+    saving: false,
+    name: '',
+    user_data: '',
+    backups: false,
+    ipV6: false,
+    private_networking: false,
+    monitoring: false,
+};
 
-        // Droplet name
-        name: '',
-        backups: false,
-        ipV6: false,
-        private_networking: false,
-        monitoring: false,
+export default class CreateDropletModal extends React.PureComponent {
+    constructor(props) {
+        super(props);
+        this.state = initialState;
     }
 
     onTextInputChange = (event) => {
@@ -59,6 +63,11 @@ export default class CreateDropletModal extends React.PureComponent {
         this.setState({
             [event.target.name]: !this.state[event.target.name],
         });
+    }
+
+    handleCloseModal = () => {
+        const {closeCreateModal} = this.props;
+        this.setState(initialState, closeCreateModal);
     }
 
     componentDidMount() {
@@ -127,7 +136,6 @@ export default class CreateDropletModal extends React.PureComponent {
     render() {
         const {
             show,
-            closeCreateModal,
             regionsSelectData,
             sizeSelectData,
             imageSelectData,
@@ -140,7 +148,7 @@ export default class CreateDropletModal extends React.PureComponent {
                     type='button'
                     btnClass='btn-link'
                     defaultMessage='Cancel'
-                    onClick={() => closeCreateModal()}
+                    onClick={this.handleCloseModal}
                 />
                 <FormButton
                     id='submit-button'
@@ -218,6 +226,7 @@ export default class CreateDropletModal extends React.PureComponent {
                         name='region'
                         options={regionsSelectData}
                         handleSelectChange={this.onMultiSelectChange}
+                        theme={this.props.theme}
                     />
                 </InputWrapper>
                 <InputWrapper
@@ -228,6 +237,7 @@ export default class CreateDropletModal extends React.PureComponent {
                         name='size'
                         options={sizeSelectData}
                         handleSelectChange={this.onMultiSelectChange}
+                        theme={this.props.theme}
                     />
                 </InputWrapper>
                 <InputWrapper
@@ -238,6 +248,7 @@ export default class CreateDropletModal extends React.PureComponent {
                         name='image'
                         options={imageSelectData}
                         handleSelectChange={this.onMultiSelectChange}
+                        theme={this.props.theme}
                     />
                 </InputWrapper>
                 <InputWrapper
@@ -248,6 +259,7 @@ export default class CreateDropletModal extends React.PureComponent {
                         name='ssh_keys'
                         creatable={true}
                         handleSelectChange={this.onMultiSelectChange}
+                        theme={this.props.theme}
                     />
                 </InputWrapper>
                 <InputWrapper
@@ -258,6 +270,7 @@ export default class CreateDropletModal extends React.PureComponent {
                         name='tags'
                         creatable={true}
                         handleSelectChange={this.onMultiSelectChange}
+                        theme={this.props.theme}
                     />
                 </InputWrapper>
                 <InputWrapper
@@ -268,6 +281,7 @@ export default class CreateDropletModal extends React.PureComponent {
                         name='volumes'
                         creatable={true}
                         handleSelectChange={this.onMultiSelectChange}
+                        theme={this.props.theme}
                     />
                 </InputWrapper>
                 <InputWrapper
@@ -287,7 +301,8 @@ export default class CreateDropletModal extends React.PureComponent {
             <Modal
                 dialogClassName='modal--scroll'
                 show={show}
-                onHide={() => closeCreateModal()}
+                onHide={this.handleCloseModal}
+                onExited={this.handleCloseModal}
                 bsSize='large'
                 backdrop='static'
             >
