@@ -1,4 +1,3 @@
-/* eslint-disable import/no-unresolved */
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 

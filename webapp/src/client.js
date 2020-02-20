@@ -1,10 +1,11 @@
-/* eslint-disable no-useless-catch */
 import axios from 'axios';
+import {ClientError} from 'mattermost-redux/client/client4';
 
 class Client {
     constructor() {
+        this.baseURL = '/plugins/com.mattermost.digitalocean';
         this.axiosInstance = axios.create({
-            baseURL: '/plugins/com.mattermost.digitalocean',
+            baseURL: this.baseURL,
         });
     }
 
@@ -29,7 +30,11 @@ class Client {
             const response = await this.axiosInstance.get(url);
             return response.data;
         } catch (error) {
-            throw error;
+            throw new ClientError(this.baseURL, {
+                message: error.response.data || '',
+                status_code: error.response.status,
+                url,
+            });
         }
     }
 
@@ -38,7 +43,11 @@ class Client {
             const response = await this.axiosInstance.post(url, data);
             return response.data;
         } catch (error) {
-            throw error;
+            throw new ClientError(this.baseURL, {
+                message: error.response.data || '',
+                status_code: error.response.status,
+                url,
+            });
         }
     }
 }

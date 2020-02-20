@@ -1,10 +1,9 @@
-/* eslint-disable no-console */
 /* eslint-disable camelcase */
 /* eslint-disable no-magic-numbers */
-/* eslint-disable react/prop-types */
 /* eslint-disable react/jsx-filename-extension */
 import React from 'react';
 import {Modal} from 'react-bootstrap';
+import PropTypes from 'prop-types';
 
 import FormButton from '../form_button';
 import InputWrapper from '../input_wrapper';
@@ -31,6 +30,10 @@ const Note = ({Tag = 'div', ...props}) => (
     />
 );
 
+Note.propTypes = {
+    Tag: PropTypes.string.isRequired,
+};
+
 const initialState = {
     saving: false,
     name: '',
@@ -42,6 +45,19 @@ const initialState = {
 };
 
 export default class CreateDropletModal extends React.PureComponent {
+    static propTypes = {
+        closeCreateModal: PropTypes.func.isRequired,
+        getDropletSizes: PropTypes.func.isRequired,
+        getImages: PropTypes.func.isRequired,
+        getTeamRegions: PropTypes.func.isRequired,
+        theme: PropTypes.object.isRequired,
+        show: PropTypes.bool.isRequired,
+        createDroplet: PropTypes.func.isRequired,
+        regionsSelectData: PropTypes.array.isRequired,
+        sizeSelectData: PropTypes.array.isRequired,
+        imageSelectData: PropTypes.array.isRequired,
+    }
+
     constructor(props) {
         super(props);
         this.state = initialState;
@@ -140,7 +156,7 @@ export default class CreateDropletModal extends React.PureComponent {
             sizeSelectData,
             imageSelectData,
         } = this.props;
-        console.log('STATE CREATING', this.state);
+
         const {saving, name, user_data, backups, monitoring, private_networking, ipV6} = this.state;
         const footer = (
             <React.Fragment>

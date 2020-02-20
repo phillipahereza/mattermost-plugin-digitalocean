@@ -1,12 +1,20 @@
 /* eslint-disable react/jsx-filename-extension */
-/* eslint-disable react/prop-types */
 import React, {PureComponent} from 'react';
 import Select from 'react-select';
 import CreatableSelect from 'react-select/creatable';
+import PropTypes from 'prop-types';
 
 import {getStyleForReactSelect} from '../utils';
 
 export default class MultiSelect extends PureComponent {
+    static propTypes = {
+        creatable: PropTypes.bool,
+        options: PropTypes.array,
+        name: PropTypes.string.isRequired,
+        handleSelectChange: PropTypes.func.isRequired,
+        theme: PropTypes.object.isRequired,
+    }
+
     render() {
         const {creatable, options, name, handleSelectChange} = this.props;
         let selectComponent;
