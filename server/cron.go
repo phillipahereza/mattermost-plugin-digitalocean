@@ -19,20 +19,30 @@ func (p *Plugin) RunPollingJobs() {
 	c.Start()
 }
 
-func (p *Plugin) getSlackAttachment(inactive []godo.Droplet) []*model.SlackAttachment {
-	var fields []*model.SlackAttachmentField
+func getDropletURL(id int) string {
+	return fmt.Sprintf("https://cloud.digitalocean.com/droplets/%d", id)
+}
 
-	if len(inactive) > 0 {
+func (p *Plugin) getSlackAttachment(inactives []godo.Droplet) []*model.SlackAttachment {
+	var fields []*model.SlackAttachmentField
+	title := "Droplet regular check"
+	var inactiveSummary string
+
+	if len(inactives) > 0 {
+		for _, droplet := range inactives {
+			inactiveSummary = inactiveSummary + fmt.Sprintf(`- [%s](%s)`, droplet.Name, getDropletURL(droplet.ID)) + "\n"
+		}
+
 		fields = append(fields, &model.SlackAttachmentField{
-			Title: "Droplet regular check",
-			Value: fmt.Sprintf("%d were found inactive", len(inactive)),
+			Title: "Inactive droplets report",
+			Value: inactiveSummary,
 			Short: true,
 		})
 
 	} else {
 		fields = append(fields, &model.SlackAttachmentField{
-			Title: "Droplet regular check",
-			Value: "Add a message here. All droplets alive and kickin'",
+			Title: title,
+			Value: "All droplets alive and kickin'",
 			Short: true,
 		})
 	}
@@ -47,7 +57,7 @@ func (p *Plugin) getSlackAttachment(inactive []godo.Droplet) []*model.SlackAttac
 
 // PollForDroplets is
 func (p *Plugin) PollForDroplets() ([]godo.Droplet, error) {
-	client, err := p.GetClient("mijye5mke7dbdbi8fb3b3a8bwh")
+	client, err := p.GetClient(adminKVKey)
 	if err != nil {
 		return []godo.Droplet{}, err
 	}
@@ -85,6 +95,7 @@ func (p *Plugin) PostToChannels() {
 	droplets, _ := p.PollForDroplets()
 	_, inactive := p.checkDroplets(droplets)
 	channels := subcription.Channels
+
 	for _, channel := range channels {
 		attachment := p.getSlackAttachment(inactive)
 		post := &model.Post{
@@ -93,6 +104,6 @@ func (p *Plugin) PostToChannels() {
 		}
 		post.AddProp("attachments", attachment)
 
-		p.API.SendEphemeralPost("mijye5mke7dbdbi8fb3b3a8bwh", post)
+		p.API.CreatePost(post)
 	}
 }

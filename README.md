@@ -43,7 +43,16 @@ Run ```/do help``` and get help on all commands.
 - ```/do list-k8s-cluster-nodes <clusterID>``` - List Nodes in a Kubernetes cluster
 - ```/do list-k8s-cluster-upgrades <clusterID>``` - Retrieve a list of available upgrades for a Kubernetes cluster
 - ```/do get-k8s-config <clusterID>``` - Retrieve kubeconfig file in YAML format
-- ```do upgrade-k8s-cluster <clusterID> <versionSlug>``` - Upgrade a Kubernetes cluster to a newer patch release of Kubernetes
+- ```/do upgrade-k8s-cluster <clusterID> <versionSlug>``` - Upgrade a Kubernetes cluster to a newer patch release of Kubernetes
+
+### 1.3 Droplet updates
+Plugin bot posts a message about the active status of droplets at configured intervals.
+Running ```/do subcribe``` in a central channel will set it up to receive these regular updates from the bot.
+Channels can unsubcribe by running ```/do unsubscribe```
+
+![Screen Shot 2020-02-21 at 17 11 49](https://user-images.githubusercontent.com/28563179/75041362-7c614600-54cd-11ea-8611-741984efdf7d.png)
+
+![Screen Shot 2020-02-21 at 17 21 26](https://user-images.githubusercontent.com/28563179/75041999-c39c0680-54ce-11ea-849f-9079fcb973aa.png)
 
 ## 2. Configuration
 - Configure the plugin in Mattermost by going to ```System Console > Plugins > DigitalOcean```. Enable the plugin if it's not enabled.

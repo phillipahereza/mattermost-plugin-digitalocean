@@ -18,9 +18,12 @@ import (
 // If you add non-reference types to your configuration struct, be sure to rewrite Clone as a deep
 // copy appropriate for your types.
 type configuration struct {
-	DOTeamID string
-	DOAdmins string
+	DOTeamID     string
+	DOAdmins     string
+	DOAdminToken string
 }
+
+const adminKVKey = "com.mattermost.digitalocean_admin"
 
 // Clone shallow copies the configuration. Your implementation may require a deep copy if
 // your configuration has reference types.
@@ -81,6 +84,14 @@ func (p *Plugin) OnConfigurationChange() error {
 	}
 
 	p.setConfiguration(configuration)
+
+	// Store an admin personal token for general API calls
+	// on behalf of unconnected users e.g. polling
+	e := p.API.KVSet(adminKVKey, []byte(configuration.DOAdminToken))
+	if e != nil {
+		p.API.LogError("Failed to store admin token", "Err", e.Error())
+		return errors.Wrap(e, "Failed to store admin token")
+	}
 
 	return nil
 }
