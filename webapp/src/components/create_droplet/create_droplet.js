@@ -103,7 +103,8 @@ export default class CreateDropletModal extends React.PureComponent {
         }
 
         const {closeCreateModal} = this.props;
-        this.setState(initialState, closeCreateModal);
+        this.setState(initialState);
+        closeCreateModal();
     }
 
     componentDidMount() {
