@@ -2,6 +2,7 @@ package client
 
 import (
 	"context"
+
 	"github.com/digitalocean/godo"
 	"golang.org/x/oauth2"
 )
@@ -43,6 +44,7 @@ type DigitalOceanService interface {
 
 	ListDomains(ctx context.Context, listOptions *godo.ListOptions) ([]godo.Domain, *godo.Response, error)
 
+	CreateDroplet(ctx context.Context, createRequest *godo.DropletCreateRequest) (*godo.Droplet, *godo.Response, error)
 	ListDroplets(ctx context.Context, listOptions *godo.ListOptions) ([]godo.Droplet, *godo.Response, error)
 	PowerCycleDroplet(ctx context.Context, dropletID int) (*godo.Action, *godo.Response, error)
 	RebootDroplet(ctx context.Context, dropletID int) (*godo.Action, *godo.Response, error)
@@ -60,6 +62,10 @@ type DigitalOceanService interface {
 	GetKubernetesClusterUpgrades(ctx context.Context, clusterID string) ([]*godo.KubernetesVersion, *godo.Response, error)
 	GetKubeConfig(ctx context.Context, clusterID string) (*godo.KubernetesClusterConfig, *godo.Response, error)
 	UpgradeKubernetesCluster(ctx context.Context, clusterID string, upgradeRequest *godo.KubernetesClusterUpgradeRequest) (*godo.Response, error)
+
+	ListRegions(ctx context.Context, listOptions *godo.ListOptions) ([]godo.Region, *godo.Response, error)
+	ListSizes(ctx context.Context, listOptions *godo.ListOptions) ([]godo.Size, *godo.Response, error)
+	ListImages(ctx context.Context, listOptions *godo.ListOptions) ([]godo.Image, *godo.Response, error)
 }
 
 // CreateDatabaseUser will create a new database user
@@ -95,6 +101,11 @@ func (do *DigitalOceanClient) ListDatabaseClusterBackups(ctx context.Context, cl
 // ListDomains lists all domains.
 func (do *DigitalOceanClient) ListDomains(ctx context.Context, listOptions *godo.ListOptions) ([]godo.Domain, *godo.Response, error) {
 	return do.Client.Domains.List(ctx, listOptions)
+}
+
+// CreateDroplet creates a new droplet.
+func (do *DigitalOceanClient) CreateDroplet(ctx context.Context, createRequest *godo.DropletCreateRequest) (*godo.Droplet, *godo.Response, error) {
+	return do.Client.Droplets.Create(ctx, createRequest)
 }
 
 // ListDroplets lists all droplets.
@@ -184,4 +195,19 @@ func (do *DigitalOceanClient) GetKubeConfig(ctx context.Context, clusterID strin
 // versions for a given cluster can be retrieved with `GetKubernetesClusterUpgrades`.
 func (do *DigitalOceanClient) UpgradeKubernetesCluster(ctx context.Context, clusterID string, upgradeRequest *godo.KubernetesClusterUpgradeRequest) (*godo.Response, error) {
 	return do.Client.Kubernetes.Upgrade(ctx, clusterID, upgradeRequest)
+}
+
+// ListRegions lists the available regions
+func (do *DigitalOceanClient) ListRegions(ctx context.Context, listOptions *godo.ListOptions) ([]godo.Region, *godo.Response, error) {
+	return do.Client.Regions.List(ctx, listOptions)
+}
+
+// ListSizes lists droplet sizes
+func (do *DigitalOceanClient) ListSizes(ctx context.Context, listOptions *godo.ListOptions) ([]godo.Size, *godo.Response, error) {
+	return do.Client.Sizes.List(ctx, listOptions)
+}
+
+// ListImages lists available images
+func (do *DigitalOceanClient) ListImages(ctx context.Context, listOptions *godo.ListOptions) ([]godo.Image, *godo.Response, error) {
+	return do.Client.Images.List(ctx, listOptions)
 }
