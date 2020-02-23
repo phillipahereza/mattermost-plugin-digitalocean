@@ -15,6 +15,7 @@ export function prepareRegionsSelectData(regions) {
     return selectData;
 }
 
+// Depends on the regions
 export function prepareSizeSelectData(sizes) {
     const selectData = [];
 
@@ -23,8 +24,8 @@ export function prepareSizeSelectData(sizes) {
     }
     sizes.forEach((size) => {
         const data = {};
-        data.label = size.memory;
-        data.value = size.slug;
+        data.label = size;
+        data.value = size;
         selectData.push(data);
     });
 

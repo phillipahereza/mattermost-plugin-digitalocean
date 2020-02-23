@@ -5,6 +5,8 @@ import React from 'react';
 import {Modal} from 'react-bootstrap';
 import PropTypes from 'prop-types';
 
+import {prepareSizeSelectData} from '../../utils';
+
 import FormButton from '../form_button';
 import InputWrapper from '../input_wrapper';
 import TextInput from '../text_input';
@@ -35,6 +37,9 @@ Note.propTypes = {
 };
 
 const initialState = {
+
+    // Sizes based on region to select from
+    rawSizes: [],
     saving: false,
     name: '',
     user_data: '',
@@ -47,6 +52,7 @@ const initialState = {
 export default class CreateDropletModal extends React.PureComponent {
     static propTypes = {
         closeCreateModal: PropTypes.func.isRequired,
+        regions: PropTypes.array.isRequired,
         getDropletSizes: PropTypes.func.isRequired,
         getImages: PropTypes.func.isRequired,
         getTeamRegions: PropTypes.func.isRequired,
@@ -54,7 +60,8 @@ export default class CreateDropletModal extends React.PureComponent {
         show: PropTypes.bool.isRequired,
         createDroplet: PropTypes.func.isRequired,
         regionsSelectData: PropTypes.array.isRequired,
-        sizeSelectData: PropTypes.array.isRequired,
+
+        // sizeSelectData: PropTypes.array.isRequired,
         imageSelectData: PropTypes.array.isRequired,
     }
 
@@ -73,6 +80,17 @@ export default class CreateDropletModal extends React.PureComponent {
         this.setState({
             [name]: inputValue,
         });
+
+        if (name === 'region') {
+            this.loadSizesBasedOnRegion(inputValue.value);
+        }
+    }
+
+    loadSizesBasedOnRegion = (regionSlug) => {
+        const {regions} = this.props;
+        const selectedRegion = regions.filter((region) => region.slug === regionSlug);
+        const sizes = prepareSizeSelectData(selectedRegion[0].sizes);
+        this.setState({rawSizes: sizes, size: null});
     }
 
     onToggleChange = (event) => {
@@ -94,6 +112,10 @@ export default class CreateDropletModal extends React.PureComponent {
     }
 
     prepareFormMultiKeys = (keys) => {
+        if (typeof keys === 'undefined') {
+            return [];
+        }
+
         if (keys.length === 0) {
             return [];
         }
@@ -153,11 +175,14 @@ export default class CreateDropletModal extends React.PureComponent {
         const {
             show,
             regionsSelectData,
-            sizeSelectData,
+
+            // sizeSelectData,
             imageSelectData,
         } = this.props;
 
-        const {saving, name, user_data, backups, monitoring, private_networking, ipV6} = this.state;
+        const {saving, name, user_data, backups, monitoring, private_networking, ipV6, size} = this.state;
+        // eslint-disable-next-line no-console
+        console.log('STATE', this.state);
         const footer = (
             <React.Fragment>
                 <FormButton
@@ -251,9 +276,12 @@ export default class CreateDropletModal extends React.PureComponent {
                 >
                     <MultiSelect
                         name='size'
-                        options={sizeSelectData}
+
+                        // options={sizeSelectData}
+                        options={this.state.rawSizes}
                         handleSelectChange={this.onMultiSelectChange}
                         theme={this.props.theme}
+                        selectedValue={size}
                     />
                 </InputWrapper>
                 <InputWrapper

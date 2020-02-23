@@ -13,18 +13,21 @@ export default class MultiSelect extends PureComponent {
         name: PropTypes.string.isRequired,
         handleSelectChange: PropTypes.func.isRequired,
         theme: PropTypes.object.isRequired,
+        selectedValue: PropTypes.object.isRequired,
     }
 
     render() {
-        const {creatable, options, name, handleSelectChange} = this.props;
+        const {creatable, options, name, handleSelectChange, selectedValue} = this.props;
         let selectComponent;
         selectComponent = (
             <Select
                 name={name}
                 isSearchable={true}
                 options={options}
+                isClearable={true}
                 onChange={(value) => handleSelectChange(value, name)}
                 styles={getStyleForReactSelect(this.props.theme)}
+                value={selectedValue}
             />
         );
 
