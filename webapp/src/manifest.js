@@ -32,11 +32,19 @@ const manifest = JSON.parse(`
             },
             {
                 "key": "DOAdmins",
-                "display_name": "Users that are not system admins on Mattermost but have advanced plugin privileges",
+                "display_name": "DO Admins",
                 "type": "text",
-                "help_text": "",
+                "help_text": "Users that are not system admins on Mattermost but have advanced plugin privileges",
                 "placeholder": "",
                 "default": null
+            },
+            {
+                "key": "DOAdminToken",
+                "display_name": "API token",
+                "type": "text",
+                "help_text": "Just like a personal token but to be used for general API calls like polling",
+                "placeholder": "",
+                "default": ""
             }
         ]
     }

@@ -2,10 +2,11 @@ package main
 
 import (
 	"context"
-	"github.com/digitalocean/godo"
-	"golang.org/x/oauth2"
 	"path/filepath"
 	"sync"
+
+	"github.com/digitalocean/godo"
+	"golang.org/x/oauth2"
 
 	"github.com/mattermost/mattermost-server/v5/model"
 	"github.com/mattermost/mattermost-server/v5/plugin"
@@ -47,7 +48,18 @@ func (p *Plugin) OnActivate() error {
 	}
 	p.BotUserID = botID
 	store := CreateStore(p)
+
+	// Add an empty subscription where channels will be kept
+	// Only add it if this was never done before
+	sub, _ := store.LoadSubscription()
+	if sub == nil {
+		store.StoreSubscription(Subscription{})
+	}
+
 	p.store = store
+
+	// start jobs
+	p.RunPollingJobs()
 
 	return nil
 }
