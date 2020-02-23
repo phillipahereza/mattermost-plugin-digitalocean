@@ -60,7 +60,7 @@ func (p *Plugin) httpRouteCreateDroplet(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	createDropletRequest := &godo.DropletCreateRequest{}
+	createDropletRequest := godo.DropletCreateRequest{}
 	err := json.NewDecoder(r.Body).Decode(&createDropletRequest)
 	if err != nil {
 		return
@@ -71,13 +71,27 @@ func (p *Plugin) httpRouteCreateDroplet(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	droplet, _, err := client.CreateDroplet(context.Background(), createDropletRequest)
-
-	post := &model.Post{
-		Message: fmt.Sprintf("New droplet: %s created by NAME", droplet.Name),
+	droplet, _, e := client.CreateDroplet(context.Background(), &createDropletRequest)
+	if e != nil {
+		return
 	}
 
-	p.API.CreatePost(post)
+	subcription, _ := p.store.LoadSubscription()
+	channels := subcription.Channels
+
+	user, _ := p.API.GetUser(mattermostUserID)
+
+	msg := fmt.Sprintf("New droplet: [%s](%s) has been created by %s", droplet.Name, getDropletURL(droplet.ID), user.Username)
+
+	for _, channel := range channels {
+		post := &model.Post{
+			UserId:    p.BotUserID,
+			ChannelId: channel,
+			Message:   msg,
+		}
+
+		p.API.CreatePost(post)
+	}
 }
 
 func (p *Plugin) httpRouteToListRegions(w http.ResponseWriter, r *http.Request) {

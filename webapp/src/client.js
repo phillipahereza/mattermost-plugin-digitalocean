@@ -1,57 +1,49 @@
-import axios from 'axios';
+import {Client4} from 'mattermost-redux/client';
 import {ClientError} from 'mattermost-redux/client/client4';
 
-class Client {
-    constructor() {
-        this.baseURL = '/plugins/com.mattermost.digitalocean';
-        this.axiosInstance = axios.create({
-            baseURL: this.baseURL,
-        });
+export const doFetch = async (url, options) => {
+    const {data} = await doFetchWithResponse(url, options);
+
+    return data;
+};
+
+export const doFetchWithResponse = async (url, options = {}) => {
+    const response = await fetch(url, Client4.getOptions(options));
+
+    let data;
+    if (response.ok) {
+        data = await response.json();
+
+        return {
+            response,
+            data,
+        };
     }
 
-    getDOTeamRegions = async () => {
-        return this.doGet('/api/v1/get-do-regions');
+    data = await response.text();
+
+    throw new ClientError(Client4.url, {
+        message: data || '',
+        status_code: response.status,
+        url,
+    });
+};
+
+export function buildQueryString(parameters) {
+    const keys = Object.keys(parameters);
+    if (keys.length === 0) {
+        return '';
     }
 
-    getDOTeamDropletSizes = async () => {
-        return this.doGet('/api/v1/get-do-sizes');
-    }
+    let query = '?';
+    for (let i = 0; i < keys.length; i++) {
+        const key = keys[i];
+        query += key + '=' + encodeURIComponent(parameters[key]);
 
-    getDOTeamImages = async () => {
-        return this.doGet('/api/v1/get-do-images');
-    }
-
-    createDroplet = async (droplet) => {
-        return this.doPost('/api/v1/create-droplet', droplet);
-    }
-
-    doGet = async (url) => {
-        try {
-            const response = await this.axiosInstance.get(url);
-            return response.data;
-        } catch (error) {
-            throw new ClientError(this.baseURL, {
-                message: error.response.data || '',
-                status_code: error.response.status,
-                url,
-            });
+        if (i < keys.length - 1) {
+            query += '&';
         }
     }
 
-    doPost = async (url, data) => {
-        try {
-            const response = await this.axiosInstance.post(url, data);
-            return response.data;
-        } catch (error) {
-            throw new ClientError(this.baseURL, {
-                message: error.response.data || '',
-                status_code: error.response.status,
-                url,
-            });
-        }
-    }
+    return query;
 }
-
-const client = new Client();
-
-export default client;

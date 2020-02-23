@@ -1,5 +1,8 @@
+/* eslint-disable no-unused-vars */
 import ActionTypes from '../action_types';
-import Client from '../client';
+
+import Client, {doFetch} from '../client';
+import {getPluginServerRoute} from '../selectors';
 
 export const openCreateModal = () => (dispatch) => dispatch({
     type: ActionTypes.OPEN_CREATE_DROPLET_MODAL,
@@ -12,10 +15,13 @@ export const closeCreateModal = () => {
 };
 
 export const getTeamRegions = () => {
-    return async (dispatch) => {
+    return async (dispatch, getState) => {
         let data;
+        const baseUrl = getPluginServerRoute(getState());
         try {
-            data = await Client.getDOTeamRegions();
+            data = await doFetch(`${baseUrl}/api/v1/get-do-regions`, {
+                method: 'get',
+            });
         } catch (error) {
             return {error};
         }
@@ -30,10 +36,13 @@ export const getTeamRegions = () => {
 };
 
 export const getDropletSizes = () => {
-    return async (dispatch) => {
+    return async (dispatch, getState) => {
         let data;
+        const baseUrl = getPluginServerRoute(getState());
         try {
-            data = await Client.getDOTeamDropletSizes();
+            data = await doFetch(`${baseUrl}/api/v1/get-do-sizes`, {
+                method: 'get',
+            });
         } catch (error) {
             return {error};
         }
@@ -48,10 +57,13 @@ export const getDropletSizes = () => {
 };
 
 export const getImages = () => {
-    return async (dispatch) => {
+    return async (dispatch, getState) => {
         let data;
+        const baseUrl = getPluginServerRoute(getState());
         try {
-            data = await Client.getDOTeamImages();
+            data = await doFetch(`${baseUrl}/api/v1/get-do-images`, {
+                method: 'get',
+            });
         } catch (error) {
             return {error};
         }
@@ -66,19 +78,16 @@ export const getImages = () => {
 };
 
 export const createDroplet = (droplet) => {
-    return async (dispatch) => {
-        let data;
+    return async (dispatch, getState) => {
+        const baseUrl = getPluginServerRoute(getState());
         try {
-            data = await Client.createDroplet(droplet);
+            const data = await doFetch(`${baseUrl}/api/v1/create-droplet`, {
+                method: 'post',
+                body: JSON.stringify(droplet),
+            });
+            return {data};
         } catch (error) {
             return {error};
         }
-
-        dispatch({
-            type: ActionTypes.RECEIVED_DO_IMAGES,
-            data,
-        });
-
-        return {data};
     };
 };

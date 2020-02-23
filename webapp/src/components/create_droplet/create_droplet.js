@@ -60,8 +60,6 @@ export default class CreateDropletModal extends React.PureComponent {
         show: PropTypes.bool.isRequired,
         createDroplet: PropTypes.func.isRequired,
         regionsSelectData: PropTypes.array.isRequired,
-
-        // sizeSelectData: PropTypes.array.isRequired,
         imageSelectData: PropTypes.array.isRequired,
     }
 
@@ -99,7 +97,11 @@ export default class CreateDropletModal extends React.PureComponent {
         });
     }
 
-    handleCloseModal = () => {
+    handleCloseModal = (e) => {
+        if (e && e.preventDefault) {
+            e.preventDefault();
+        }
+
         const {closeCreateModal} = this.props;
         this.setState(initialState, closeCreateModal);
     }
@@ -111,7 +113,7 @@ export default class CreateDropletModal extends React.PureComponent {
         getImages();
     }
 
-    prepareFormMultiKeys = (keys) => {
+    prepareFormMultiKeys = (keys, name) => {
         if (typeof keys === 'undefined') {
             return [];
         }
@@ -121,8 +123,23 @@ export default class CreateDropletModal extends React.PureComponent {
         }
 
         const prepKeys = [];
+
+        if (name === 'ssh') {
+            keys.forEach((key) => {
+                prepKeys.push({Fingerprint: key.value});
+            });
+            return prepKeys;
+        }
+
+        if (name === 'tags') {
+            keys.forEach((key) => {
+                prepKeys.push(key.value);
+            });
+            return prepKeys;
+        }
+
         keys.forEach((key) => {
-            prepKeys.push(key.value);
+            prepKeys.push({ID: key.value});
         });
         return prepKeys;
     }
@@ -138,15 +155,15 @@ export default class CreateDropletModal extends React.PureComponent {
         droplet.name = name;
         droplet.region = region.value;
         droplet.size = size.value;
-        droplet.image = image.value;
-        droplet.ssh_keys = this.prepareFormMultiKeys(ssh_keys);
+        droplet.image = {ID: image.value};
+        droplet.ssh_keys = this.prepareFormMultiKeys(ssh_keys, 'ssh');
         droplet.backups = backups;
         droplet.ipV6 = ipV6;
         droplet.private_networking = private_networking;
         droplet.user_data = user_data;
         droplet.monitoring = monitoring;
-        droplet.volumes = this.prepareFormMultiKeys(volumes);
-        droplet.tags = this.prepareFormMultiKeys(tags);
+        droplet.volumes = this.prepareFormMultiKeys(volumes, '');
+        droplet.tags = this.prepareFormMultiKeys(tags, 'tags');
 
         return droplet;
     }
@@ -156,7 +173,7 @@ export default class CreateDropletModal extends React.PureComponent {
             e.preventDefault();
         }
 
-        const {createDroplet, closeCreateModal} = this.props;
+        const {createDroplet} = this.props;
         const droplet = this.createDropletDataFromState();
 
         this.setState({saving: true});
@@ -167,7 +184,7 @@ export default class CreateDropletModal extends React.PureComponent {
                 return;
             }
 
-            closeCreateModal();
+            this.handleCloseModal(e);
         });
     }
 
@@ -175,14 +192,10 @@ export default class CreateDropletModal extends React.PureComponent {
         const {
             show,
             regionsSelectData,
-
-            // sizeSelectData,
             imageSelectData,
         } = this.props;
 
         const {saving, name, user_data, backups, monitoring, private_networking, ipV6, size} = this.state;
-        // eslint-disable-next-line no-console
-        console.log('STATE', this.state);
         const footer = (
             <React.Fragment>
                 <FormButton
@@ -276,8 +289,6 @@ export default class CreateDropletModal extends React.PureComponent {
                 >
                     <MultiSelect
                         name='size'
-
-                        // options={sizeSelectData}
                         options={this.state.rawSizes}
                         handleSelectChange={this.onMultiSelectChange}
                         theme={this.props.theme}
