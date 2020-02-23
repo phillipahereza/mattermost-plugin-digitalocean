@@ -19,6 +19,14 @@ Run ```/do help``` and get help on all commands.
 - ```/do token``` - Provides instructions on getting a personal access token for the configured DigitalOcean team
 - ```/do show-configured-token``` - Display your configured access token
 #### Droplets
+- ```/do create``` - Easily create a new droplet from within Mattermost
+![Modal](https://user-images.githubusercontent.com/28563179/75112993-82d0f880-565a-11ea-94ff-3742101242fb.png)
+
+Create process alerts team members of the newly created resource
+
+![MM SS](https://user-images.githubusercontent.com/28563179/75112995-8d8b8d80-565a-11ea-96a1-709f7b543ad1.png)
+
+
 - ```/do list-droplets``` - List all Droplets in your team
 - ```/do rename-droplet <dropletID> <name>``` - Rename a droplet
 - ```/do reboot-droplet <dropletID>``` - Reboot a droplet
