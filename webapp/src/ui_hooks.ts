@@ -1,11 +1,15 @@
+import {Store, Action} from 'redux';
+
 import {openCreateModal} from './actions';
 
 export default class UIHook {
-    constructor(store) {
+    public store: Store<object, Action<object>>;
+
+    public constructor(store: Store<object, Action<object>>) {
         this.store = store;
     }
 
-    slashCommandWillBePostedHook = (message, contextArgs) => {
+    public slashCommandWillBePostedHook = (message: string, contextArgs: any): Promise<{message?: string; args?: any}> => {
         let messageTrimmed;
         if (message) {
             messageTrimmed = message.trim();
