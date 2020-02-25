@@ -1,13 +1,13 @@
 import {Client4} from 'mattermost-redux/client';
 import {ClientError} from 'mattermost-redux/client/client4';
 
-export const doFetch = async (url, options) => {
+export const doFetch = async (url: string, options: object): Promise<any> => {
     const {data} = await doFetchWithResponse(url, options);
 
     return data;
 };
 
-export const doFetchWithResponse = async (url, options = {}) => {
+export const doFetchWithResponse = async (url: string, options: object = {}): Promise<any> => {
     const response = await fetch(url, Client4.getOptions(options));
 
     let data;
@@ -29,7 +29,7 @@ export const doFetchWithResponse = async (url, options = {}) => {
     });
 };
 
-export function buildQueryString(parameters) {
+export function buildQueryString(parameters: any): string {
     const keys = Object.keys(parameters);
     if (keys.length === 0) {
         return '';
