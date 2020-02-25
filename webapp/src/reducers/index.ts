@@ -1,8 +1,12 @@
 import {combineReducers} from 'redux';
 
+import {
+    GenericAction,
+} from 'mattermost-redux/types/actions';
+
 import ActionTypes from '../action_types';
 
-const openModal = (state = false, action) => {
+const openModal = (state: boolean = false, action: GenericAction): boolean => {
     switch (action.type) {
     case ActionTypes.OPEN_CREATE_DROPLET_MODAL:
         return true;
@@ -13,7 +17,7 @@ const openModal = (state = false, action) => {
     }
 };
 
-const regions = (state = [], action) => {
+const regions = (state: any[] = [], action: GenericAction): any[] => {
     switch (action.type) {
     case ActionTypes.RECEIVED_DO_REGIONS:
         return action.data;
@@ -24,7 +28,7 @@ const regions = (state = [], action) => {
     }
 };
 
-const sizes = (state = [], action) => {
+const sizes = (state: any[] = [], action: GenericAction): any[] => {
     switch (action.type) {
     case ActionTypes.RECEIVED_DO_DROPLET_SIZES:
         return action.data;
@@ -35,7 +39,7 @@ const sizes = (state = [], action) => {
     }
 };
 
-const images = (state = [], action) => {
+const images = (state: any[] = [], action: GenericAction): any[] => {
     switch (action.type) {
     case ActionTypes.RECEIVED_DO_IMAGES:
         return action.data;

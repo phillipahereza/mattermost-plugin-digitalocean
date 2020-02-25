@@ -1,12 +1,15 @@
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
 import {changeOpacity} from 'mattermost-redux/utils/theme_utils';
 
-export function prepareRegionsSelectData(regions) {
-    const selectData = [];
+import {GenericSelectData} from './ts_types';
+
+export function prepareRegionsSelectData(regions: any[]): GenericSelectData[] {
+    const selectData: GenericSelectData[] = [];
     if (!Array.isArray(regions) || regions.length === 0) {
         return selectData;
     }
     regions.forEach((region) => {
-        const data = {};
+        const data: GenericSelectData = {};
         data.label = region.name;
         data.value = region.slug;
         selectData.push(data);
@@ -16,14 +19,14 @@ export function prepareRegionsSelectData(regions) {
 }
 
 // Depends on the regions
-export function prepareSizeSelectData(sizes) {
-    const selectData = [];
+export function prepareSizeSelectData(sizes: any[]): GenericSelectData[] {
+    const selectData: GenericSelectData[] = [];
 
     if (!Array.isArray(sizes) || sizes.length === 0) {
         return selectData;
     }
     sizes.forEach((size) => {
-        const data = {};
+        const data: GenericSelectData = {};
         data.label = size;
         data.value = size;
         selectData.push(data);
@@ -32,13 +35,13 @@ export function prepareSizeSelectData(sizes) {
     return selectData;
 }
 
-export function prepareImageSelectData(images) {
-    const selectData = [];
+export function prepareImageSelectData(images: any[]): GenericSelectData[] {
+    const selectData: GenericSelectData[] = [];
     if (!Array.isArray(images) || images.length === 0) {
         return selectData;
     }
     images.forEach((image) => {
-        const data = {};
+        const data: GenericSelectData = {};
         data.label = `${image.name}(${image.distribution})`;
         data.value = image.id;
         selectData.push(data);
