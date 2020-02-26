@@ -1,21 +1,29 @@
-/* eslint-disable no-unused-vars */
-import ActionTypes from '../action_types';
+import {
+    GenericAction,
+    DispatchFunc,
+    ActionFunc,
+    GetStateFunc,
+    ActionResult,
+} from 'mattermost-redux/types/actions';
 
-import Client, {doFetch} from '../client';
+import ActionTypes from '../action_types';
+import {Droplet} from '../ts_types';
+
+import {doFetch} from '../client';
 import {getPluginServerRoute} from '../selectors';
 
-export const openCreateModal = () => (dispatch) => dispatch({
+export const openCreateModal = (): DispatchFunc => (dispatch: DispatchFunc): DispatchFunc => dispatch({
     type: ActionTypes.OPEN_CREATE_DROPLET_MODAL,
 });
 
-export const closeCreateModal = () => {
+export const closeCreateModal = (): GenericAction => {
     return {
         type: ActionTypes.CLOSE_CREATE_DROPLET_MODAL,
     };
 };
 
-export const getTeamRegions = () => {
-    return async (dispatch, getState) => {
+export const getTeamRegions = (): ActionFunc => {
+    return async (dispatch: DispatchFunc, getState: GetStateFunc): ActionResult => {
         let data;
         const baseUrl = getPluginServerRoute(getState());
         try {
@@ -35,8 +43,8 @@ export const getTeamRegions = () => {
     };
 };
 
-export const getDropletSizes = () => {
-    return async (dispatch, getState) => {
+export const getDropletSizes = (): ActionFunc => {
+    return async (dispatch: DispatchFunc, getState: GetStateFunc): ActionResult => {
         let data;
         const baseUrl = getPluginServerRoute(getState());
         try {
@@ -56,8 +64,8 @@ export const getDropletSizes = () => {
     };
 };
 
-export const getImages = () => {
-    return async (dispatch, getState) => {
+export const getImages = (): ActionFunc => {
+    return async (dispatch: DispatchFunc, getState: GetStateFunc): ActionResult => {
         let data;
         const baseUrl = getPluginServerRoute(getState());
         try {
@@ -77,8 +85,8 @@ export const getImages = () => {
     };
 };
 
-export const createDroplet = (droplet) => {
-    return async (dispatch, getState) => {
+export const createDroplet = (droplet: Droplet): ActionFunc => {
+    return async (dispatch: DispatchFunc, getState: GetStateFunc): ActionResult => {
         const baseUrl = getPluginServerRoute(getState());
         try {
             const data = await doFetch(`${baseUrl}/api/v1/create-droplet`, {
