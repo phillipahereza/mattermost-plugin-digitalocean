@@ -1,9 +1,16 @@
-/* eslint-disable react/jsx-filename-extension */
 import React, {PureComponent} from 'react';
 import PropTypes from 'prop-types';
 
-export default class FormButton extends PureComponent {
-    static propTypes = {
+type Props = {
+    name: string;
+    onChangeFunc: (event: React.ChangeEvent<HTMLTextAreaElement> | React.ChangeEvent<HTMLInputElement>) => void;
+    value: string;
+    placeholder?: string;
+    largeText?: boolean;
+}
+
+export default class FormButton extends PureComponent<Props, {}> {
+    public static propTypes = {
         name: PropTypes.string.isRequired,
         onChangeFunc: PropTypes.func.isRequired,
         value: PropTypes.string.isRequired,
@@ -11,12 +18,12 @@ export default class FormButton extends PureComponent {
         largeText: PropTypes.bool,
     }
 
-    static defaultProps = {
+    public static defaultProps = {
         placeholder: '',
         largeText: false,
     }
 
-    render() {
+    public render(): JSX.Element {
         const {name, onChangeFunc, value, placeholder, largeText} = this.props;
         let textInput;
         textInput = (
@@ -35,7 +42,7 @@ export default class FormButton extends PureComponent {
                 <textarea
                     name={name}
                     className='form-control'
-                    rows='5'
+                    rows={5}
                     value={value}
                     onChange={onChangeFunc}
                 />
