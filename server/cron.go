@@ -9,14 +9,33 @@ import (
 	cron "github.com/robfig/cron/v3"
 )
 
-// RunPollingJobs is
-func (p *Plugin) RunPollingJobs() {
+// DOCron is
+type DOCron struct {
+	cron *cron.Cron
+}
+
+func newCron() *cron.Cron {
 	c := cron.New()
-	c.AddFunc("*/1 * * * *", func() {
+	return c
+}
+
+// RegisterPollingJobs is
+func (p *Plugin) RegisterPollingJobs() {
+	cronConfig := p.getConfiguration().CronConfig
+	p.cron.AddFunc(cronConfig, func() {
 		p.PostToChannels()
 	})
+}
 
-	c.Start()
+// StartCronJobs starts our cron jobs
+func (p *Plugin) StartCronJobs() {
+	p.RegisterPollingJobs()
+	p.cron.Start()
+}
+
+// StopCronJobs stops cron jobs
+func (p *Plugin) StopCronJobs() {
+	p.cron.Stop()
 }
 
 func getDropletURL(id int) string {

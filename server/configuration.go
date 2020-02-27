@@ -21,6 +21,7 @@ type configuration struct {
 	DOTeamID     string
 	DOAdmins     string
 	DOAdminToken string
+	CronConfig   string
 }
 
 const adminKVKey = "com.mattermost.digitalocean_admin"
@@ -91,6 +92,15 @@ func (p *Plugin) OnConfigurationChange() error {
 	if e != nil {
 		p.API.LogError("Failed to store admin token", "Err", e.Error())
 		return errors.Wrap(e, "Failed to store admin token")
+	}
+
+	// stop old crons and start a new one with updated config
+	// Might require a more detailed check within the config to only run the code below
+	// cron config changes
+	if p.cron != nil {
+		p.StopCronJobs()
+		p.cron = newCron()
+		p.StartCronJobs()
 	}
 
 	return nil
