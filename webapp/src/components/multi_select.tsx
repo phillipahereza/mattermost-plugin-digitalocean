@@ -1,13 +1,23 @@
-/* eslint-disable react/jsx-filename-extension */
 import React, {PureComponent} from 'react';
 import Select from 'react-select';
 import CreatableSelect from 'react-select/creatable';
 import PropTypes from 'prop-types';
 
+import {GenericSelectData} from '../ts_types';
+
 import {getStyleForReactSelect} from '../utils';
 
-export default class MultiSelect extends PureComponent {
-    static propTypes = {
+type Props = {
+    creatable?: boolean;
+    options?: GenericSelectData[];
+    name: string;
+    handleSelectChange: (value: GenericSelectData, name: string) => void;
+    theme: object;
+    selectedValue?: GenericSelectData[];
+}
+
+export default class MultiSelect extends PureComponent<Props, {}> {
+    public static propTypes = {
         creatable: PropTypes.bool,
         options: PropTypes.array,
         name: PropTypes.string.isRequired,
@@ -16,7 +26,7 @@ export default class MultiSelect extends PureComponent {
         selectedValue: PropTypes.object.isRequired,
     }
 
-    render() {
+    public render(): JSX.Element {
         const {creatable, options, name, handleSelectChange, selectedValue} = this.props;
         let selectComponent;
         selectComponent = (
@@ -25,7 +35,7 @@ export default class MultiSelect extends PureComponent {
                 isSearchable={true}
                 options={options}
                 isClearable={true}
-                onChange={(value) => handleSelectChange(value, name)}
+                onChange={(value: GenericSelectData | any): void => handleSelectChange(value, name)}
                 styles={getStyleForReactSelect(this.props.theme)}
                 value={selectedValue}
             />
@@ -34,14 +44,12 @@ export default class MultiSelect extends PureComponent {
         if (creatable) {
             selectComponent = (
                 <CreatableSelect
-                    noOptionsMessage={() => 'Start typing...'}
-                    formatCreateLabel={(value) => `Add "${value}"`}
                     placeholder=''
                     menuPortalTarget={document.body}
                     menuPlacement='auto'
                     isClearable={true}
                     isMulti={true}
-                    onChange={(value) => handleSelectChange(value, name)}
+                    onChange={(value: GenericSelectData | any): void => handleSelectChange(value, name)}
                     styles={getStyleForReactSelect(this.props.theme)}
                 />
             );

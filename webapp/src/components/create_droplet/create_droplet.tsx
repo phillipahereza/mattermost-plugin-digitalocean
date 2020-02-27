@@ -1,18 +1,22 @@
-/* eslint-disable camelcase */
+/* eslint-disable @typescript-eslint/camelcase */
 /* eslint-disable no-magic-numbers */
-/* eslint-disable react/jsx-filename-extension */
 import React from 'react';
 import {Modal} from 'react-bootstrap';
 import PropTypes from 'prop-types';
 
-import {prepareSizeSelectData} from '../../utils';
+import {GenericAction, ActionFunc} from 'mattermost-redux/types/actions';
 
 import FormButton from '../form_button';
+
+import {prepareSizeSelectData} from '../../utils';
+
 import InputWrapper from '../input_wrapper';
 import TextInput from '../text_input';
 import MultiSelect from '../multi_select';
 
-const Checkbox = (props) => (
+import {GenericSelectData, Droplet} from '../../ts_types';
+
+const Checkbox = (props: {checked: boolean; name: string; onChange: (event: React.ChangeEvent<HTMLTextAreaElement> | React.ChangeEvent<HTMLInputElement>) => void}): JSX.Element => (
     <input
         type='checkbox'
         {...props}
@@ -26,7 +30,7 @@ const noteStyle = {
     marginTop: '1em',
 };
 
-const Note = ({Tag = 'div', ...props}) => (
+const Note = ({Tag = 'div', ...props}): JSX.Element => (
     <Tag
         {...props}
     />
@@ -36,7 +40,37 @@ Note.propTypes = {
     Tag: PropTypes.string.isRequired,
 };
 
-const initialState = {
+type Props = {
+    closeCreateModal: () => GenericAction;
+    regions: any[];
+    getDropletSizes: () => ActionFunc;
+    getImages: () => ActionFunc;
+    getTeamRegions: () => ActionFunc;
+    theme: object;
+    show: boolean;
+    createDroplet: (droplet: Droplet) => ActionFunc;
+    regionsSelectData: GenericSelectData[];
+    imageSelectData: GenericSelectData[];
+}
+
+type State = {
+    rawSizes: any[];
+    saving: boolean;
+    name: string;
+    user_data: string;
+    backups: boolean;
+    ipV6: boolean;
+    private_networking: boolean;
+    monitoring: boolean;
+    size: GenericSelectData | null;
+    region?: GenericSelectData;
+    image?: any;
+    ssh_keys?: any;
+    volumes?: any;
+    tags?: any;
+}
+
+const initialState: State = {
 
     // Sizes based on region to select from
     rawSizes: [],
@@ -47,10 +81,11 @@ const initialState = {
     ipV6: false,
     private_networking: false,
     monitoring: false,
+    size: null,
 };
 
-export default class CreateDropletModal extends React.PureComponent {
-    static propTypes = {
+export default class CreateDropletModal extends React.PureComponent<Props, State> {
+    public static propTypes = {
         closeCreateModal: PropTypes.func.isRequired,
         regions: PropTypes.array.isRequired,
         getDropletSizes: PropTypes.func.isRequired,
@@ -63,41 +98,41 @@ export default class CreateDropletModal extends React.PureComponent {
         imageSelectData: PropTypes.array.isRequired,
     }
 
-    constructor(props) {
+    public constructor(props: Props) {
         super(props);
         this.state = initialState;
     }
 
-    onTextInputChange = (event) => {
+    public onTextInputChange = (event: React.ChangeEvent<HTMLTextAreaElement> | React.ChangeEvent<HTMLInputElement>): void => {
         this.setState({
             [event.target.name]: event.target.value,
-        });
+        }as any);
     }
 
-    onMultiSelectChange = (inputValue, name) => {
+    public onMultiSelectChange = (inputValue: GenericSelectData, name: string): void => {
         this.setState({
             [name]: inputValue,
-        });
+        } as any);
 
         if (name === 'region') {
             this.loadSizesBasedOnRegion(inputValue.value);
         }
     }
 
-    loadSizesBasedOnRegion = (regionSlug) => {
+    public loadSizesBasedOnRegion = (regionSlug: string | undefined): void => {
         const {regions} = this.props;
-        const selectedRegion = regions.filter((region) => region.slug === regionSlug);
+        const selectedRegion = regions.filter((region): boolean => region.slug === regionSlug);
         const sizes = prepareSizeSelectData(selectedRegion[0].sizes);
         this.setState({rawSizes: sizes, size: null});
     }
 
-    onToggleChange = (event) => {
+    public onToggleChange = (event: React.ChangeEvent<HTMLTextAreaElement> | React.ChangeEvent<HTMLInputElement>): void => {
         this.setState({
             [event.target.name]: !this.state[event.target.name],
-        });
+        } as any);
     }
 
-    handleCloseModal = (e) => {
+    public handleCloseModal = (e: React.ChangeEvent<HTMLTextAreaElement> | React.ChangeEvent<HTMLInputElement>): void => {
         if (e && e.preventDefault) {
             e.preventDefault();
         }
@@ -107,14 +142,14 @@ export default class CreateDropletModal extends React.PureComponent {
         closeCreateModal();
     }
 
-    componentDidMount() {
+    public componentDidMount(): void {
         const {getTeamRegions, getDropletSizes, getImages} = this.props;
         getTeamRegions();
         getDropletSizes();
         getImages();
     }
 
-    prepareFormMultiKeys = (keys, name) => {
+    public prepareFormMultiKeys = (keys: any[], name: string): any[] => {
         if (typeof keys === 'undefined') {
             return [];
         }
@@ -126,33 +161,33 @@ export default class CreateDropletModal extends React.PureComponent {
         const prepKeys = [];
 
         if (name === 'ssh') {
-            keys.forEach((key) => {
+            keys.forEach((key): void => {
                 prepKeys.push({Fingerprint: key.value});
             });
             return prepKeys;
         }
 
         if (name === 'tags') {
-            keys.forEach((key) => {
+            keys.forEach((key): void => {
                 prepKeys.push(key.value);
             });
             return prepKeys;
         }
 
-        keys.forEach((key) => {
+        keys.forEach((key): void => {
             prepKeys.push({ID: key.value});
         });
         return prepKeys;
     }
 
-    createDropletDataFromState = () => {
+    public createDropletDataFromState = (): Droplet => {
         const {
             name, region, size,
             image, ssh_keys, backups,
             ipV6, private_networking, user_data,
             monitoring, volumes, tags} = this.state;
 
-        const droplet = {};
+        const droplet: Droplet = {name: '', region: '', size: '', image: {ID: ''}};
         droplet.name = name;
         droplet.region = region.value;
         droplet.size = size.value;
@@ -169,7 +204,7 @@ export default class CreateDropletModal extends React.PureComponent {
         return droplet;
     }
 
-    handleCreate = (e) => {
+    public handleCreate = (e: React.ChangeEvent<HTMLTextAreaElement> | React.ChangeEvent<HTMLInputElement>): void => {
         if (e && e.preventDefault) {
             e.preventDefault();
         }
@@ -179,7 +214,7 @@ export default class CreateDropletModal extends React.PureComponent {
 
         this.setState({saving: true});
 
-        createDroplet(droplet).then((data) => {
+        createDroplet(droplet).then((data: any): unknown => {
             if (data.error) {
                 this.setState({saving: false});
                 return;
@@ -189,7 +224,7 @@ export default class CreateDropletModal extends React.PureComponent {
         });
     }
 
-    render() {
+    public render(): JSX.Element {
         const {
             show,
             regionsSelectData,

@@ -1,9 +1,22 @@
-/* eslint-disable react/jsx-filename-extension */
 import React, {PureComponent} from 'react';
 import PropTypes from 'prop-types';
 
-export default class FormButton extends PureComponent {
-    static propTypes = {
+type Props = {
+    id?: string;
+    executing?: boolean;
+    disabled?: boolean;
+    executingMessage?: React.ReactNode;
+    defaultMessage: React.ReactNode;
+    btnClass?: string;
+    extraClasses?: string;
+    saving?: boolean;
+    savingMessage?: string;
+    type?: 'button' | 'submit' | 'reset' | undefined;
+    onClick?: (e: React.ChangeEvent<HTMLTextAreaElement> | React.ChangeEvent<HTMLInputElement>) => void;
+}
+
+export default class FormButton extends PureComponent<Props, {}> {
+    public static propTypes = {
         executing: PropTypes.bool,
         disabled: PropTypes.bool,
         executingMessage: PropTypes.node,
@@ -15,7 +28,7 @@ export default class FormButton extends PureComponent {
         type: PropTypes.string,
     };
 
-    static defaultProps = {
+    public static defaultProps = {
         disabled: false,
         savingMessage: 'Creating',
         defaultMessage: 'Create',
@@ -23,7 +36,7 @@ export default class FormButton extends PureComponent {
         extraClasses: '',
     };
 
-    render() {
+    public render(): JSX.Element {
         const {saving, disabled, savingMessage, defaultMessage, btnClass, extraClasses, ...props} = this.props;
 
         let contents;

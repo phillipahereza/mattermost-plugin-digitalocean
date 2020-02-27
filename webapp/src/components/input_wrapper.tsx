@@ -1,18 +1,26 @@
-/* eslint-disable react/jsx-filename-extension */
+
 import React from 'react';
 import PropTypes from 'prop-types';
 
-export default class Wrapper extends React.PureComponent {
-    static propTypes = {
+type Props = {
+    helpText?: string;
+    label?: string;
+    inputId?: string;
+    hideRequiredStar?: boolean;
+    required?: boolean;
+}
+
+export default class Wrapper extends React.PureComponent<Props, {}> {
+    public static propTypes = {
         inputId: PropTypes.string,
-        label: PropTypes.node,
+        label: PropTypes.string,
         children: PropTypes.node.isRequired,
-        helpText: PropTypes.node,
+        helpText: PropTypes.string,
         required: PropTypes.bool,
         hideRequiredStar: PropTypes.bool,
     };
 
-    render() {
+    public render(): JSX.Element {
         const {
             children,
             helpText,
