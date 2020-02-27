@@ -21,6 +21,7 @@ type configuration struct {
 	DOTeamID     string
 	DOAdmins     string
 	DOAdminToken string
+	CronConfig   string
 }
 
 const adminKVKey = "com.mattermost.digitalocean_admin"

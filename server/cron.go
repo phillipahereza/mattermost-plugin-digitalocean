@@ -11,8 +11,9 @@ import (
 
 // RunPollingJobs is
 func (p *Plugin) RunPollingJobs() {
+	cronConfig := p.getConfiguration().CronConfig
 	c := cron.New()
-	c.AddFunc("*/1 * * * *", func() {
+	c.AddFunc(cronConfig, func() {
 		p.PostToChannels()
 	})
 

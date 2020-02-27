@@ -45,6 +45,32 @@ const manifest = JSON.parse(`
                 "help_text": "Just like a personal token but to be used for general API calls like polling",
                 "placeholder": "",
                 "default": ""
+            },
+            {
+                "key": "CronConfig",
+                "display_name": "",
+                "type": "dropdown",
+                "help_text": "Define which time zone you'll post bot updates",
+                "placeholder": "",
+                "default": "*/1 * * * *",
+                "options": [
+                    {
+                        "display_name": "7:30 am East Africa time",
+                        "value": "CRON_TZ=Africa/Nairobi 05 15 * * *"
+                    },
+                    {
+                        "display_name": "7:30 am Tokyo time",
+                        "value": "CRON_TZ=Asia/Tokyo 30 07 * * *"
+                    },
+                    {
+                        "display_name": "7:30 am EST",
+                        "value": "CRON_TZ=US/Eastern 30 07 * * *"
+                    },
+                    {
+                        "display_name": "7:30 am PST",
+                        "value": "CRON_TZ=US/Pacific 30 07 * * *"
+                    }
+                ]
             }
         ]
     }
