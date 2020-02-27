@@ -48,15 +48,19 @@ const manifest = JSON.parse(`
             },
             {
                 "key": "CronConfig",
-                "display_name": "",
+                "display_name": "Updates schedule",
                 "type": "dropdown",
-                "help_text": "Define which time zone you'll post bot updates",
+                "help_text": "Define which time zone you'll post bot updates. Default Timezone is US EST.",
                 "placeholder": "",
-                "default": "*/1 * * * *",
+                "default": "CRON_TZ=US/Eastern 30 07 * * *",
                 "options": [
                     {
+                        "display_name": "Demo, every minute",
+                        "value": "*/1 * * * *"
+                    },
+                    {
                         "display_name": "7:30 am East Africa time",
-                        "value": "CRON_TZ=Africa/Nairobi 05 15 * * *"
+                        "value": "CRON_TZ=Africa/Nairobi 30 07 * * *"
                     },
                     {
                         "display_name": "7:30 am Tokyo time",

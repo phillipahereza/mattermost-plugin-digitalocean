@@ -12,6 +12,7 @@ import (
 	"github.com/mattermost/mattermost-server/v5/plugin"
 	"github.com/phillipahereza/mattermost-plugin-digitalocean/server/client"
 	"github.com/pkg/errors"
+	cron "github.com/robfig/cron/v3"
 )
 
 // Plugin implements the interface expected by the Mattermost server to communicate between the server and plugin processes.
@@ -28,6 +29,8 @@ type Plugin struct {
 	store Store
 
 	BotUserID string
+
+	cron *cron.Cron
 }
 
 // OnActivate is
@@ -58,8 +61,11 @@ func (p *Plugin) OnActivate() error {
 
 	p.store = store
 
+	// Register cron
+	p.cron = newCron()
+
 	// start jobs
-	p.RunPollingJobs()
+	p.StartCronJobs()
 
 	return nil
 }
