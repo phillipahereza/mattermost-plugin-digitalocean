@@ -43,8 +43,8 @@ export function prepareSizeSelectData(sizes: any[]): GenericSelectData[] {
     }
     sizes.forEach((size) => {
         const data: GenericSelectData = {};
-        data.label = `${size.Memory} ${size.Disk}`;
-        data.value = size.Slug;
+        data.label = size.label;
+        data.value = size.slug;
         selectData.push(data);
     });
 

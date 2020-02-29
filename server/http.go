@@ -26,10 +26,11 @@ type sizesInfoRequest struct {
 }
 
 type sizeInfo struct {
-	Slug         string
-	Memory       int
-	Disk         int
-	PriceMonthly float64
+	Slug         string  `json:"slug"`
+	Memory       int     `json:"memory"`
+	Disk         int     `json:"disk"`
+	PriceMonthly float64 `json:"price_monthly"`
+	Label        string  `json:"label"`
 }
 
 func (p *Plugin) ServeHTTP(c *plugin.Context, w http.ResponseWriter, r *http.Request) {
@@ -209,11 +210,13 @@ func (p *Plugin) httpRouteToGetSizesInfo(w http.ResponseWriter, r *http.Request)
 
 	sizesMap := make(map[string]sizeInfo)
 	for _, size := range sizes {
+		memory := float64(size.Memory) / float64(1024)
 		sizesMap[size.Slug] = sizeInfo{
 			Slug:         size.Slug,
 			Memory:       size.Memory,
 			Disk:         size.Disk,
 			PriceMonthly: size.PriceMonthly,
+			Label:        fmt.Sprintf("Memory %.1fGB Disk %dGB (USD %v)\n", memory, size.Disk, size.PriceMonthly),
 		}
 	}
 
