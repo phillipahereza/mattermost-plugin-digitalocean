@@ -12,20 +12,22 @@ const commandHelp = `* |/do help| - Run 'test' to see if you're configured to ru
 * |/do token| - Provides instructions on getting a personal access token for the configured DigitalOcean team
 * |/do show-configured-token| - Display your configured access token
 * |/do list-droplets| - List all Droplets in your team
+* |/do create-droplet| - Create a droplet
 * |/do rename-droplet <dropletID> <name>| - Rename a droplet
 * |/do reboot-droplet <dropletID>| - Reboot a droplet
 * |/do shutdown-droplet <dropletID>| - Shutdown a droplet
 * |/do powercycle-droplet <dropletID>| - action is similar to pushing the reset button on a physical machine, it's similar to booting from scratch
 * |/do list-domains| - Retrieve a list of all of the domains in your team
-* |/do list-keys| - Retrieve a list of all of SSH keys in your team
-* |/do retrieve-key <keyID>| - Retrieve a single key by its ID
-* |/do delete-key <keyID>| - Delete single key by its ID
-* |/do create-key <name> <publicKey>| - Add an SSH key to your team. PublicKey is in double quotes
-* |/do list-clusters| - Retrieve a list of all Database Clusters set up in your team
-* |/do list-cluster-backups <id>| - Retrieve a list of all backups of a Database Cluster
-* |/do add-cluster-user <clusterID> <userName>| - Add a database user to a cluster
-* |/do list-cluster-users <clusterID>| - List database cluster users
-* |/do delete-cluster-user <clusterID> <userName>| - Delete a database user to a cluster
+* |/do list-ssh-keys| - Retrieve a list of all of SSH keys in your team
+* |/do retrieve-ssh-key <keyID>| - Retrieve a single key by its ID
+* |/do delete-ssh-key <keyID>| - Delete single key by its ID
+* |/do create-ssh-key <name> <publicKey>| - Add an SSH key to your team. PublicKey is in double quotes
+* |/do list-db-clusters| - Retrieve a list of all Database Clusters set up in your team
+* |/do list-cluster-dbs <clusterID>| - Retrieve a list of all databases in a cluster
+* |/do list-db-cluster-backups <id>| - Retrieve a list of all backups of a Database Cluster
+* |/do add-db-cluster-user <clusterID> <userName>| - Add a database user to a cluster
+* |/do list-db-cluster-users <clusterID>| - List database cluster users
+* |/do delete-db-cluster-user <clusterID> <userName>| - Delete a database user to a cluster
 * |/do list-k8s-clusters| - List all Kubernetes Clusters in your team
 * |/do list-k8s-cluster-nodepools <clusterID>| - List Nodepools in a Kubernetes cluster
 * |/do list-k8s-cluster-nodes <clusterID>| - List Nodes in a Kubernetes cluster

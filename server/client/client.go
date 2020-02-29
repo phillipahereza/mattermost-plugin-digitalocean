@@ -65,7 +65,7 @@ type DigitalOceanService interface {
 
 	ListRegions(ctx context.Context, listOptions *godo.ListOptions) ([]godo.Region, *godo.Response, error)
 	ListSizes(ctx context.Context, listOptions *godo.ListOptions) ([]godo.Size, *godo.Response, error)
-	ListImages(ctx context.Context, listOptions *godo.ListOptions) ([]godo.Image, *godo.Response, error)
+	ListImageDistributions(ctx context.Context, listOptions *godo.ListOptions) ([]godo.Image, *godo.Response, error)
 }
 
 // CreateDatabaseUser will create a new database user
@@ -207,7 +207,7 @@ func (do *DigitalOceanClient) ListSizes(ctx context.Context, listOptions *godo.L
 	return do.Client.Sizes.List(ctx, listOptions)
 }
 
-// ListImages lists available images
-func (do *DigitalOceanClient) ListImages(ctx context.Context, listOptions *godo.ListOptions) ([]godo.Image, *godo.Response, error) {
-	return do.Client.Images.List(ctx, listOptions)
+// ListImageDistributions lists available images
+func (do *DigitalOceanClient) ListImageDistributions(ctx context.Context, listOptions *godo.ListOptions) ([]godo.Image, *godo.Response, error) {
+	return do.Client.Images.ListDistribution(ctx, listOptions)
 }
