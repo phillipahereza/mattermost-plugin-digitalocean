@@ -22,7 +22,7 @@ const (
 )
 
 type sizesInfoRequest struct {
-	sizes []string
+	Sizes []string `json:"sizes"`
 }
 
 type sizeInfo struct {
@@ -203,6 +203,7 @@ func (p *Plugin) httpRouteToGetSizesInfo(w http.ResponseWriter, r *http.Request)
 	sizes, _, err := client.ListSizes(context.TODO(), nil)
 
 	if err != nil {
+		p.API.LogInfo("Got error while getting sizes list ", err)
 		return
 	}
 
@@ -216,14 +217,19 @@ func (p *Plugin) httpRouteToGetSizesInfo(w http.ResponseWriter, r *http.Request)
 		}
 	}
 
+	p.API.LogInfo(fmt.Sprintf("SizesMap: %+v\n", sizesMap))
+
 	var sizesInfo []sizeInfo
 
-	for _, size := range req.sizes {
+	p.API.LogInfo(fmt.Sprintf("sizes: %+v\n", req))
+
+	for _, size := range req.Sizes {
 		if value, ok := sizesMap[size]; ok {
 			sizesInfo = append(sizesInfo, value)
 		}
 
 	}
 	data, _ := json.Marshal(sizesInfo)
+	p.API.LogInfo(fmt.Sprintf("SizeInfoSlice: %+v\n", data))
 	w.Write(data)
 }
