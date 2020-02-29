@@ -5,6 +5,7 @@ export default {
 
     RECEIVED_DO_REGIONS: `${id}_received_do_regions`,
     RECEIVED_DO_DROPLET_SIZES: `${id}_received_do_droplet_sizes`,
+    RECEIVED_PROCESSED_DO_DROPLET_SIZES: `${id}_received_processed_do_droplet_sizes`,
     RECEIVED_DO_IMAGES: `${id}_received_do_images`,
 
     REQUEST_FAILED: `${id}_request_fail`,

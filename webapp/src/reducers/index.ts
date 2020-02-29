@@ -39,6 +39,17 @@ const sizes = (state: any[] = [], action: GenericAction): any[] => {
     }
 };
 
+const processedSizes = (state: any[] = [], action: GenericAction): any[] => {
+    switch (action.type) {
+    case ActionTypes.RECEIVED_PROCESSED_DO_DROPLET_SIZES:
+        return action.data;
+    case ActionTypes.REQUEST_FAILED:
+        return state;
+    default:
+        return state;
+    }
+};
+
 const images = (state: any[] = [], action: GenericAction): any[] => {
     switch (action.type) {
     case ActionTypes.RECEIVED_DO_IMAGES:
@@ -54,5 +65,6 @@ export default combineReducers({
     openModal,
     regions,
     sizes,
+    processedSizes,
     images,
 });
