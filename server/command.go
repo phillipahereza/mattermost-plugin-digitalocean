@@ -35,7 +35,15 @@ func (p *Plugin) ExecuteCommand(c *plugin.Context, args *model.CommandArgs) (*mo
 	case "help":
 		return p.helpCommandFunc(args)
 	case "connect":
-		return p.connectCommandFunc(args)
+		if len(parameters) == 0 {
+			return p.responsef(args, "Missing token, command should be in the form `/do connect <token>`"), nil
+		} else if len(parameters) == 1 {
+			token := parameters[0]
+			return p.connectCommandFunc(args, token)
+		} else {
+			return p.responsef(args, "Too many arguments, command should be in the form `/do connect <token>`"), nil
+		}
+
 	case "disconnect":
 		return p.disconnectCommandFunc(args)
 	case "token":

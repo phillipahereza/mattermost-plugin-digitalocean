@@ -18,10 +18,24 @@ func (p *Plugin) isUserAuthorized(id string) (bool, *model.AppError) {
 	return true, nil
 }
 
-func (p *Plugin) connectCommandFunc(args *model.CommandArgs) (*model.CommandResponse, *model.AppError) {
-	userID := args.UserId
+func (p *Plugin) getSiteURL() string {
+	url := p.API.GetConfig().ServiceSettings.SiteURL
+	if url == nil {
+		return ""
+	}
 
-	token := extractTokenFromCommand(args.Command)
+	return *url
+}
+
+func (p *Plugin) connectCommandFunc(args *model.CommandArgs, token string) (*model.CommandResponse, *model.AppError) {
+	siteURL := p.getSiteURL()
+	if siteURL == "" {
+		errMsg := "Please set a SITEURL"
+		p.API.LogError(errMsg, "user_id", args.UserId, "Err", errMsg)
+		return p.responsef(args, errMsg),
+			&model.AppError{Message: errMsg}
+	}
+	userID := args.UserId
 	stErr := p.store.StoreUserDOToken(token, userID)
 	if stErr != nil {
 		p.API.LogError("Failed to store token", "user_id", args.UserId, "Err", stErr.Error())

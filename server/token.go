@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"github.com/mattermost/mattermost-server/v5/model"
-	"strings"
 )
 
 func (p *Plugin) getPersonalTokenCommandFunc(args *model.CommandArgs) (*model.CommandResponse, *model.AppError) {
@@ -36,9 +35,4 @@ func (p *Plugin) showConnectTokenCommandFunc(args *model.CommandArgs) (*model.Co
 	}
 
 	return p.responsef(args, fmt.Sprintf("Your token: %s", tk)), nil
-}
-
-func extractTokenFromCommand(command string) string {
-	tk := strings.Fields(command)[2]
-	return strings.TrimSpace(tk)
 }
