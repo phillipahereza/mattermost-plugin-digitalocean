@@ -35,7 +35,15 @@ func (p *Plugin) ExecuteCommand(c *plugin.Context, args *model.CommandArgs) (*mo
 	case "help":
 		return p.helpCommandFunc(args)
 	case "connect":
-		return p.connectCommandFunc(args)
+		if len(parameters) == 0 {
+			return p.responsef(args, "Missing token, command should be in the form `/do connect <token>`"), nil
+		} else if len(parameters) == 1 {
+			token := parameters[0]
+			return p.connectCommandFunc(args, token)
+		} else {
+			return p.responsef(args, "Too many arguments, command should be in the form `/do connect <token>`"), nil
+		}
+
 	case "disconnect":
 		return p.disconnectCommandFunc(args)
 	case "token":
@@ -109,9 +117,9 @@ func (p *Plugin) ExecuteCommand(c *plugin.Context, args *model.CommandArgs) (*mo
 		}
 	case "list-domains":
 		return p.listDomainsCommandFunc(client, args)
-	case "list-keys":
+	case "list-ssh-keys":
 		return p.listSSHKeysCommandFunc(client, args)
-	case "create-key":
+	case "create-ssh-key":
 		p.API.LogInfo("%v", parameters)
 		if len(parameters) < 2 {
 			return p.responsef(args, "Please specify the key name or and the publicKey in the form `/do create-key <name> <publicKey>`"), nil
@@ -122,7 +130,7 @@ func (p *Plugin) ExecuteCommand(c *plugin.Context, args *model.CommandArgs) (*mo
 		} else {
 			return p.responsef(args, "Too many arguments, command should be in the form `/do create-key <name> <publicKey>`"), nil
 		}
-	case "retrieve-key":
+	case "retrieve-ssh-key":
 		if len(parameters) == 0 {
 			return p.responsef(args, "Please specify the SSH key ID"), nil
 		} else if len(parameters) == 1 {
@@ -134,7 +142,7 @@ func (p *Plugin) ExecuteCommand(c *plugin.Context, args *model.CommandArgs) (*mo
 		} else {
 			return p.responsef(args, "Too many arguments, command should be in the form `/do retrieve-key <keyID>`"), nil
 		}
-	case "delete-key":
+	case "delete-ssh-key":
 		if len(parameters) == 0 {
 			return p.responsef(args, "Please specify the SSH key ID"), nil
 		} else if len(parameters) == 1 {
@@ -146,9 +154,9 @@ func (p *Plugin) ExecuteCommand(c *plugin.Context, args *model.CommandArgs) (*mo
 		} else {
 			return p.responsef(args, "Too many arguments, command should be in the form `/do delete-key <keyID>`"), nil
 		}
-	case "list-clusters":
+	case "list-db-clusters":
 		return p.listDatabaseClustersCommandFunc(client, args)
-	case "list-cluster-backups":
+	case "list-db-cluster-backups":
 		if len(parameters) == 0 {
 			return p.responsef(args, "Please specify the Cluster ID"), nil
 		} else if len(parameters) == 1 {
@@ -157,7 +165,7 @@ func (p *Plugin) ExecuteCommand(c *plugin.Context, args *model.CommandArgs) (*mo
 		} else {
 			return p.responsef(args, "Too many arguments, command should be in the form `/do retrieve-key <keyID>`"), nil
 		}
-	case "add-cluster-user":
+	case "add-db-cluster-user":
 		if len(parameters) < 2 {
 			return p.responsef(args, "Please specify the cluster ID or and the name in the form `/do add-cluster-user <clusterID> <userName>`"), nil
 		} else if len(parameters) == 2 {
@@ -167,7 +175,7 @@ func (p *Plugin) ExecuteCommand(c *plugin.Context, args *model.CommandArgs) (*mo
 		} else {
 			return p.responsef(args, "Too many arguments, command should be in the form `/do add-cluster-user <clusterID> <userName>`"), nil
 		}
-	case "list-cluster-users":
+	case "list-db-cluster-users":
 		if len(parameters) == 0 {
 			return p.responsef(args, "Please specify the database cluster ID"), nil
 		} else if len(parameters) == 1 {
@@ -176,7 +184,7 @@ func (p *Plugin) ExecuteCommand(c *plugin.Context, args *model.CommandArgs) (*mo
 		} else {
 			return p.responsef(args, "Too many arguments, command should be in the form `/do list-cluster-users <clusterID>`"), nil
 		}
-	case "delete-cluster-user":
+	case "delete-db-cluster-user":
 		if len(parameters) < 2 {
 			return p.responsef(args, "Please specify the cluster ID or and the name in the form `/do delete-cluster-user <clusterID> <userName>`"), nil
 		} else if len(parameters) == 2 {

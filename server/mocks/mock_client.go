@@ -257,20 +257,20 @@ func (mr *MockDigitalOceanServiceMockRecorder) ListDroplets(arg0, arg1 interface
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListDroplets", reflect.TypeOf((*MockDigitalOceanService)(nil).ListDroplets), arg0, arg1)
 }
 
-// ListImages mocks base method
-func (m *MockDigitalOceanService) ListImages(arg0 context.Context, arg1 *godo.ListOptions) ([]godo.Image, *godo.Response, error) {
+// ListImageDistributions mocks base method
+func (m *MockDigitalOceanService) ListImageDistributions(arg0 context.Context, arg1 *godo.ListOptions) ([]godo.Image, *godo.Response, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ListImages", arg0, arg1)
+	ret := m.ctrl.Call(m, "ListImageDistributions", arg0, arg1)
 	ret0, _ := ret[0].([]godo.Image)
 	ret1, _ := ret[1].(*godo.Response)
 	ret2, _ := ret[2].(error)
 	return ret0, ret1, ret2
 }
 
-// ListImages indicates an expected call of ListImages
+// ListImageDistributions indicates an expected call of ListImageDistributions
 func (mr *MockDigitalOceanServiceMockRecorder) ListImages(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListImages", reflect.TypeOf((*MockDigitalOceanService)(nil).ListImages), arg0, arg1)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListImageDistributions", reflect.TypeOf((*MockDigitalOceanService)(nil).ListImageDistributions), arg0, arg1)
 }
 
 // ListKubernetesClusterNodePools mocks base method
