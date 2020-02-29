@@ -18,7 +18,19 @@ const (
 	routeToListRegions      = "/api/v1/get-do-regions"
 	routeToListDropletSizes = "/api/v1/get-do-sizes"
 	routeToListImages       = "/api/v1/get-do-images"
+	routeToGetSizesInfo     = "/api/v1/get-sizes-info"
 )
+
+type sizesInfoRequest struct {
+	sizes []string
+}
+
+type sizeInfo struct {
+	Slug         string
+	Memory       int
+	Disk         int
+	PriceMonthly float64
+}
 
 func (p *Plugin) ServeHTTP(c *plugin.Context, w http.ResponseWriter, r *http.Request) {
 	path := r.URL.Path
@@ -34,6 +46,8 @@ func (p *Plugin) ServeHTTP(c *plugin.Context, w http.ResponseWriter, r *http.Req
 		p.httpRouteToListDropletSizes(w, r)
 	case routeToListImages:
 		p.httpRouteToListImages(w, r)
+	case routeToGetSizesInfo:
+		p.httpRouteToGetSizesInfo(w, r)
 	default:
 		http.NotFound(w, r)
 	}
@@ -157,11 +171,59 @@ func (p *Plugin) httpRouteToListImages(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	images, _, err := client.ListImages(context.Background(), &godo.ListOptions{})
+	images, _, err := client.ListImageDistributions(context.Background(), &godo.ListOptions{})
 	if err != nil {
 		writeError(w, err)
 	}
 
 	data, _ := json.Marshal(images)
+	w.Write(data)
+}
+
+func (p *Plugin) httpRouteToGetSizesInfo(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		return
+	}
+	req := sizesInfoRequest{}
+	err := json.NewDecoder(r.Body).Decode(&req)
+	if err != nil {
+		return
+	}
+
+	mattermostUserID := r.Header.Get("Mattermost-User-Id")
+	if mattermostUserID == "" {
+		return
+	}
+
+	client, err := p.GetClient(mattermostUserID)
+	if err != nil {
+		return
+	}
+
+	sizes, _, err := client.ListSizes(context.TODO(), nil)
+
+	if err != nil {
+		return
+	}
+
+	sizesMap := make(map[string]sizeInfo)
+	for _, size := range sizes {
+		sizesMap[size.Slug] = sizeInfo{
+			Slug:         size.Slug,
+			Memory:       size.Memory,
+			Disk:         size.Disk,
+			PriceMonthly: size.PriceMonthly,
+		}
+	}
+
+	var sizesInfo []sizeInfo
+
+	for _, size := range req.sizes {
+		if value, ok := sizesMap[size]; ok {
+			sizesInfo = append(sizesInfo, value)
+		}
+
+	}
+	data, _ := json.Marshal(sizesInfo)
 	w.Write(data)
 }

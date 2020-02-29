@@ -15,7 +15,7 @@ export default class UIHook {
             messageTrimmed = message.trim();
         }
 
-        if (messageTrimmed && messageTrimmed.startsWith('/do create')) {
+        if (messageTrimmed && messageTrimmed === '/do create-droplet') {
             this.store.dispatch(openCreateModal());
             return Promise.resolve({});
         }
