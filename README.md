@@ -35,6 +35,7 @@ Create process alerts team members of the newly created resource
 #### Domains
 - ```/do list-domains``` - Retrieve a list of all of the domains in your team
 #### SSH Keys
+![SSH](https://drive.google.com/open?id=1WyyaVn_LZMZhW4aj1duSDMfBkGVmrCoP)
 - ```/do list-keys``` - Retrieve a list of all of SSH keys in your team
 - ```/do retrieve-key <keyID>``` - Retrieve a single key by its ID
 - ```/do delete-key <keyID>``` - Delete single key by its ID
