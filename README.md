@@ -87,6 +87,8 @@ Channels can unsubcribe by running ```/do unsubscribe```
 NB: This can be found as query param on any Digital Ocean Url. From this URL *https://cloud.digitalocean.com/projects/9ae5693a-1573-4dc1-a55d-3ebf87579XXX/resources?i=6dXcXX*, It would be *6dXcXX*
 - Save your settings
 
+![config](https://user-images.githubusercontent.com/13383422/75653372-85d97380-5c6e-11ea-984f-89443118dfa1.gif)
+
 ## 3. Development
 - Fork this repo
 - Clone your fork and make changes on your branch
