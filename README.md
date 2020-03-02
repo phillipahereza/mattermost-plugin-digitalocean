@@ -13,6 +13,8 @@
 
 ![Screen Shot 2020-02-16 at 09 51 09](https://user-images.githubusercontent.com/28563179/74600387-f8a8f300-50a1-11ea-99ee-b913c3d68fa7.png)
 
+![config](https://user-images.githubusercontent.com/13383422/75653372-85d97380-5c6e-11ea-984f-89443118dfa1.gif)
+
 NB: This can be found as query param on any Digital Ocean Url. From this URL *https://cloud.digitalocean.com/projects/9ae5693a-1573-4dc1-a55d-3ebf87579XXX/resources?i=6dXcXX*, It would be *6dXcXX*
 - Save your settings
 
@@ -87,7 +89,6 @@ Channels can unsubcribe by running ```/do unsubscribe```
 
 ![Screen Shot 2020-02-21 at 17 21 26](https://user-images.githubusercontent.com/28563179/75041999-c39c0680-54ce-11ea-849f-9079fcb973aa.png)
 
-![config](https://user-images.githubusercontent.com/13383422/75653372-85d97380-5c6e-11ea-984f-89443118dfa1.gif)
 
 ## 3. Development
 - Fork this repo
