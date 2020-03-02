@@ -14,10 +14,12 @@ Run ```/do help``` and get help on all commands.
 ### 1.2 Available Commands
 - ```/do help``` - Run 'test' to see if you're configured to run do commands
 #### Authentication
+![token_instructions](https://user-images.githubusercontent.com/13383422/75652191-7efd3180-5c6b-11ea-826f-59ac26b93a0a.gif)
 - ```/do connect <access token>``` - Associates your DO team personal token with your mattermost account
 - ```/do disconnect``` - Remove your DO team personal token with your mattermost account
 - ```/do token``` - Provides instructions on getting a personal access token for the configured DigitalOcean team
 - ```/do show-configured-token``` - Display your configured access token
+
 #### Droplets
 - ```/do create``` - Easily create a new droplet from within Mattermost
 
