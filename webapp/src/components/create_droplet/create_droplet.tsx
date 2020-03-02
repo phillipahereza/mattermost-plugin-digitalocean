@@ -113,6 +113,7 @@ export default class CreateDropletModal extends React.PureComponent<Props, State
 
         if (name === 'region') {
             this.loadSizesBasedOnRegion(inputValue.value);
+            this.setState({size: null});
         }
     }
 
@@ -325,6 +326,7 @@ export default class CreateDropletModal extends React.PureComponent<Props, State
                         options={sizeSelectData}
                         handleSelectChange={this.onMultiSelectChange}
                         theme={this.props.theme}
+                        selectedValue={size}
                     />
                 </InputWrapper>
                 <InputWrapper

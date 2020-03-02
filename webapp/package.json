@@ -58,6 +58,7 @@
   },
   "dependencies": {
     "core-js": "3.6.2",
+    "mattermost-redux": "github:mattermost/mattermost-redux#d5f581cfed3ffc273d0e7ca02663dd8fd6b8c241",
     "react": "16.8.6",
     "react-bootstrap": "^1.0.0-beta.16",
     "react-redux": "^5.0.7",
