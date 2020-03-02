@@ -102,7 +102,7 @@ Channels can unsubcribe by running ```/do unsubscribe```
 - [ ] Scaling Kubernetes Clusters
 - [ ] Configuring LoadBalancers
 - [ ] Getting detailed Droplet healthcheck updates
-- [ ] Working with different projects within an account
+- [ ] Connecting to multiple projects within an account/ Being able to switch between projects
 - [ ] Block Storage
 - [ ] CDNs
 - [ ] SSL Certificates
