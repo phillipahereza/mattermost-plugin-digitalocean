@@ -20,7 +20,9 @@ Run ```/do help``` and get help on all commands.
 - ```/do show-configured-token``` - Display your configured access token
 #### Droplets
 - ```/do create``` - Easily create a new droplet from within Mattermost
-![Modal](https://user-images.githubusercontent.com/28563179/75112993-82d0f880-565a-11ea-94ff-3742101242fb.png)
+
+[![drop](https://user-images.githubusercontent.com/28563179/75614604-888f7800-5b4b-11ea-8c9e-0222ce1b6eec.gif)](https://drive.google.com/file/d/1ccWofd3eUX5Mn61wsxzGqdglubm9vCqh/view?usp=sharing)
+
 
 Create process alerts team members of the newly created resource
 
@@ -33,9 +35,10 @@ Create process alerts team members of the newly created resource
 - ```/do shutdown-droplet <dropletID>``` - Shutdown a droplet
 - ```/do powercycle-droplet <dropletID>``` - action is similar to pushing the reset button on a physical machine, it's similar to booting from scratch
 #### Domains
+![domains](https://user-images.githubusercontent.com/13383422/75648899-8966fd80-5c62-11ea-806d-cb47fbe1d469.gif)
 - ```/do list-domains``` - Retrieve a list of all of the domains in your team
 #### SSH Keys
-![SSH](https://drive.google.com/open?id=1WyyaVn_LZMZhW4aj1duSDMfBkGVmrCoP)
+![SSH](https://user-images.githubusercontent.com/13383422/75649641-c9c77b00-5c64-11ea-9434-1c19b2b4f33a.gif)
 - ```/do list-keys``` - Retrieve a list of all of SSH keys in your team
 - ```/do retrieve-key <keyID>``` - Retrieve a single key by its ID
 - ```/do delete-key <keyID>``` - Delete single key by its ID
@@ -48,6 +51,15 @@ Create process alerts team members of the newly created resource
 - ```/do delete-cluster-user <clusterID> <userName>``` - Delete a database user to a cluster
 - ```/do list-cluster-dbs <clusterID>``` - List databases in the cluster
 #### Kubernetes
+## List Kubernetes clusters
+![list-k8s](https://user-images.githubusercontent.com/13383422/75651335-3f354a80-5c69-11ea-922b-b94e987ee7ff.gif)
+
+## List Kubernetes Cluster Nodes
+![list-nodes](https://user-images.githubusercontent.com/13383422/75651365-4e1bfd00-5c69-11ea-94c6-08fe925c6685.gif)
+
+## Get cluster kubeconfig 
+![k8s-config](https://user-images.githubusercontent.com/13383422/75651382-5a07bf00-5c69-11ea-9856-2a28ff740278.gif)
+
 - ```/do list-k8s-clusters``` - List all Kubernetes Clusters in your team
 - ```/do list-k8s-cluster-nodepools <clusterID>``` - List Nodepools in a Kubernetes cluster
 - ```/do list-k8s-cluster-nodes <clusterID>``` - List Nodes in a Kubernetes cluster
@@ -78,4 +90,14 @@ NB: This can be found as query param on any Digital Ocean Url. From this URL *ht
 - Clone your fork and make changes on your branch
 - Run ```$ make``` at the root of this project
 - Install the generated tar on your server to see your changes
+
+
+## 4. TODO
+- [ ] Scaling Kubernetes Clusters
+- [ ] Configuring LoadBalancers
+- [ ] Getting detailed Droplet healthcheck updates
+- [ ] Working with different projects within an account
+- [ ] Block Storage
+- [ ] CDNs
+- [ ] SSL Certificates
 
