@@ -22,14 +22,15 @@ const (
 )
 
 type sizesInfoRequest struct {
-	sizes []string
+	Sizes []string `json:"sizes"`
 }
 
 type sizeInfo struct {
-	Slug         string
-	Memory       int
-	Disk         int
-	PriceMonthly float64
+	Slug         string  `json:"slug"`
+	Memory       int     `json:"memory"`
+	Disk         int     `json:"disk"`
+	PriceMonthly float64 `json:"price_monthly"`
+	Label        string  `json:"label"`
 }
 
 func (p *Plugin) ServeHTTP(c *plugin.Context, w http.ResponseWriter, r *http.Request) {
@@ -203,27 +204,35 @@ func (p *Plugin) httpRouteToGetSizesInfo(w http.ResponseWriter, r *http.Request)
 	sizes, _, err := client.ListSizes(context.TODO(), nil)
 
 	if err != nil {
+		p.API.LogInfo("Got error while getting sizes list ", err)
 		return
 	}
 
 	sizesMap := make(map[string]sizeInfo)
 	for _, size := range sizes {
+		memory := float64(size.Memory) / float64(1024)
 		sizesMap[size.Slug] = sizeInfo{
 			Slug:         size.Slug,
 			Memory:       size.Memory,
 			Disk:         size.Disk,
 			PriceMonthly: size.PriceMonthly,
+			Label:        fmt.Sprintf("Memory %.1fGB Disk %dGB (USD %v)\n", memory, size.Disk, size.PriceMonthly),
 		}
 	}
 
+	p.API.LogInfo(fmt.Sprintf("SizesMap: %+v\n", sizesMap))
+
 	var sizesInfo []sizeInfo
 
-	for _, size := range req.sizes {
+	p.API.LogInfo(fmt.Sprintf("sizes: %+v\n", req))
+
+	for _, size := range req.Sizes {
 		if value, ok := sizesMap[size]; ok {
 			sizesInfo = append(sizesInfo, value)
 		}
 
 	}
 	data, _ := json.Marshal(sizesInfo)
+	p.API.LogInfo(fmt.Sprintf("SizeInfoSlice: %+v\n", data))
 	w.Write(data)
 }

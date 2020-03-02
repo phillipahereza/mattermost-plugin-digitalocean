@@ -85,6 +85,29 @@ export const getImages = (): ActionFunc => {
     };
 };
 
+export const sendSizesToGetDetails = (unprocessedSizes: string[]): ActionFunc => {
+    return async (dispatch: DispatchFunc, getState: GetStateFunc): ActionResult => {
+        const requestData = {sizes: unprocessedSizes};
+        let data;
+        const baseUrl = getPluginServerRoute(getState());
+        try {
+            data = await doFetch(`${baseUrl}/api/v1/get-sizes-info`, {
+                method: 'post',
+                body: JSON.stringify(requestData),
+            });
+        } catch (error) {
+            return {error};
+        }
+
+        dispatch({
+            type: ActionTypes.RECEIVED_PROCESSED_DO_DROPLET_SIZES,
+            data,
+        });
+
+        return {data};
+    };
+};
+
 export const createDroplet = (droplet: Droplet): ActionFunc => {
     return async (dispatch: DispatchFunc, getState: GetStateFunc): ActionResult => {
         const baseUrl = getPluginServerRoute(getState());

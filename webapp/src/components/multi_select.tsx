@@ -13,7 +13,6 @@ type Props = {
     name: string;
     handleSelectChange: (value: GenericSelectData, name: string) => void;
     theme: object;
-    selectedValue?: GenericSelectData[];
 }
 
 export default class MultiSelect extends PureComponent<Props, {}> {
@@ -23,11 +22,10 @@ export default class MultiSelect extends PureComponent<Props, {}> {
         name: PropTypes.string.isRequired,
         handleSelectChange: PropTypes.func.isRequired,
         theme: PropTypes.object.isRequired,
-        selectedValue: PropTypes.object.isRequired,
     }
 
     public render(): JSX.Element {
-        const {creatable, options, name, handleSelectChange, selectedValue} = this.props;
+        const {creatable, options, name, handleSelectChange} = this.props;
         let selectComponent;
         selectComponent = (
             <Select
@@ -37,7 +35,6 @@ export default class MultiSelect extends PureComponent<Props, {}> {
                 isClearable={true}
                 onChange={(value: GenericSelectData | any): void => handleSelectChange(value, name)}
                 styles={getStyleForReactSelect(this.props.theme)}
-                value={selectedValue}
             />
         );
 

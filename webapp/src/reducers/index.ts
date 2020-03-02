@@ -28,9 +28,20 @@ const regions = (state: any[] = [], action: GenericAction): any[] => {
     }
 };
 
+// const sizes = (state: any[] = [], action: GenericAction): any[] => {
+//     switch (action.type) {
+//     case ActionTypes.RECEIVED_DO_DROPLET_SIZES:
+//         return action.data;
+//     case ActionTypes.REQUEST_FAILED:
+//         return state;
+//     default:
+//         return state;
+//     }
+// };
+
 const sizes = (state: any[] = [], action: GenericAction): any[] => {
     switch (action.type) {
-    case ActionTypes.RECEIVED_DO_DROPLET_SIZES:
+    case ActionTypes.RECEIVED_PROCESSED_DO_DROPLET_SIZES:
         return action.data;
     case ActionTypes.REQUEST_FAILED:
         return state;

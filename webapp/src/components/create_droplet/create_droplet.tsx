@@ -8,8 +8,6 @@ import {GenericAction, ActionFunc} from 'mattermost-redux/types/actions';
 
 import FormButton from '../form_button';
 
-import {prepareSizeSelectData} from '../../utils';
-
 import InputWrapper from '../input_wrapper';
 import TextInput from '../text_input';
 import MultiSelect from '../multi_select';
@@ -46,15 +44,16 @@ type Props = {
     getDropletSizes: () => ActionFunc;
     getImages: () => ActionFunc;
     getTeamRegions: () => ActionFunc;
+    sendSizesToGetDetails: (x: string[]) => ActionFunc;
     theme: object;
     show: boolean;
     createDroplet: (droplet: Droplet) => ActionFunc;
     regionsSelectData: GenericSelectData[];
     imageSelectData: GenericSelectData[];
+    sizeSelectData: GenericSelectData[];
 }
 
 type State = {
-    rawSizes: any[];
     saving: boolean;
     name: string;
     user_data: string;
@@ -71,9 +70,6 @@ type State = {
 }
 
 const initialState: State = {
-
-    // Sizes based on region to select from
-    rawSizes: [],
     saving: false,
     name: '',
     user_data: '',
@@ -96,6 +92,7 @@ export default class CreateDropletModal extends React.PureComponent<Props, State
         createDroplet: PropTypes.func.isRequired,
         regionsSelectData: PropTypes.array.isRequired,
         imageSelectData: PropTypes.array.isRequired,
+        sendSizesToGetDetails: PropTypes.func.isRequired,
     }
 
     public constructor(props: Props) {
@@ -120,10 +117,9 @@ export default class CreateDropletModal extends React.PureComponent<Props, State
     }
 
     public loadSizesBasedOnRegion = (regionSlug: string | undefined): void => {
-        const {regions} = this.props;
+        const {regions, sendSizesToGetDetails} = this.props;
         const selectedRegion = regions.filter((region): boolean => region.slug === regionSlug);
-        const sizes = prepareSizeSelectData(selectedRegion[0].sizes);
-        this.setState({rawSizes: sizes, size: null});
+        sendSizesToGetDetails(selectedRegion[0].sizes);
     }
 
     public onToggleChange = (event: React.ChangeEvent<HTMLTextAreaElement> | React.ChangeEvent<HTMLInputElement>): void => {
@@ -229,6 +225,7 @@ export default class CreateDropletModal extends React.PureComponent<Props, State
             show,
             regionsSelectData,
             imageSelectData,
+            sizeSelectData,
         } = this.props;
 
         const {saving, name, user_data, backups, monitoring, private_networking, ipV6, size} = this.state;
@@ -325,10 +322,9 @@ export default class CreateDropletModal extends React.PureComponent<Props, State
                 >
                     <MultiSelect
                         name='size'
-                        options={this.state.rawSizes}
+                        options={sizeSelectData}
                         handleSelectChange={this.onMultiSelectChange}
                         theme={this.props.theme}
-                        selectedValue={size}
                     />
                 </InputWrapper>
                 <InputWrapper

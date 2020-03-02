@@ -4,7 +4,7 @@ import {bindActionCreators} from 'redux';
 import {GlobalState} from 'mattermost-redux/types/store';
 import {DispatchFunc} from 'mattermost-redux/types/actions';
 
-import {closeCreateModal, getTeamRegions, getDropletSizes, getImages, createDroplet} from '../../actions';
+import {closeCreateModal, getTeamRegions, getDropletSizes, getImages, createDroplet, sendSizesToGetDetails} from '../../actions';
 import {isCreateModalOpen, getRegions, getPreparedRegions, getPreparedSizes, getPreparedImages} from '../../selectors';
 
 import CreateDroplet from './create_droplet';
@@ -25,6 +25,7 @@ const mapDispatchToProps = (dispatch: DispatchFunc): object => bindActionCreator
     getDropletSizes,
     createDroplet,
     getImages,
+    sendSizesToGetDetails,
 }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(CreateDroplet);
