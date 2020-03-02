@@ -97,6 +97,7 @@ NB: This can be found as query param on any Digital Ocean Url. From this URL *ht
 
 
 ## 4. TODO
+- [ ] Create Kubernetes Clusters
 - [ ] Scaling Kubernetes Clusters
 - [ ] Configuring LoadBalancers
 - [ ] Getting detailed Droplet healthcheck updates
