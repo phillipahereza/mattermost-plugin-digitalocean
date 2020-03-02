@@ -3,15 +3,24 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/phillipahereza/mattermost-plugin-digitalocean)](https://goreportcard.com/badge/github.com/phillipahereza/mattermost-plugin-digitalocean)
 
 ## Table of Contents
-- [1. Features](#1-features)
-- [2. Configuration](#2-configuration)
+- [1. Configuration](#1-configuration)
+- [2. Features](#2-features)
 - [3. Development](#3-development)
 
-## 1. Features
-### 1.1 Help
+## 1. Configuration
+- Configure the plugin in Mattermost by going to ```System Console > Plugins > DigitalOcean```. Enable the plugin if it's not enabled.
+- Go to Digital Ocean, copy and then add your Digital Ocean team identifier (ID) to the settings under *"Unique DigitalOcean Team Identifier"*
+
+![Screen Shot 2020-02-16 at 09 51 09](https://user-images.githubusercontent.com/28563179/74600387-f8a8f300-50a1-11ea-99ee-b913c3d68fa7.png)
+
+NB: This can be found as query param on any Digital Ocean Url. From this URL *https://cloud.digitalocean.com/projects/9ae5693a-1573-4dc1-a55d-3ebf87579XXX/resources?i=6dXcXX*, It would be *6dXcXX*
+- Save your settings
+
+## 2. Features
+### 2.1 Help
 Run ```/do help``` and get help on all commands.
 
-### 1.2 Available Commands
+### 2.2 Available Commands
 - ```/do help``` - Run 'test' to see if you're configured to run do commands
 #### Authentication
 ![token_instructions](https://user-images.githubusercontent.com/13383422/75652191-7efd3180-5c6b-11ea-826f-59ac26b93a0a.gif)
@@ -40,7 +49,7 @@ Create process alerts team members of the newly created resource
 ![domains](https://user-images.githubusercontent.com/13383422/75648899-8966fd80-5c62-11ea-806d-cb47fbe1d469.gif)
 - ```/do list-domains``` - Retrieve a list of all of the domains in your team
 #### SSH Keys
-![SSH](https://user-images.githubusercontent.com/13383422/75649641-c9c77b00-5c64-11ea-9434-1c19b2b4f33a.gif)
+![SSH](https://user-images.githubusercontent.com/13383422/75677559-cf40b780-5c9c-11ea-9d09-16e8678ed665.gif)
 - ```/do list-keys``` - Retrieve a list of all of SSH keys in your team
 - ```/do retrieve-key <keyID>``` - Retrieve a single key by its ID
 - ```/do delete-key <keyID>``` - Delete single key by its ID
@@ -69,7 +78,7 @@ Create process alerts team members of the newly created resource
 - ```/do get-k8s-config <clusterID>``` - Retrieve kubeconfig file in YAML format
 - ```/do upgrade-k8s-cluster <clusterID> <versionSlug>``` - Upgrade a Kubernetes cluster to a newer patch release of Kubernetes
 
-### 1.3 Droplet updates
+### 2.3 Droplet updates
 Plugin bot posts a message about the active status of droplets at configured intervals.
 Running ```/do subcribe``` in a central channel will set it up to receive these regular updates from the bot.
 Channels can unsubcribe by running ```/do unsubscribe```
@@ -77,15 +86,6 @@ Channels can unsubcribe by running ```/do unsubscribe```
 ![Screen Shot 2020-02-21 at 17 11 49](https://user-images.githubusercontent.com/28563179/75041362-7c614600-54cd-11ea-8611-741984efdf7d.png)
 
 ![Screen Shot 2020-02-21 at 17 21 26](https://user-images.githubusercontent.com/28563179/75041999-c39c0680-54ce-11ea-849f-9079fcb973aa.png)
-
-## 2. Configuration
-- Configure the plugin in Mattermost by going to ```System Console > Plugins > DigitalOcean```. Enable the plugin if it's not enabled.
-- Go to Digital Ocean, copy and then add your Digital Ocean team identifier (ID) to the settings under *"Unique DigitalOcean Team Identifier"*
-
-![Screen Shot 2020-02-16 at 09 51 09](https://user-images.githubusercontent.com/28563179/74600387-f8a8f300-50a1-11ea-99ee-b913c3d68fa7.png)
-
-NB: This can be found as query param on any Digital Ocean Url. From this URL *https://cloud.digitalocean.com/projects/9ae5693a-1573-4dc1-a55d-3ebf87579XXX/resources?i=6dXcXX*, It would be *6dXcXX*
-- Save your settings
 
 ![config](https://user-images.githubusercontent.com/13383422/75653372-85d97380-5c6e-11ea-984f-89443118dfa1.gif)
 
