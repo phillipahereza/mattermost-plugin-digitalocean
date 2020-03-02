@@ -79,3 +79,4 @@ NB: This can be found as query param on any Digital Ocean Url. From this URL *ht
 - Run ```$ make``` at the root of this project
 - Install the generated tar on your server to see your changes
 
+NB: This will add images to the github CDN. We will not merge this PR.
