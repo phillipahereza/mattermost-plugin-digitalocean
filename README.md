@@ -81,13 +81,11 @@ Create process alerts team members of the newly created resource
 - ```/do upgrade-k8s-cluster <clusterID> <versionSlug>``` - Upgrade a Kubernetes cluster to a newer patch release of Kubernetes
 
 ### 2.3 Droplet updates
-Plugin bot posts a message about the active status of droplets at configured intervals.
+The bot provides alerts to team members in subscribed channels incase certain thresholds like CPU, Memory Usage etc. are hit.
 Running ```/do subcribe``` in a central channel will set it up to receive these regular updates from the bot.
 Channels can unsubcribe by running ```/do unsubscribe```
 
-![Screen Shot 2020-02-21 at 17 11 49](https://user-images.githubusercontent.com/28563179/75041362-7c614600-54cd-11ea-8611-741984efdf7d.png)
-
-![Screen Shot 2020-02-21 at 17 21 26](https://user-images.githubusercontent.com/28563179/75041999-c39c0680-54ce-11ea-849f-9079fcb973aa.png)
+![Screen Shot 2020-03-04 at 15 54 19](https://user-images.githubusercontent.com/28563179/75881675-989ba600-5e30-11ea-9dc5-6be51b53dd1a.png)
 
 
 ## 3. Development

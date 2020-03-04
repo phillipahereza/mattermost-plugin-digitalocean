@@ -65,6 +65,10 @@ func (p *Plugin) httpRouteToDOApps(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, doAppsPage, http.StatusSeeOther)
 }
 
+func getDropletURL(id int) string {
+	return fmt.Sprintf("https://cloud.digitalocean.com/droplets/%d", id)
+}
+
 func (p *Plugin) httpRouteCreateDroplet(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		return
