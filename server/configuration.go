@@ -20,8 +20,10 @@ import (
 type configuration struct {
 	DOTeamID     string
 	DOAdmins     string
-	DOAdminToken string
 	CronConfig   string
+	IMAPServer   string
+	IMAPUsername string
+	IMAPPassword string
 }
 
 const adminKVKey = "com.mattermost.digitalocean_admin"
@@ -85,14 +87,6 @@ func (p *Plugin) OnConfigurationChange() error {
 	}
 
 	p.setConfiguration(configuration)
-
-	// Store an admin personal token for general API calls
-	// on behalf of unconnected users e.g. polling
-	e := p.API.KVSet(adminKVKey, []byte(configuration.DOAdminToken))
-	if e != nil {
-		p.API.LogError("Failed to store admin token", "Err", e.Error())
-		return errors.Wrap(e, "Failed to store admin token")
-	}
 
 	// stop old crons and start a new one with updated config
 	// Might require a more detailed check within the config to only run the code below

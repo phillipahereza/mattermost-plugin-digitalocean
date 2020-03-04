@@ -29,40 +29,53 @@
                 "help_text": "Users that are not system admins on Mattermost but have advanced plugin privileges"
             },
             {
-                "key": "DOAdminToken",
-                "display_name": "API token",
+                "key": "IMAPServer",
+                "display_name": "IMAP Server Address",
                 "type": "text",
-                "help_text": "Just like a personal token but to be used for general API calls like polling",
+                "help_text": "Enable imap on your email provider. Example of Google's imap server is 'imap.gmail.com:993'. 933 is usually the default port",
+                "default": ""
+            },
+            {
+                "key": "IMAPUsername",
+                "display_name": "IMAP Username",
+                "type": "text",
+                "help_text": "This is the same as your Digital Ocean alerts email. Usually the email address. Something like example@gmail.com.",
+                "default": ""
+            },
+            {
+                "key": "IMAPPassword",
+                "display_name": "IMAP Password",
+                "type": "text",
                 "default": ""
             },
             {
                 "key": "CronConfig",
                 "display_name": "Updates schedule",
                 "type": "dropdown",
-                "default": "CRON_TZ=US/Eastern 30 07 * * *",
+                "default": "*/5 * * * *",
                 "options": [
                     {
                         "display_name": "Demo, every minute",
                         "value": "*/1 * * * *"
                     },
                     {
-                        "display_name": "7:30 am East Africa time",
-                        "value": "CRON_TZ=Africa/Nairobi 30 07 * * *"
+                        "display_name": "Every 5 minutes",
+                        "value": "*/5 * * * *"
                     },
                     {
-                        "display_name": "7:30 am Tokyo time",
-                        "value": "CRON_TZ=Asia/Tokyo 30 07 * * *"
+                        "display_name": "Every 10 minutes",
+                        "value": "*/10 * * * *"
                     },
                     {
-                        "display_name": "7:30 am EST",
-                        "value": "CRON_TZ=US/Eastern 30 07 * * *"
+                        "display_name": "Every 30 minutes",
+                        "value": "*/30 * * * *"
                     },
                     {
-                        "display_name": "7:30 am PST",
-                        "value": "CRON_TZ=US/Pacific 30 07 * * *"
+                        "display_name": "Every 1 hour",
+                        "value": "*/60 * * * *"
                     }
                 ],
-                "help_text": "Define which time zone you'll post bot updates. Default Timezone is US EST."
+                "help_text": "Define how often to check for Monitoring updates and alert channels. Default is 5 minutes."
             }
         ]
     }

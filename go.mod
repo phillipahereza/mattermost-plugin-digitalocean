@@ -4,6 +4,8 @@ go 1.13
 
 require (
 	github.com/digitalocean/godo v1.30.0
+	github.com/emersion/go-imap v1.0.4
+	github.com/emersion/go-message v0.11.1
 	github.com/golang/mock v1.2.0
 	github.com/mattermost/mattermost-server/v5 v5.19.1
 	github.com/mholt/archiver/v3 v3.3.0
