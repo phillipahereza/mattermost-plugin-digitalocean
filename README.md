@@ -34,6 +34,8 @@ Run ```/do help``` and get help on all commands.
 #### Droplets
 - ```/do create-droplet``` - Easily create a new droplet from within Mattermost
 
+*Click image below to access feature demo*
+
 [![drop](https://user-images.githubusercontent.com/28563179/75614604-888f7800-5b4b-11ea-8c9e-0222ce1b6eec.gif)](https://drive.google.com/file/d/1ccWofd3eUX5Mn61wsxzGqdglubm9vCqh/view?usp=sharing)
 
 
