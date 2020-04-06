@@ -15,7 +15,7 @@ const manifestStr = `
   "id": "com.mattermost.digitalocean",
   "name": "DigitalOcean Plugin",
   "description": "A DigitalOcean plugin for Mattermost",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "min_server_version": "5.12.0",
   "server": {
     "executables": {
