@@ -5,7 +5,6 @@
     "homepage_url": "https://github.com/phillipahereza/mattermost-plugin-digitalocean",
     "support_url": "https://github.com/phillipahereza/mattermost-plugin-digitalocean/issues",
     "icon_path": "assets/icon.svg",
-    "release_notes_url": "https://github.com/phillipahereza/mattermost-plugin-digitalocean/releases",
     "version": "1.0.0",
     "min_server_version": "5.12.0",
     "server": {

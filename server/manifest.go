@@ -15,6 +15,9 @@ const manifestStr = `
   "id": "com.github.phillipahereza.mattermost-plugin-digitalocean",
   "name": "DigitalOcean Plugin",
   "description": "A DigitalOcean plugin for Mattermost",
+  "homepage_url": "https://github.com/phillipahereza/mattermost-plugin-digitalocean",
+  "support_url": "https://github.com/phillipahereza/mattermost-plugin-digitalocean/issues",
+  "icon_path": "assets/icon.svg",
   "version": "1.0.0",
   "min_server_version": "5.12.0",
   "server": {
