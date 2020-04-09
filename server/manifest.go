@@ -12,7 +12,7 @@ var manifest *model.Manifest
 
 const manifestStr = `
 {
-  "id": "com.mattermost.digitalocean",
+  "id": "com.github.phillipahereza.mattermost-plugin-digitalocean",
   "name": "DigitalOcean Plugin",
   "description": "A DigitalOcean plugin for Mattermost",
   "version": "1.0.0",
