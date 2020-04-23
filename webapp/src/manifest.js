@@ -5,7 +5,9 @@ const manifest = JSON.parse(`
     "id": "com.mattermost.digitalocean",
     "name": "DigitalOcean Plugin",
     "description": "A DigitalOcean plugin for Mattermost",
-    "version": "0.1.0",
+    "homepage_url": "https://github.com/phillipahereza/mattermost-plugin-digitalocean",
+    "support_url": "https://github.com/phillipahereza/mattermost-plugin-digitalocean/issues",
+    "version": "1.0.0",
     "min_server_version": "5.12.0",
     "server": {
         "executables": {

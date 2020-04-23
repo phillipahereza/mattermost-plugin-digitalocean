@@ -4,6 +4,7 @@
     "description": "A DigitalOcean plugin for Mattermost",
     "homepage_url": "https://github.com/phillipahereza/mattermost-plugin-digitalocean",
     "support_url": "https://github.com/phillipahereza/mattermost-plugin-digitalocean/issues",
+    "release_notes_url": "",
     "version": "1.0.0",
     "min_server_version": "5.12.0",
     "server": {
